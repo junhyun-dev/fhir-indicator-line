@@ -1,6 +1,6 @@
 # fhir-indicator-line
 
-합성 FHIR Bundle을 두 배치로 나누고, 받은 본문을 보존하며, 같은 자원의 최신 내용을 하나로 고르는 학습 프로젝트다. 요청 02는 L0~L2와 dbt 틀까지다. D1~D7 임상 규칙을 적용하는 L3~L6 SQL 모델과 `expected/` 정답은 사용자가 작성한다.
+합성 FHIR Bundle을 두 배치로 나누고, 받은 본문을 보존하며, 같은 자원의 최신 내용을 하나로 고르는 학습 프로젝트다. 요청 02는 L0~L2와 dbt 틀까지다. D1~D7 임상 규칙을 적용하는 L3~L6 SQL 모델은 요청 03에서 Codex가 쓰고, `expected/` 기대 결과(읽기 전용)와 그 비교 검사는 짝 Claude 세션이 쓴다(10/19). 검사 명령은 `sh scripts/check.sh` 하나이고, 지킬 것은 `AGENTS.md`에 있다.
 
 ```bash
 mkdir -p .cache/FHIR-LINE-02/tmp .cache/FHIR-LINE-02/pip models/{staging,intermediate,marts}

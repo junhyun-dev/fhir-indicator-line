@@ -60,6 +60,40 @@ def compare_expected(connection, folder):
             'comparisons':comparisons, 'on_mismatch':'기준이 틀린 것 같다/구현 불일치 가능성을 반환; expected는 읽기만 함'}
 
 
+SUMMARY_COLUMNS = ('as_of','denominator','numerator','rate')  # note 열은 설명이라 비교하지 않음
+
+
+def compare_summary(connection, folder):
+    """④ 요약: expected/summary_<as_of>.csv와 bp_summary를 기준일마다 비교(D6 · D7 · rate는 넷째 자리 반올림)."""
+    files = sorted(folder.glob('summary_*.csv'))
+    relation = connection.execute("SELECT count(*) FROM information_schema.tables WHERE table_schema='main' AND table_name='bp_summary'").fetchone()[0]
+    if not files or not relation:
+        return {'status':'기다림','detail':'expected/summary_<as_of>.csv 또는 bp_summary 없음'}
+    columns = {r[1]:r[2] for r in connection.execute("PRAGMA table_info('bp_summary')").fetchall()}
+    if any(c not in columns for c in SUMMARY_COLUMNS):
+        return {'status':'실패','detail':'bp_summary 열 계약(as_of · denominator · numerator · rate)이 맞지 않음; 기준을 고치지 않음'}
+    comparisons = []
+    for file in files:
+        match = re.fullmatch(r'summary_(\d{4}-\d{2}-\d{2})\.csv',file.name)
+        if match is None:
+            return {'status':'실패','detail':'expected 요약 파일의 기준일 형식을 확인해야 함; 기준을 고치지 않음'}
+        with file.open(newline='') as f:
+            expected = list(csv.DictReader(f))
+        projection = ','.join('"'+c+'"' for c in SUMMARY_COLUMNS)
+        actual_rows = connection.execute('SELECT '+projection+" FROM bp_summary WHERE left(cast(as_of AS VARCHAR),10)=?",[match.group(1)]).fetchall()
+        actual = collections.Counter(tuple(normalized_cell(v,columns[c]) for c,v in zip(SUMMARY_COLUMNS,row)) for row in actual_rows)
+        wanted = collections.Counter(tuple(normalized_cell(row[c],columns[c]) for c in SUMMARY_COLUMNS) for row in expected)
+        comparisons.append({'as_of':match.group(1),'expected_rows':len(expected),'actual_rows':len(actual_rows),'all_cells_equal':actual==wanted})
+    passed = all(c['all_cells_equal'] for c in comparisons)
+    return {'status':'통과' if passed else '실패','detail':'요약 네 열을 기준일마다 비교','comparisons':comparisons}
+
+
+def combine(person, summary):
+    """④ = 사람별 + 요약. 하나라도 실패면 실패, 하나라도 기다림이면 기다림."""
+    status = '실패' if '실패' in (person['status'],summary['status']) else '기다림' if '기다림' in (person['status'],summary['status']) else '통과'
+    return {'status':status,'detail':'사람별 '+person['status']+' · 요약 '+summary['status'],'person':person,'summary':summary}
+
+
 def source_anchor(connection):
     targets = []
     for path in sorted(ORIGINAL.glob('*.json')):
@@ -143,7 +177,7 @@ def check(expected):
                  'duplicated_resources':duplicates,'different_payload_resources':changed}
         if folder.exists():
             try:
-                fourth = compare_expected(connection,folder)
+                fourth = combine(compare_expected(connection,folder),compare_summary(connection,folder))
             except (ValueError,InvalidOperation,csv.Error,OSError) as error:
                 fourth = {'status':'실패','detail':'expected 읽기/셀 자료형 오류: '+type(error).__name__+'; 기준을 고치지 않음'}
             fifth = source_anchor(connection)
