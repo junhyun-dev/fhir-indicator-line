@@ -1,7 +1,7 @@
 -- D1,D3,D4 / t05,t07,t08,t14,t15: one as_of/person/day with at least one usable value.
 select dates.as_of, bp.person_id, bp.bp_day as bp_date,
-       min(case when bp.loinc_code = '8480-6' then bp.value end) as systolic_min,
-       min(case when bp.loinc_code = '8462-4' then bp.value end) as diastolic_min
+       min(case when bp.component_type = 'systolic' then bp.value end) as systolic_min,
+       min(case when bp.component_type = 'diastolic' then bp.value end) as diastolic_min
 from {{ ref('stg_bp_component') }} bp
 cross join {{ ref('stg_as_of_dates') }} dates
 where bp.bp_day between dates.measurement_start_day and dates.period_end_day

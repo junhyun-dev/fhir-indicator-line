@@ -257,9 +257,9 @@ class IndicatorModels(unittest.TestCase):
         self.assertEqual(self.person('t12-future'),('2025-02-01',104,81,1,'조절됨'))
 
     def test_t13_D3_reversed_components_remain_paired_with_codes(self):
-        rows = self.query('SELECT loinc_code,value FROM stg_bp_component WHERE observation_id=? ORDER BY loinc_code',
+        rows = self.query('SELECT loinc_code,component_type,value FROM stg_bp_component WHERE observation_id=? ORDER BY loinc_code',
                           [identifier('Observation','t13-reversed')])
-        self.assertEqual(rows,[('8462-4',75),('8480-6',145)])
+        self.assertEqual(rows,[('8462-4','diastolic',75),('8480-6','systolic',145)])
         self.assertEqual(self.person('t13'),('2025-09-13',145,75,0,'수축기 140 이상'))
 
     def test_t14_D1_written_day_without_timezone_shift(self):
