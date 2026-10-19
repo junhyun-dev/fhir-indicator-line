@@ -1,0 +1,4 @@
+hospital,source_system,source_code,source_unit,concept,std_unit
+A,http://loinc.org,8480-6,mm[Hg],systolic,mm[Hg]
+A,http://loinc.org,8462-4,mm[Hg],diastolic,mm[Hg]
+A,http://snomed.info/sct,59621000,,essential_hypertension,

@@ -1,4 +1,4 @@
-"""D1-D7 / t01-t15: handmade FHIR through the actual dbt SQL, in one isolated build.
+"""D1-D7/M2 / t01-t15: handmade FHIR through the actual SQL, in one isolated build.
 
 No original/expected inputs are used here. Expected outcomes are specified per case.
 """
@@ -16,6 +16,7 @@ from fhir_line.store import append_rows, initialize
 
 SEPTEMBER = '2025-09-30'
 DECEMBER = '2025-12-31'
+PERIOD_LABELS = {SEPTEMBER:'sep30', DECEMBER:'dec31'}
 
 
 def identifier(kind, label):
@@ -143,7 +144,7 @@ def cases():
 class IndicatorModels(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cache = ROOT/'.cache/FHIR-LINE-03'
+        cache = ROOT/'.cache/FHIR-LINE-04'
         cache.mkdir(parents=True,exist_ok=True)
         cls.scratch = tempfile.TemporaryDirectory(prefix='models-',dir=cache)
         cls.addClassCleanup(cls.scratch.cleanup)
@@ -165,7 +166,7 @@ class IndicatorModels(unittest.TestCase):
         env.update(FHIR_DB_PATH=str(cls.database),FHIR_DUCKDB_TEMP=str(folder/'duckdb'),
                    FHIR_DUCKDB_EXTENSIONS=str(folder/'extensions'),DBT_LOG_PATH=str(folder/'logs'),
                    DBT_TARGET_PATH=str(folder/'target'),TMPDIR=str(folder/'tmp'),XDG_CACHE_HOME=str(folder/'xdg'))
-        log = ROOT/'.local/FHIR-LINE-03/logs/fixture-dbt-build.log'
+        log = ROOT/'.local/FHIR-LINE-04/logs/fixture-dbt-build.log'
         log.parent.mkdir(parents=True,exist_ok=True)
         with log.open('w') as out:
             result = subprocess.run([str(ROOT/'.venv/bin/dbt'),'--no-use-colors','build','--no-partial-parse'],
@@ -179,26 +180,28 @@ class IndicatorModels(unittest.TestCase):
 
     def person(self, label, as_of=DECEMBER):
         rows = self.query('''SELECT last_bp_date,systolic,diastolic,controlled,reason
-            FROM fct_bp_person WHERE person_id=? AND as_of=?''',[identifier('Patient',label),as_of])
+            FROM fct_bp_person WHERE hospital='A' AND person_id=? AND as_of_label=?''',
+            [identifier('Patient',label),PERIOD_LABELS[as_of]])
         self.assertEqual(len(rows),1,label)
         day,*values = rows[0]
         return (day.isoformat() if day else None,*values)
 
     def assert_absent(self, label, as_of=DECEMBER):
-        self.assertEqual(self.query('SELECT count(*) FROM fct_bp_person WHERE person_id=? AND as_of=?',
-                                   [identifier('Patient',label),as_of])[0][0],0,label)
+        self.assertEqual(self.query("SELECT count(*) FROM fct_bp_person WHERE hospital='A' AND person_id=? AND as_of_label=?",
+                                   [identifier('Patient',label),PERIOD_LABELS[as_of]])[0][0],0,label)
 
     def daily(self, label):
         return [(day.isoformat(),s,d) for day,s,d in self.query('''SELECT bp_date,systolic_min,diastolic_min
-            FROM int_bp_daily WHERE person_id=? AND as_of=? ORDER BY bp_date''',
-            [identifier('Patient',label),DECEMBER])]
+            FROM int_bp_daily WHERE hospital='A' AND person_id=? AND as_of_label=? ORDER BY bp_date''',
+            [identifier('Patient',label),'dec31'])]
 
     def test_t01_D2_D5_D6_normal_connection(self):
         self.assertEqual(self.person('t01'),('2025-02-01',104,81,1,'조절됨'))
-        self.assertEqual(self.query('SELECT count(*),sum(controlled) FROM fct_bp_person WHERE person_id=? AND as_of=?',
-                                   [identifier('Patient','t01'),DECEMBER]),[(1,1)])
-        self.assertEqual(self.query('SELECT denominator,numerator,rate FROM bp_summary ORDER BY as_of'),
-                         [(23,15,0.6522),(25,17,0.68)])
+        self.assertEqual(self.query("SELECT count(*),sum(controlled) FROM fct_bp_person WHERE hospital='A' AND person_id=? AND as_of_label=?",
+                                   [identifier('Patient','t01'),'dec31']),[(1,1)])
+        summaries = {label:(d,n,r) for label,d,n,r in self.query(
+            "SELECT as_of_label,denominator,numerator,rate FROM bp_summary WHERE hospital='A'")}
+        self.assertEqual(summaries,{'sep30':(23,15,0.6522),'dec31':(25,17,0.68)})
 
     def test_t02_D6_systolic_140_not_controlled(self):
         self.assertEqual(self.person('t02'),('2025-02-01',140,81,0,'수축기 140 이상'))
@@ -257,7 +260,7 @@ class IndicatorModels(unittest.TestCase):
         self.assertEqual(self.person('t12-future'),('2025-02-01',104,81,1,'조절됨'))
 
     def test_t13_D3_reversed_components_remain_paired_with_codes(self):
-        rows = self.query('SELECT loinc_code,component_type,value FROM stg_bp_component WHERE observation_id=? ORDER BY loinc_code',
+        rows = self.query("SELECT source_code,concept,value FROM bp_value WHERE hospital='A' AND observation_id=? ORDER BY source_code",
                           [identifier('Observation','t13-reversed')])
         self.assertEqual(rows,[('8462-4','diastolic',75),('8480-6','systolic',145)])
         self.assertEqual(self.person('t13'),('2025-09-13',145,75,0,'수축기 140 이상'))
@@ -276,9 +279,9 @@ class IndicatorModels(unittest.TestCase):
         with connect(self.database) as con:
             con.execute('BEGIN')
             try:
-                con.execute("UPDATE as_of_dates SET as_of='2025-01-01' WHERE as_of='2025-09-30'")
-                self.assertEqual(con.execute("SELECT denominator,numerator,rate FROM bp_summary WHERE as_of='2025-01-01'").fetchall(),[(0,0,None)])
-                self.assertEqual(con.execute("SELECT count(*) FROM fct_bp_person WHERE as_of='2025-01-01'").fetchone()[0],0)
+                con.execute("UPDATE as_of_labels SET month=1,day=1 WHERE as_of_label='sep30'")
+                self.assertEqual(con.execute("SELECT denominator,numerator,rate FROM bp_summary WHERE hospital='A' AND as_of_label='sep30'").fetchall(),[(0,0,None)])
+                self.assertEqual(con.execute("SELECT count(*) FROM fct_bp_person WHERE hospital='A' AND as_of_label='sep30'").fetchone()[0],0)
             finally:
                 con.execute('ROLLBACK')
 

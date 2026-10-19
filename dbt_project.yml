@@ -12,10 +12,16 @@ models:
     +materialized: view
 seeds:
   fhir_indicator_line:
-    as_of_dates:
+    as_of_labels:
       +column_types:
-        as_of: date
-    hypertension_codes:
+        as_of_label: varchar
+        month: integer
+        day: integer
+    code_map:
       +column_types:
-        system: varchar
-        code: varchar
+        hospital: varchar
+        source_system: varchar
+        source_code: varchar
+        source_unit: varchar
+        concept: varchar
+        std_unit: varchar

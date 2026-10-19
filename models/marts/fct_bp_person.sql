@@ -1,35 +1,36 @@
--- D1,D2,D5,D6,D7 / t01-t15: eligibility and person classification live here; no D7 exclusions.
+-- D1,D2,D5,D6,D7,M2 / t01-t15: eligibility stays here, using only common meanings.
 with eligible as (
-    select patient.person_id, dates.as_of
-    from {{ ref('stg_patient') }} patient
-    cross join {{ ref('stg_as_of_dates') }} dates
-    where year(dates.measurement_end_day) - year(patient.birth_date) between 18 and 85
+    select periods.hospital, periods.as_of_label, periods.person_id, periods.as_of
+    from {{ ref('person_period') }} periods
+    where periods.age_at_year_end between 18 and 85
       and exists (
           select 1
-          from {{ ref('stg_condition') }} diagnosis
-          where diagnosis.person_id = patient.person_id
-            and (diagnosis.record_day is null or diagnosis.record_day <= dates.as_of)
-            and diagnosis.onset_day <= make_date(year(dates.measurement_end_day), 6, 30)
-            and (diagnosis.abatement_day is null or diagnosis.abatement_day >= dates.measurement_start_day)
+          from {{ ref('condition') }} diagnosis
+          where diagnosis.hospital = periods.hospital and diagnosis.person_id = periods.person_id
+            and diagnosis.concept = 'essential_hypertension'
+            and (diagnosis.record_day is null or diagnosis.record_day <= periods.as_of)
+            and diagnosis.start_day <= periods.hypertension_cutoff_day
+            and (diagnosis.end_day is null or diagnosis.end_day >= periods.measurement_start_day)
       )
       and exists (
           select 1
-          from {{ ref('stg_encounter') }} encounter
-          where encounter.person_id = patient.person_id
-            and encounter.class_code = 'AMB'
-            and (encounter.record_day is null or encounter.record_day <= dates.as_of)
-            and encounter.start_day between dates.measurement_start_day and dates.period_end_day
+          from {{ ref('visit') }} visits
+          where visits.hospital = periods.hospital and visits.person_id = periods.person_id
+            and visits.visit_type = 'outpatient'
+            and (visits.record_day is null or visits.record_day <= periods.as_of)
+            and visits.start_day between periods.measurement_start_day and periods.period_end_day
       )
 ), ranked_days as (
-    select as_of, person_id, bp_date, systolic_min, diastolic_min,
-           row_number() over (partition by as_of, person_id order by bp_date desc) as day_rank
+    select hospital, as_of_label, person_id, bp_date, systolic_min, diastolic_min,
+           row_number() over (partition by hospital, as_of_label, person_id order by bp_date desc) as day_rank
     from {{ ref('int_bp_daily') }}
 ), last_values as (
-    select eligible.person_id, eligible.as_of, daily.bp_date as last_bp_date,
+    select eligible.hospital, eligible.as_of_label, eligible.person_id, eligible.as_of, daily.bp_date as last_bp_date,
            daily.systolic_min as systolic, daily.diastolic_min as diastolic
     from eligible
     left join ranked_days daily
-      on daily.person_id = eligible.person_id and daily.as_of = eligible.as_of and daily.day_rank = 1
+      on daily.hospital = eligible.hospital and daily.as_of_label = eligible.as_of_label
+     and daily.person_id = eligible.person_id and daily.day_rank = 1
 ), classified as (
     select *,
            case when last_bp_date is null then '혈압 없음'
@@ -39,6 +40,6 @@ with eligible as (
                 else '조절됨' end as reason
     from last_values
 )
-select person_id, as_of, last_bp_date, systolic, diastolic,
+select hospital, as_of_label, person_id, as_of, last_bp_date, systolic, diastolic,
        cast(reason = '조절됨' as integer) as controlled, reason
 from classified
