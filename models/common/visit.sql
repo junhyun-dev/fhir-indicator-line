@@ -2,5 +2,8 @@
 with hospital_rows as (
     select hospital, visit_id, person_id, visit_type, start_day, end_day, record_day
     from {{ ref('stg_a_visit') }}
+    union all
+    select hospital, visit_id, person_id, visit_type, start_day, end_day, record_day
+    from {{ ref('stg_b_visit') }}
 )
 select * from hospital_rows

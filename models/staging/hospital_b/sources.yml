@@ -1,0 +1,21 @@
+# L0/D1-D3/M2B: declared, read-only native CSV sources; fixtures override only the directory.
+version: 2
+sources:
+  - name: mimic
+    schema: main
+    tables:
+      - name: patients
+        meta:
+          external_location: "read_csv('{{ env_var('MIMIC_SOURCE_DIR', '.local/public-data/mimic-iv-demo-2.2/extracted/mimic-iv-clinical-database-demo-2.2') }}/hosp/patients.csv.gz', header=true, all_varchar=true)"
+      - name: admissions
+        meta:
+          external_location: "read_csv('{{ env_var('MIMIC_SOURCE_DIR', '.local/public-data/mimic-iv-demo-2.2/extracted/mimic-iv-clinical-database-demo-2.2') }}/hosp/admissions.csv.gz', header=true, all_varchar=true)"
+      - name: diagnoses_icd
+        meta:
+          external_location: "read_csv('{{ env_var('MIMIC_SOURCE_DIR', '.local/public-data/mimic-iv-demo-2.2/extracted/mimic-iv-clinical-database-demo-2.2') }}/hosp/diagnoses_icd.csv.gz', header=true, all_varchar=true)"
+      - name: omr
+        meta:
+          external_location: "read_csv('{{ env_var('MIMIC_SOURCE_DIR', '.local/public-data/mimic-iv-demo-2.2/extracted/mimic-iv-clinical-database-demo-2.2') }}/hosp/omr.csv.gz', header=true, all_varchar=true)"
+      - name: chartevents
+        meta:
+          external_location: "read_csv('{{ env_var('MIMIC_SOURCE_DIR', '.local/public-data/mimic-iv-demo-2.2/extracted/mimic-iv-clinical-database-demo-2.2') }}/icu/chartevents.csv.gz', header=true, all_varchar=true)"

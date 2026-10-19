@@ -1,4 +1,4 @@
-# D1-D6/M2: preserve the grains and clinical checks through the common boundary.
+# D1-D6/M2/M2B: preserve the grains and clinical checks through the common boundary.
 version: 2
 seeds:
   - name: as_of_labels
@@ -79,6 +79,59 @@ models:
           name: t_D1_D3_M2_a_bp_value_key_unique
           arguments:
             column_name: "hospital || ':' || observation_id || ':' || source_code"
+  - name: stg_b_person_period
+    description: D1/D2/M2B person-specific anchor calendar and age.
+    data_tests:
+      - unique:
+          name: t_M2B_D1_D2_person_period_key_unique
+          arguments:
+            column_name: "hospital || ':' || as_of_label || ':' || person_id"
+    columns:
+      - name: person_id
+        data_tests:
+          - not_null: {name: t_M2B_D2_person_not_null}
+      - name: as_of
+        data_tests:
+          - not_null: {name: t_M2B_D1_as_of_not_null}
+  - name: stg_b_condition
+    description: D1/D2/M2B earliest admission for each versioned hypertension code.
+    data_tests:
+      - unique:
+          name: t_M2B_D1_D2_condition_key_unique
+          arguments:
+            column_name: "hospital || ':' || condition_id || ':' || source_code"
+    columns:
+      - name: condition_id
+        data_tests:
+          - not_null: {name: t_M2B_D2_condition_id_not_null}
+      - name: source_code
+        data_tests:
+          - not_null: {name: t_M2B_D2_condition_code_not_null}
+  - name: stg_b_visit
+    description: D1/D2/D3/M2B outpatient days and admission/ED intervals.
+    data_tests:
+      - unique:
+          name: t_M2B_D1_D2_D3_visit_key_unique
+          arguments:
+            column_name: "hospital || ':' || visit_id"
+    columns:
+      - name: visit_id
+        data_tests:
+          - not_null: {name: t_M2B_D2_D3_visit_id_not_null}
+  - name: stg_b_bp_value
+    description: D1/D3/M2B one OMR half or ICU item value with its source code.
+    data_tests:
+      - unique:
+          name: t_M2B_D1_D3_bp_value_key_unique
+          arguments:
+            column_name: "hospital || ':' || observation_id || ':' || source_code"
+    columns:
+      - name: observation_id
+        data_tests:
+          - not_null: {name: t_M2B_D3_observation_id_not_null}
+      - name: source_code
+        data_tests:
+          - not_null: {name: t_M2B_D3_source_code_not_null}
   - name: person_period
     description: D1/D2 common person calendar; all people reach this boundary.
     data_tests:

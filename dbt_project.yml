@@ -18,6 +18,9 @@ seeds:
         month: integer
         day: integer
     code_map:
+      # D3/M2B: only B's declared missing-unit mappings become empty strings.
+      +post-hook:
+        - "update {{ this }} set source_unit = '' where hospital = 'B' and source_unit is null"
       +column_types:
         hospital: varchar
         source_system: varchar

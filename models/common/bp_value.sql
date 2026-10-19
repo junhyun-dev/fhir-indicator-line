@@ -2,6 +2,9 @@
 with hospital_rows as (
     select hospital, observation_id, person_id, source_code, value, source_unit, bp_day, record_day
     from {{ ref('stg_a_bp_value') }}
+    union all
+    select hospital, observation_id, person_id, source_code, value, source_unit, bp_day, record_day
+    from {{ ref('stg_b_bp_value') }}
 )
 select bp.hospital, bp.observation_id, bp.person_id, bp.source_code, mapping.concept,
        bp.value, mapping.std_unit, bp.bp_day, bp.record_day

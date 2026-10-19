@@ -1,6 +1,6 @@
 # fhir-indicator-line
 
-합성 FHIR Bundle을 두 배치로 나누고, 받은 본문을 보존하며, 같은 자원의 최신 내용을 하나로 골라 혈압 지표를 계산하는 학습 프로젝트다. 병원별 staging이 자료의 모양·시계·방문 종류·나이를 해석하고, common 층이 코드 매핑 표로 공통 뜻을 붙인다. L4~L6은 이 공통 표만으로 같은 규칙을 적용한다. 현재 연결된 것은 병원 A 하나다. Codex가 구현하고 `expected/` 기대 결과(읽기 전용)와 그 비교 검사는 짝 Claude 세션이 쓴다. 검사 명령은 `sh scripts/check.sh` 하나이고, 지킬 것은 `AGENTS.md`에 있다.
+병원 A의 합성 FHIR와 병원 B의 MIMIC-IV 데모 CSV를 공통 표로 연결해 혈압 지표를 계산하는 학습 프로젝트다. A의 Bundle은 두 배치로 나누고 본문을 보존하며 최신 자원 하나를 고른다. 병원별 staging이 자료의 모양·시계·방문 종류·나이를 해석하고, common 층이 코드 매핑 표로 공통 뜻을 붙인다. L4~L6은 이 공통 표만으로 같은 규칙을 적용한다. Codex가 구현하고 `expected/` 기대 결과(읽기 전용)와 그 비교 검사는 짝 Claude 세션이 쓴다. 검사 명령은 `sh scripts/check.sh` 하나이고, 지킬 것은 `AGENTS.md`에 있다.
 
 ```bash
 mkdir -p .cache/FHIR-LINE-02/tmp .cache/FHIR-LINE-02/pip
@@ -35,12 +35,14 @@ sh scripts/check.sh
 
 ## dbt 계산 층과 확인 사다리
 
-L3~L6은 `source('fhir', 'latest_resources')`에서 다음 순서로 읽는다. `seeds/as_of_labels.csv`는 sep30/dec31의 월·일을 정하고, `seeds/code_map.csv`는 병원별 원래 코드·단위를 공통 concept/std_unit으로 매핑한다. A의 2025년·연말 나이·6/30 경계와 FHIR 날짜/원소 해석은 `models/staging/hospital_a/`에 있다.
+A staging은 `source('fhir', 'latest_resources')`, B staging은 선언된 mimic CSV source를 읽는다. 아래 공통 표부터 두 병원이 같은 계산을 따른다. `seeds/as_of_labels.csv`는 sep30/dec31의 월·일을 정하고, `seeds/code_map.csv`는 병원별 원래 코드·단위를 공통 concept/std_unit으로 매핑한다. A의 2025년·연말 나이·6/30 경계와 FHIR 날짜/원소 해석은 `models/staging/hospital_a/`에 있다.
 
 | 층 | 모델 | 한 행 |
 |---|---|---|
 | L3 staging/hospital_a | stg_a_person_period | 병원×기준일 이름×사람; 실제 기준일·측정 기간·나이 |
 | L3 staging/hospital_a | stg_a_condition, stg_a_visit, stg_a_bp_value | 진단×원래 코드 / 방문 / 관찰×원래 코드와 값 |
+| L3 staging/hospital_b | stg_b_person_period | B의 사람×기준일 이름; anchor_year의 시계와 anchor_age |
+| L3 staging/hospital_b | stg_b_condition, stg_b_visit, stg_b_bp_value | 버전별 진단 코드의 첫 입원 / 외래 날·입원 기간 / OMR·ICU 값 |
 | common | person_period, condition, visit, bp_value | 병원별 줄을 같은 열로 연결; 진단·혈압에는 공통 뜻 부여 |
 | L4 intermediate | int_bp_daily | 병원×기준일 이름×사람×사용할 혈압 날짜 |
 | L5 marts | fct_bp_person | 병원×기준일 이름×평가 대상 한 사람 |
@@ -53,7 +55,7 @@ code_map은 진단에서 `(hospital, source_code)`, 혈압에서 `(hospital, sou
 
 D3·D4는 같은 병원·사람의 inpatient_or_ed 기간(양 끝 포함)을 제외하고 매핑된 숫자를 성분별로 그 날의 최솟값으로 묶는다. 성분 위치는 쓰지 않는다. 쓸 성분이 없는 날은 없애고, 하나만 있는 날은 남긴다. D5·D6은 마지막 유효일을 골라 `혈압 없음` → `마지막 날에 한쪽 값만` → 140/90 임계값 순서로 분류한다. 혈압 없는 대상도 분모에 남는다. dim_as_of가 걸러내지 않은 person_period의 병원/label을 전달하므로 대상 0명인 기준일도 분모·분자 0, rate NULL이다. 원천에 사람이 0명인 병원의 요약 행까지 보장하지는 않는다. **D7 제외 대상은 빼지 않는 학습용 계산**이며 CMS 지표 전체 구현은 아니다.
 
-모델은 view라서 현재 latest_resources를 읽는다. as_of는 기록 날짜의 가시성을 뜻하며, 과거 배치 버전으로 되돌린 데이터베이스 snapshot을 뜻하지 않는다. 서로 다른 시각인 원본 갱신시각·임상 시각·수신시각을 합치지 않는다.
+A와 공통 계산 모델은 view라서 현재 latest_resources와 B staging 결과를 읽는다. B staging 네 개는 dbt build 때 테이블로 만든다. 실제 자료에서 외부 gzip 스캔을 여러 view에 중첩하면 512MB 한도를 넘기므로, B 전용 단계의 계산 결과를 한 번 저장하고 이후 층이 재사용한다. as_of는 기록 날짜의 가시성을 뜻하며, 과거 배치 버전으로 되돌린 데이터베이스 snapshot을 뜻하지 않는다. 서로 다른 시각인 원본 갱신시각·임상 시각·수신시각을 합치지 않는다.
 
 ```bash
 PYTHONDONTWRITEBYTECODE=1 .venv/bin/python scripts/dbt.py debug
@@ -70,6 +72,20 @@ wrapper가 프로필·DB·임시파일·로그 경로와 telemetry 설정을 전
 
 ①은 `raw=배치1+배치2`, `latest=배치1+배치2−공통 (resource_type,id) 수=원본 자원 수`를 검사한다. 날짜 없는 자원을 두 번 받으면 raw에 배치마다 한 행씩 남고 latest에는 하나가 남는다. 공통 자원 수는 따로 보고한다. strict에서 모든 칸을 통과하면 exit 0, 실패나 기다림이 있으면 exit 1이다. 결과는 `.local/FHIR-LINE-02/summaries/verification-ladder.json`과 `.md`에 남는다.
 
-다음 병원을 연결할 자리는 `models/common/` 네 파일의 hospital_rows CTE다. 그 병원의 staging 네 모델을 만든 뒤 각 CTE에 같은 열의 SELECT를 UNION ALL로 더하고 code_map에 병원 매핑 행을 추가한다. 병원별 시계·나이·방문 해석은 새 staging에 두고 L4~L6의 계산은 유지한다. 이번 요청에는 다른 병원 파일/자료/매핑이 없다.
+## 병원 B: 읽기 전용 MIMIC-IV 데모
 
-L0~L2·설치 근거는 `.local/FHIR-LINE-02/summaries/FHIR-LINE-02.reply.md`, M1 계산·시험은 `.local/FHIR-LINE-03/summaries/FHIR-LINE-03.reply.md`, common 층으로 옮긴 근거는 `.local/FHIR-LINE-04/summaries/FHIR-LINE-04.reply.md`에서 확인한다.
+`models/staging/hospital_b/sources.yml`은 patients/admissions/diagnoses_icd/omr/chartevents 다섯 source를 선언한다. DuckDB의 native read_csv로 gzip CSV를 문자열로 읽고 B staging에서 필요한 날짜/숫자를 해석한다. 같은 DuckDB 파일에 B staging 결과 네 개를 저장하며 원본 사본이나 별도 L1 로더는 만들지 않는다. 원본 변경을 반영하려면 dbt build를 다시 실행한다. 기본 위치는 `.local/public-data/mimic-iv-demo-2.2/extracted/mimic-iv-clinical-database-demo-2.2/`이며 프로세스 환경변수 `MIMIC_SOURCE_DIR`로 시험용 경로를 지정할 수 있다. 이미 받은 원본과 SHA256/ODbL 파일은 읽기만 한다.
+
+B의 측정 연도/기준일/6월 말은 사람마다 anchor_year로 만들고 나이는 anchor_age를 쓴다. ICD-10 I10과 ICD-9 4010/4011/4019는 버전을 함께 확인하고, 그 사람의 해당 코드가 붙은 첫 입원일을 시작/record_day로 쓴다. 끝은 NULL이다. 외래는 결과 이름과 무관한 OMR 기록 날이며, 응급실 등록일(없으면 입원일)~퇴원일에 겹치는 날은 뺀다.
+
+OMR의 정확한 Blood Pressure 줄을 omr_systolic/omr_diastolic 두 값으로 가른다. source_unit은 빈 문자열이며 code_map seed의 post_hook이 B의 NULL 단위만 빈 문자열로 맞춘다. A seed 행은 건드리지 않는다. ICU는 220179/220180의 valuenum과 valueuom=mmHg를 읽고 code_map에서 mm[Hg] 뜻을 붙인다. record_day와 BP 날짜는 charttime의 날짜이고 storetime은 안정된 원본 행 식별자에만 사용한다. 입원/응급실 날 제외는 기존 L4가 담당한다.
+
+A 수제 시험은 헤더만 있는 B CSV.gz를 가리켜 실제 B 자료와 격리한다. B의 작은 시험은 수제 CSV.gz와 빈 A raw를 갖는 별도 DuckDB에 dbt를 한 번 실행한다. M2B 시험은 113/44, 외래/입원일 겹침, 6월 말 경계와 ICD 버전, 사람별 다른 연도, ICU 입원일 제외, 마지막 140/60을 확인한다. 실제 전체 검사는 기존 A 원본과 B 데모 100명을 함께 읽는다.
+
+다음 병원을 연결할 자리는 `models/common/` 네 파일의 hospital_rows CTE다. 그 병원의 staging 네 모델을 만든 뒤 각 CTE에 같은 열의 SELECT를 UNION ALL로 더하고 code_map에 병원 매핑 행을 추가한다. 병원별 시계·나이·방문 해석은 새 staging에 두고 L4~L6의 계산은 유지한다. 요청 05에서는 다음 명령의 출력이 비어 있어야 한다.
+
+```bash
+git diff --stat e5b86a5 -- models/intermediate models/marts models/reports
+```
+
+L0~L2·설치 근거는 `.local/FHIR-LINE-02/summaries/FHIR-LINE-02.reply.md`, M1 계산·시험은 `.local/FHIR-LINE-03/summaries/FHIR-LINE-03.reply.md`, common 층으로 옮긴 근거는 `.local/FHIR-LINE-04/summaries/FHIR-LINE-04.reply.md`, B 연결 결과는 `.local/FHIR-LINE-05/summaries/FHIR-LINE-05.reply.md`에서 확인한다.

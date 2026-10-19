@@ -13,6 +13,7 @@ import uuid
 
 from fhir_line.runtime import ROOT, connect, environment
 from fhir_line.store import append_rows, initialize
+from mimic_fixture import write_sources
 
 SEPTEMBER = '2025-09-30'
 DECEMBER = '2025-12-31'
@@ -144,7 +145,7 @@ def cases():
 class IndicatorModels(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cache = ROOT/'.cache/FHIR-LINE-04'
+        cache = ROOT/'.cache/FHIR-LINE-05'
         cache.mkdir(parents=True,exist_ok=True)
         cls.scratch = tempfile.TemporaryDirectory(prefix='models-',dir=cache)
         cls.addClassCleanup(cls.scratch.cleanup)
@@ -165,8 +166,9 @@ class IndicatorModels(unittest.TestCase):
             (folder/label).mkdir()
         env.update(FHIR_DB_PATH=str(cls.database),FHIR_DUCKDB_TEMP=str(folder/'duckdb'),
                    FHIR_DUCKDB_EXTENSIONS=str(folder/'extensions'),DBT_LOG_PATH=str(folder/'logs'),
-                   DBT_TARGET_PATH=str(folder/'target'),TMPDIR=str(folder/'tmp'),XDG_CACHE_HOME=str(folder/'xdg'))
-        log = ROOT/'.local/FHIR-LINE-04/logs/fixture-dbt-build.log'
+                   DBT_TARGET_PATH=str(folder/'target'),TMPDIR=str(folder/'tmp'),XDG_CACHE_HOME=str(folder/'xdg'),
+                   MIMIC_SOURCE_DIR=str(write_sources(folder/'empty-mimic')))
+        log = ROOT/'.local/FHIR-LINE-05/logs/fixture-a-dbt-build.log'
         log.parent.mkdir(parents=True,exist_ok=True)
         with log.open('w') as out:
             result = subprocess.run([str(ROOT/'.venv/bin/dbt'),'--no-use-colors','build','--no-partial-parse'],
