@@ -7,10 +7,12 @@ fhir_indicator_line:
       path: "{{ env_var('FHIR_DB_PATH') }}"
       schema: main
       threads: 1
+      # L2/D1-D6: set the spill path once at connection creation, not per cursor.
+      config_options:
+        temp_directory: "{{ env_var('FHIR_DUCKDB_TEMP') }}"
       settings:
         threads: 2
         memory_limit: 512MB
-        temp_directory: "{{ env_var('FHIR_DUCKDB_TEMP') }}"
         extension_directory: "{{ env_var('FHIR_DUCKDB_EXTENSIONS') }}"
         autoinstall_known_extensions: false
         autoload_known_extensions: false

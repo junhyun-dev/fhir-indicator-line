@@ -1,0 +1,125 @@
+# D1-D6: keys describe the grain; nullable blood pressure values remain allowed.
+version: 2
+seeds:
+  - name: as_of_dates
+    description: D1 requested measurement cutoffs.
+    columns:
+      - name: as_of
+        data_tests:
+          - unique: {name: t_D1_seed_as_of_unique}
+          - not_null: {name: t_D1_seed_as_of_not_null}
+  - name: hypertension_codes
+    description: D2 code list; this learning version matches code without system.
+    columns:
+      - name: code
+        data_tests:
+          - unique: {name: t_D2_seed_hypertension_code_unique}
+          - not_null: {name: t_D2_seed_hypertension_code_not_null}
+models:
+  - name: stg_as_of_dates
+    description: D1 measurement calendar, shared by all upper layers.
+    columns:
+      - name: as_of
+        data_tests:
+          - unique: {name: t_D1_stg_as_of_unique}
+          - not_null: {name: t_D1_stg_as_of_not_null}
+  - name: stg_patient
+    description: D1/D2 one patient, without eligibility filtering.
+    columns:
+      - name: person_id
+        data_tests:
+          - unique: {name: t_D1_D2_patient_unique}
+          - not_null: {name: t_D1_D2_patient_not_null}
+  - name: stg_encounter
+    description: D1/D2/D3 one encounter with its written calendar dates.
+    columns:
+      - name: encounter_id
+        data_tests:
+          - unique: {name: t_D1_D2_D3_encounter_unique}
+          - not_null: {name: t_D1_D2_D3_encounter_not_null}
+  - name: stg_condition
+    description: D1/D2 one matching diagnosis code per condition.
+    data_tests:
+      - unique:
+          name: t_D1_D2_condition_key_unique
+          arguments:
+            column_name: "condition_id || ':' || code"
+    columns:
+      - name: condition_id
+        data_tests:
+          - not_null: {name: t_D1_D2_condition_id_not_null}
+      - name: code
+        data_tests:
+          - not_null: {name: t_D2_condition_code_not_null}
+  - name: stg_bp_component
+    description: D1/D3 one component value associated with its own code.
+    data_tests:
+      - unique:
+          name: t_D1_D3_bp_component_key_unique
+          arguments:
+            column_name: "observation_id || ':' || loinc_code"
+    columns:
+      - name: observation_id
+        data_tests:
+          - not_null: {name: t_D1_D3_observation_id_not_null}
+      - name: loinc_code
+        data_tests:
+          - not_null: {name: t_D3_component_code_not_null}
+  - name: int_bp_daily
+    description: D1/D3/D4 one as_of, person and usable blood pressure day.
+    data_tests:
+      - unique:
+          name: t_D1_D3_D4_daily_key_unique
+          arguments:
+            column_name: "cast(as_of as varchar) || ':' || person_id || ':' || cast(bp_date as varchar)"
+    columns:
+      - name: as_of
+        data_tests:
+          - not_null: {name: t_D1_daily_as_of_not_null}
+      - name: person_id
+        data_tests:
+          - not_null: {name: t_D3_daily_person_not_null}
+      - name: bp_date
+        data_tests:
+          - not_null: {name: t_D1_daily_day_not_null}
+  - name: fct_bp_person
+    description: D2/D5/D6/D7 one eligible person per cutoff; learning rules without D7 exclusions.
+    data_tests:
+      - unique:
+          name: t_D1_D2_person_result_key_unique
+          arguments:
+            column_name: "person_id || ':' || cast(as_of as varchar)"
+    columns:
+      - name: person_id
+        data_tests:
+          - not_null: {name: t_D2_result_person_not_null}
+      - name: as_of
+        data_tests:
+          - not_null: {name: t_D1_result_as_of_not_null}
+      - name: controlled
+        data_tests:
+          - not_null: {name: t_D6_controlled_not_null}
+          - accepted_values:
+              name: t_D6_controlled_binary
+              arguments: {values: [0, 1], quote: false}
+      - name: reason
+        data_tests:
+          - not_null: {name: t_D6_reason_not_null}
+          - accepted_values:
+              name: t_D6_reason_accepted_values
+              arguments:
+                values: ['조절됨', '수축기 140 이상', '이완기 90 이상', '마지막 날에 한쪽 값만', '혈압 없음']
+  - name: dim_as_of_dates
+    description: D1/D6 all cutoffs reach reports, including those with no eligible person.
+    columns:
+      - name: as_of
+        data_tests:
+          - unique: {name: t_D1_report_date_unique}
+          - not_null: {name: t_D1_report_date_not_null}
+  - name: bp_summary
+    description: D6/D7 learning summary; no D7 exclusions, undefined zero-denominator rate is NULL.
+    columns:
+      - name: as_of
+        data_tests:
+          - unique: {name: t_D1_summary_as_of_unique}
+          - not_null: {name: t_D1_summary_as_of_not_null}

@@ -34,21 +34,38 @@ PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m fhir_line check
 
 `meta.lastUpdated`는 원본 자원 갱신시각, `Encounter.period`/`Observation.effectiveDateTime`은 임상 시각, `received_at`은 이 로더의 배치 수신시각이다. 서로 대신하지 않는다. 다른 도구로 DB를 직접 UPDATE하는 것을 막는 권한 시스템은 만들지 않았다.
 
-## 사용자 dbt 모델과 확인 사다리
+## dbt 계산 층과 확인 사다리
 
-모델은 `models/staging/`, `models/intermediate/`, `models/marts/`에 작성한다. 현재 세 폴더는 비어 있으며 `models/sources.yml`에 `source('fhir', 'latest_resources')`만 있다. Git은 빈 폴더를 보관하지 않으므로 새 checkout에서는 이 디렉터리를 만들어 사용한다.
+L3~L6은 `source('fhir', 'latest_resources')`에서 다음 순서로 읽는다. 두 기준일은 `seeds/as_of_dates.csv`, 고혈압 코드 목록은 `seeds/hypertension_codes.csv`에 있다. FHIR의 코드·값 연결과 날짜 변환은 staging에서 한 번 처리한다.
+
+| 층 | 모델 | 한 행 |
+|---|---|---|
+| L3 staging | stg_patient, stg_encounter, stg_condition, stg_bp_component | 환자 / 방문 / 진단×코드 / 관찰×성분 코드 |
+| L3 staging | stg_as_of_dates | 기준일과 2025년 측정 기간 |
+| L4 intermediate | int_bp_daily | 기준일×사람×사용할 혈압 날짜 |
+| L5 marts | fct_bp_person | 기준일×평가 대상 한 사람 |
+| L5 marts | dim_as_of_dates | 대상이 없는 경우에도 요약에 전할 기준일 |
+| L6 reports | bp_summary | 기준일별 분모·분자·비율 |
+
+D1은 날짜 문자열의 앞 10자를 쓰고 기준일 뒤 기록을 보지 않는다. D2 대상 판정은 fct_bp_person의 eligibility CTE 한 곳에 있다: 연말 나이 18~85세, 상반기까지 시작해 측정 연도와 겹친 고혈압, 기간 내 AMB 방문이다. 고혈압·혈압 코드는 system 없이 code만 비교한다.
+
+D3·D4는 입원/응급실 기간(양 끝 포함)을 제외하고 `valueQuantity.code=mm[Hg]`인 숫자를 성분별로 그 날의 최솟값으로 묶는다. 성분 위치는 쓰지 않는다. 쓸 성분이 없는 날은 없애고, 하나만 있는 날은 남긴다. D5·D6은 마지막 유효일을 골라 `혈압 없음` → `마지막 날에 한쪽 값만` → 140/90 임계값 순서로 분류한다. 혈압 없는 대상도 분모에 남는다. 대상 0명인 기준일은 분모·분자 0, rate NULL이다. **D7 제외 대상은 빼지 않는 학습용 계산**이며 CMS 지표 전체 구현은 아니다.
+
+모델은 view라서 현재 latest_resources를 읽는다. as_of는 기록 날짜의 가시성을 뜻하며, 과거 배치 버전으로 되돌린 데이터베이스 snapshot을 뜻하지 않는다. 서로 다른 시각인 원본 갱신시각·임상 시각·수신시각을 합치지 않는다.
 
 ```bash
 PYTHONDONTWRITEBYTECODE=1 .venv/bin/python scripts/dbt.py debug
-PYTHONDONTWRITEBYTECODE=1 .venv/bin/python scripts/dbt.py run
+sh scripts/check.sh
 PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m fhir_line layers
-PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m fhir_line check
+PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m fhir_line check --strict
 ```
 
-wrapper가 프로필·DB·임시파일·로그 경로와 telemetry 설정을 전달하므로 전역 dbt 설정은 필요 없다. 확인 사다리 전에 dbt parse로 실제 의존 관계를 읽는다. staging은 source/seed, intermediate는 staging, marts는 intermediate/staging에만 의존한다. 선언하지 않은 직접 테이블 읽기도 거부한다. 동적 relation macro와 복잡한 직접 SQL 접근은 이 작은 검사기의 지원 범위가 아니므로 명시적 source/ref와 CTE로 표현한다.
+wrapper가 프로필·DB·임시파일·로그 경로와 telemetry 설정을 전달하므로 전역 dbt 설정은 필요 없다. 확인 사다리 전에 dbt parse로 실제 의존 관계를 읽는다. staging은 source/seed, intermediate는 staging, marts는 intermediate/staging, reports는 marts에만 의존한다. marts끼리 읽지 않는다. 선언하지 않은 직접 테이블 읽기도 거부한다. 동적 relation macro와 복잡한 직접 SQL 접근은 이 작은 검사기의 지원 범위가 아니므로 명시적 source/ref와 CTE로 표현한다.
 
-확인 사다리는 원본/배치/raw/latest 행 수, 자원 종류·혈압 수, 같은 자원 본문을 비교한다. `expected/`가 없으면 ④·⑤는 기다림이다. 생기면 ④는 `person_<YYYY-MM-DD>.csv`의 모든 열·행을 사용자 `fct_bp_person`의 해당 `as_of`와 비교한다. CSV 헤더와 모델 열 이름은 같아야 한다. 행 순서는 무시하고 중복 행 수는 보존하며 bool·숫자의 표현 차이는 해당 DB 자료형으로 정규화한다. ⑤는 지정 환자의 12/01 혈압 원문·해시를 세 층에서 비교한다. expected를 쓰거나 수정하지 않는다. CSV 불일치와 열 계약 미정은 실패 또는 기다림으로 보고한다.
+확인 사다리는 원본/배치/raw/latest 행 수, 자원 종류·혈압 수, 같은 자원 본문을 비교한다. ④는 `person_<YYYY-MM-DD>.csv`의 7열·모든 행을 fct_bp_person과 비교하고, summary CSV의 날짜·분모·분자·비율 4열을 bp_summary와 비교한다. 두 결과 모델의 자료형 계약도 검사한다. 행 순서는 무시하고 중복 행 수는 보존하며 숫자의 표현 차이는 해당 DB 자료형으로 정규화한다. ⑤는 지정 환자의 12/01 혈압 원문·해시를 세 층에서 비교한다. expected를 쓰거나 수정하지 않는다.
 
-①은 `raw=배치1+배치2`, `latest=배치1+배치2−공통 (resource_type,id) 수=원본 자원 수`를 검사한다. 날짜 없는 자원을 두 번 받으면 raw에 배치마다 한 행씩 남고 latest에는 하나가 남는다. 공통 자원 수는 따로 보고한다. 데이터 불일치는 실패(exit 1), 이번 범위 통과는 exit 0이며 ④·⑤의 기다림은 각 칸에 표시한다. 결과는 `.local/FHIR-LINE-02/summaries/verification-ladder.json`과 `.md`에 남는다.
+`sh scripts/check.sh`는 기대 CSV의 해시·읽기 전용 상태, 기존 검사기 시험, 작은 별도 DuckDB의 테스트 01~15와 Q3, 실제 dbt build, 층 방향, 사다리의 순서로 실행한다. 가짜 FHIR를 쓰는 시험은 실제 기대 파일과 원본을 사용하지 않고 dbt를 한 번만 실행한다. 기본 check는 기대 폴더/모델 부재를 기다림으로 표시할 수 있지만, 종료 명령의 `check --strict`는 기다림도 실패로 센다.
 
-범위·실행 근거·미확인·설치/저장 크기는 `.local/FHIR-LINE-02/summaries/FHIR-LINE-02.reply.md`에서 확인한다.
+①은 `raw=배치1+배치2`, `latest=배치1+배치2−공통 (resource_type,id) 수=원본 자원 수`를 검사한다. 날짜 없는 자원을 두 번 받으면 raw에 배치마다 한 행씩 남고 latest에는 하나가 남는다. 공통 자원 수는 따로 보고한다. strict에서 모든 칸을 통과하면 exit 0, 실패나 기다림이 있으면 exit 1이다. 결과는 `.local/FHIR-LINE-02/summaries/verification-ladder.json`과 `.md`에 남는다.
+
+L0~L2·설치 근거는 `.local/FHIR-LINE-02/summaries/FHIR-LINE-02.reply.md`, L3~L6·테스트·결과는 `.local/FHIR-LINE-03/summaries/FHIR-LINE-03.reply.md`에서 확인한다.

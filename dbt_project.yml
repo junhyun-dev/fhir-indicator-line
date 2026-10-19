@@ -1,4 +1,4 @@
-# L2 boundary: only the source is delivered; D1-D7 models belong to the user.
+# L2/D1-D7: Codex implements the models; paired Claude owns expected/ and checks.
 name: fhir_indicator_line
 version: '1.0.0'
 config-version: 2
@@ -7,3 +7,15 @@ model-paths: [models]
 seed-paths: [seeds]
 test-paths: [dbt_tests]
 clean-targets: [.local/FHIR-LINE-02/dbt-target]
+models:
+  fhir_indicator_line:
+    +materialized: view
+seeds:
+  fhir_indicator_line:
+    as_of_dates:
+      +column_types:
+        as_of: date
+    hypertension_codes:
+      +column_types:
+        system: varchar
+        code: varchar

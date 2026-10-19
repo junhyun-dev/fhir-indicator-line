@@ -13,5 +13,6 @@ echo "== 테스트"
 .venv/bin/python -m unittest discover -s tests
 
 echo "== 확인 사다리(층 방향 포함)"
+.venv/bin/python scripts/dbt.py build
 .venv/bin/python -m fhir_line check --strict > /dev/null || { cat .local/FHIR-LINE-02/summaries/verification-ladder.md; exit 1; }
 cat .local/FHIR-LINE-02/summaries/verification-ladder.md
