@@ -1,0 +1,16 @@
+# L2: use scripts/dbt.py to supply absolute project-local paths.
+fhir_indicator_line:
+  target: local
+  outputs:
+    local:
+      type: duckdb
+      path: "{{ env_var('FHIR_DB_PATH') }}"
+      schema: main
+      threads: 1
+      settings:
+        threads: 2
+        memory_limit: 512MB
+        temp_directory: "{{ env_var('FHIR_DUCKDB_TEMP') }}"
+        extension_directory: "{{ env_var('FHIR_DUCKDB_EXTENSIONS') }}"
+        autoinstall_known_extensions: false
+        autoload_known_extensions: false

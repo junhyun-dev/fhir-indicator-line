@@ -1,0 +1,18 @@
+# L2: upper layers consume the resolved resource, not raw arrival history.
+version: 2
+sources:
+  - name: fhir
+    schema: main
+    tables:
+      - name: latest_resources
+        description: One resource per (resource_type, id), selected by changed-content batch order.
+        columns:
+          - name: resource_type
+          - name: id
+          - name: full_url
+          - name: payload_json
+          - name: payload_hash
+          - name: change_batch_id
+          - name: batch_id
+          - name: source_file
+          - name: received_at

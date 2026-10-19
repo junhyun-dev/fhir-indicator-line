@@ -1,0 +1,10 @@
+.local/
+.cache/
+.venv/
+__pycache__/
+*.pyc
+data/batches/
+data/*.duckdb*
+target/
+logs/
+dbt_packages/

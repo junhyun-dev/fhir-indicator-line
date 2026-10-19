@@ -1,0 +1,9 @@
+# L2 boundary: only the source is delivered; D1-D7 models belong to the user.
+name: fhir_indicator_line
+version: '1.0.0'
+config-version: 2
+profile: fhir_indicator_line
+model-paths: [models]
+seed-paths: [seeds]
+test-paths: [dbt_tests]
+clean-targets: [.local/FHIR-LINE-02/dbt-target]
