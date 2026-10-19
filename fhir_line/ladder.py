@@ -26,74 +26,59 @@ def normalized_cell(value, sql_type=''):
     return value.lower() if sql_type=='BOOLEAN' and value.lower() in ('true','false') else value
 
 
-def compare_expected(connection, folder):
-    files = sorted(folder.glob('person_*.csv'))
-    relation = connection.execute("SELECT count(*) FROM information_schema.tables WHERE table_schema='main' AND table_name='fct_bp_person'").fetchone()[0]
+def compare_table(connection, folder, kind, table, columns=None):
+    """④ 한 결과 표를 병원마다 비교: expected/<kind>_<병원>.csv의 줄과 <table>에서 그 병원의 줄(M2 · 두 병원 공통 모양)."""
+    files = sorted(f for f in folder.glob(kind+'_*.csv') if re.fullmatch(kind+r'_[A-Z]+\.csv',f.name))
+    relation = connection.execute("SELECT count(*) FROM information_schema.tables WHERE table_schema='main' AND table_name=?",[table]).fetchone()[0]
     if not files or not relation:
-        return {'status':'기다림','detail':'expected/person_<as_of>.csv 또는 사용자 fct_bp_person 없음'}
-    columns = {r[1]:r[2] for r in connection.execute("PRAGMA table_info('fct_bp_person')").fetchall()}
-    if 'as_of' not in columns:
-        return {'status':'실패','detail':'fct_bp_person의 as_of 열 없음; 기준을 고치지 않음'}
+        return {'status':'기다림','detail':f'expected/{kind}_<병원>.csv 또는 {table} 없음'}
+    have = {r[1]:r[2] for r in connection.execute(f"PRAGMA table_info('{table}')").fetchall()}
+    if 'hospital' not in have:
+        return {'status':'실패','detail':f'{table}에 hospital 열 없음; 기준을 고치지 않음'}
     comparisons = []
     for file in files:
-        match = re.fullmatch(r'person_(\d{4}-\d{2}-\d{2})\.csv',file.name)
-        if match is None:
-            return {'status':'실패','detail':'expected 파일의 기준일 형식을 확인해야 함; 기준을 고치지 않음'}
-        date = match.group(1)
+        hospital = file.stem.split('_',1)[1]
         with file.open(newline='') as f:
             reader = csv.DictReader(f)
-            headers = reader.fieldnames or []
+            headers = list(columns or reader.fieldnames or [])
             expected = list(reader)
         if any(None in row or any(v is None for v in row.values()) for row in expected):
             return {'status':'실패','detail':'expected CSV 행의 열 개수가 헤더와 다름; 기준을 고치지 않음'}
-        if not headers or len(headers)!=len(set(headers)) or any(h not in columns for h in headers):
-            return {'status':'실패','detail':'expected와 fct_bp_person의 열 계약이 맞지 않음; 기준을 고치지 않음'}
+        if not headers or len(headers)!=len(set(headers)) or any(h not in have for h in headers):
+            return {'status':'실패','detail':f'expected와 {table}의 열 계약이 맞지 않음; 기준을 고치지 않음'}
+        if any(row['hospital']!=hospital for row in expected):
+            return {'status':'실패','detail':f'{file.name}의 hospital 열이 파일 이름과 다름; 기준을 고치지 않음'}
         projection = ','.join('"'+h.replace('"','""')+'"' for h in headers)
-        actual_rows = connection.execute('SELECT '+projection+" FROM fct_bp_person WHERE left(cast(as_of AS VARCHAR),10)=?",[date]).fetchall()
-        actual = collections.Counter(tuple(normalized_cell(v,columns[h]) for h,v in zip(headers,row)) for row in actual_rows)
-        wanted = collections.Counter(tuple(normalized_cell(row[h],columns[h]) for h in headers) for row in expected)
-        comparisons.append({'as_of':date,'expected_rows':len(expected),'actual_rows':len(actual_rows),
+        actual_rows = connection.execute('SELECT '+projection+f' FROM {table} WHERE hospital=?',[hospital]).fetchall()
+        actual = collections.Counter(tuple(normalized_cell(v,have[h]) for h,v in zip(headers,row)) for row in actual_rows)
+        wanted = collections.Counter(tuple(normalized_cell(row[h],have[h]) for h in headers) for row in expected)
+        comparisons.append({'hospital':hospital,'expected_rows':len(expected),'actual_rows':len(actual_rows),
                             'cells_per_row':len(headers),'missing_rows':sum((wanted-actual).values()),
                             'unexpected_rows':sum((actual-wanted).values()),'all_cells_equal':actual==wanted})
     passed = all(c['all_cells_equal'] for c in comparisons)
-    return {'status':'통과' if passed else '실패', 'detail':'기대 CSV 열 전체를 행 순서와 무관하게 비교; 중복 행도 셈',
-            'comparisons':comparisons, 'on_mismatch':'기준이 틀린 것 같다/구현 불일치 가능성을 반환; expected는 읽기만 함'}
+    return {'status':'통과' if passed else '실패','detail':'병원마다 기대 CSV 열 전체를 행 순서와 무관하게 비교; 중복 행도 셈',
+            'comparisons':comparisons,'on_mismatch':'기준이 틀린 것 같다/구현 불일치 가능성을 반환; expected는 읽기만 함'}
 
 
-SUMMARY_COLUMNS = ('as_of','denominator','numerator','rate')  # note 열은 설명이라 비교하지 않음
+def compare_expected(connection, folder):
+    """④ 사람별: expected/person_<병원>.csv와 fct_bp_person(D2 · D5 · D6)."""
+    return compare_table(connection, folder, 'person', 'fct_bp_person')
+
+
+SUMMARY_COLUMNS = ('hospital','as_of_label','denominator','numerator','rate')  # 설명 열(note)은 비교하지 않음
 
 
 def compare_summary(connection, folder):
-    """④ 요약: expected/summary_<as_of>.csv와 bp_summary를 기준일마다 비교(D6 · D7 · rate는 넷째 자리 반올림)."""
-    files = sorted(folder.glob('summary_*.csv'))
-    relation = connection.execute("SELECT count(*) FROM information_schema.tables WHERE table_schema='main' AND table_name='bp_summary'").fetchone()[0]
-    if not files or not relation:
-        return {'status':'기다림','detail':'expected/summary_<as_of>.csv 또는 bp_summary 없음'}
-    columns = {r[1]:r[2] for r in connection.execute("PRAGMA table_info('bp_summary')").fetchall()}
-    if any(c not in columns for c in SUMMARY_COLUMNS):
-        return {'status':'실패','detail':'bp_summary 열 계약(as_of · denominator · numerator · rate)이 맞지 않음; 기준을 고치지 않음'}
-    comparisons = []
-    for file in files:
-        match = re.fullmatch(r'summary_(\d{4}-\d{2}-\d{2})\.csv',file.name)
-        if match is None:
-            return {'status':'실패','detail':'expected 요약 파일의 기준일 형식을 확인해야 함; 기준을 고치지 않음'}
-        with file.open(newline='') as f:
-            expected = list(csv.DictReader(f))
-        projection = ','.join('"'+c+'"' for c in SUMMARY_COLUMNS)
-        actual_rows = connection.execute('SELECT '+projection+" FROM bp_summary WHERE left(cast(as_of AS VARCHAR),10)=?",[match.group(1)]).fetchall()
-        actual = collections.Counter(tuple(normalized_cell(v,columns[c]) for c,v in zip(SUMMARY_COLUMNS,row)) for row in actual_rows)
-        wanted = collections.Counter(tuple(normalized_cell(row[c],columns[c]) for c in SUMMARY_COLUMNS) for row in expected)
-        comparisons.append({'as_of':match.group(1),'expected_rows':len(expected),'actual_rows':len(actual_rows),'all_cells_equal':actual==wanted})
-    passed = all(c['all_cells_equal'] for c in comparisons)
-    return {'status':'통과' if passed else '실패','detail':'요약 네 열을 기준일마다 비교','comparisons':comparisons}
+    """④ 요약: expected/summary_<병원>.csv와 bp_summary(D6 · D7 · rate는 넷째 자리 반올림)."""
+    return compare_table(connection, folder, 'summary', 'bp_summary', SUMMARY_COLUMNS)
 
 
 INTEGERS = ('TINYINT','SMALLINT','INTEGER','BIGINT','HUGEINT')
 NUMBERS = INTEGERS+('FLOAT','DOUBLE','DECIMAL')
-TYPE_CONTRACT = {  # 열 계약(요청 03 4절): 값이 같아도 자료형이 다르면 실패
-    'fct_bp_person':{'person_id':('VARCHAR',),'as_of':('DATE',),'last_bp_date':('DATE',),'systolic':NUMBERS,
-                     'diastolic':NUMBERS,'controlled':INTEGERS,'reason':('VARCHAR',)},
-    'bp_summary':{'as_of':('DATE',),'denominator':INTEGERS,'numerator':INTEGERS,'rate':NUMBERS}}
+TYPE_CONTRACT = {  # 열 계약(요청 03 4절 · M2 요청 04에서 병원 · 기준일 이름 더함): 값이 같아도 자료형이 다르면 실패
+    'fct_bp_person':{'hospital':('VARCHAR',),'as_of_label':('VARCHAR',),'person_id':('VARCHAR',),'as_of':('DATE',),
+                     'last_bp_date':('DATE',),'systolic':NUMBERS,'diastolic':NUMBERS,'controlled':INTEGERS,'reason':('VARCHAR',)},
+    'bp_summary':{'hospital':('VARCHAR',),'as_of_label':('VARCHAR',),'denominator':INTEGERS,'numerator':INTEGERS,'rate':NUMBERS}}
 
 
 def check_types(connection):

@@ -6,7 +6,9 @@ from pathlib import Path
 
 from .runtime import ARTIFACTS, ROOT, environment
 
-ALLOWED = {'staging':{'source','seed'}, 'intermediate':{'staging'}, 'marts':{'intermediate','staging'},
+ALLOWED = {'staging':{'source','seed'},          # L3 병원마다(staging/hospital_a · hospital_b): 그 병원의 모양만 앎
+           'common':{'staging','seed'},           # 공통 표(M2 요청 04): 병원 줄을 이어 붙이고 코드 매핑 표로 표준 뜻에
+           'intermediate':{'common'}, 'marts':{'intermediate','common'},
            'reports':{'marts'}}  # L6 reports: summaries read only finished marts (request 03 review R1)
 
 
@@ -44,7 +46,7 @@ def validate(manifest):
         own = layer(node)
         name = node.get('name','<unnamed>')
         if own not in ALLOWED:
-            issues.append(f'{name}: model must be in staging/intermediate/marts/reports')
+            issues.append(f'{name}: model must be in staging/common/intermediate/marts/reports')
             continue
         for dep_id in node.get('depends_on',{}).get('nodes',[]):
             dep = nodes.get(dep_id) or sources.get(dep_id)

@@ -133,7 +133,8 @@ class LayerTests(unittest.TestCase):
             return {'name':name,'resource_type':'model','original_file_path':f'models/{layer_name}/{name}.sql','depends_on':{'nodes':deps},'raw_code':sql}
         return {'sources':{'source.fhir.latest_resources':{'name':'latest_resources','resource_type':'source'}},
                 'nodes':{'model.stg':node('stg','staging',['source.fhir.latest_resources'],"select * from {{ source('fhir','latest_resources') }}"),
-                         'model.int':node('int','intermediate',['model.stg'],"with x as (select * from {{ ref('stg') }}) select * from x"),
+                         'model.com':node('com','common',['model.stg'],"select * from {{ ref('stg') }}"),
+                         'model.int':node('int','intermediate',['model.com'],"with x as (select * from {{ ref('com') }}) select * from x"),
                          'model.fct':node('fct','marts',['model.int'],"select * from {{ ref('int') }}")}}
 
     def test_L2_layers_empty_and_correct_graph_pass(self):
@@ -186,10 +187,10 @@ class LadderTests(unittest.TestCase):
     def test_L2_ladder_expected_cells_and_read_only_failure(self):
         CACHE.mkdir(parents=True,exist_ok=True)
         with tempfile.TemporaryDirectory(dir=CACHE) as folder, connect(':memory:') as connection:
-            connection.execute('CREATE TABLE fct_bp_person(person_id VARCHAR,as_of DATE,systolic DOUBLE,controlled BOOLEAN)')
-            connection.execute("INSERT INTO fct_bp_person VALUES ('fixture','2025-12-31',124.0,true)")
-            file=Path(folder)/'person_2025-12-31.csv'
-            fixture=b'person_id,systolic,controlled\nfixture,124,True\n'
+            connection.execute('CREATE TABLE fct_bp_person(hospital VARCHAR,person_id VARCHAR,as_of DATE,systolic DOUBLE,controlled BOOLEAN)')
+            connection.execute("INSERT INTO fct_bp_person VALUES ('A','fixture','2025-12-31',124.0,true)")
+            file=Path(folder)/'person_A.csv'
+            fixture=b'hospital,person_id,systolic,controlled\nA,fixture,124,True\n'
             file.write_bytes(fixture)
             self.assertEqual(compare_expected(connection,Path(folder))['status'],'통과')
             connection.execute('UPDATE fct_bp_person SET systolic=125')

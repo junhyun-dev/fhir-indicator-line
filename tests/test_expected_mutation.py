@@ -1,6 +1,6 @@
 """④ 기대 결과 비교가 열마다 실제로 보는지 재는 시험(뮤테이션 테스트 · 표준 과정 v1.7).
 
-기대 결과 파일(expected/)로 가짜 fct_bp_person · bp_summary를 만들고, 열 하나만 망가뜨렸을 때
+기대 결과 파일(expected/person_<병원>.csv · summary_<병원>.csv · M2 공통 모양)로 가짜 fct_bp_person · bp_summary를 만들고, 열 하나만 망가뜨렸을 때
 비교가 실패하는지 본다. 쓰는 쪽: 짝 Claude 세션(기대 결과와 검사기는 Codex 밖 · 10/19).
 """
 import csv
@@ -13,9 +13,9 @@ from fhir_line.ladder import SUMMARY_COLUMNS, compare_expected, compare_summary
 from fhir_line.runtime import ROOT
 
 EXPECTED = ROOT / 'expected'
-PERSON_TYPES = {'person_id':'VARCHAR','as_of':'DATE','last_bp_date':'DATE','systolic':'DOUBLE',
+PERSON_TYPES = {'hospital':'VARCHAR','as_of_label':'VARCHAR','person_id':'VARCHAR','as_of':'DATE','last_bp_date':'DATE','systolic':'DOUBLE',
                 'diastolic':'DOUBLE','controlled':'INTEGER','reason':'VARCHAR'}
-SUMMARY_TYPES = {'as_of':'DATE','denominator':'INTEGER','numerator':'INTEGER','rate':'DOUBLE'}
+SUMMARY_TYPES = {'hospital':'VARCHAR','as_of_label':'VARCHAR','denominator':'INTEGER','numerator':'INTEGER','rate':'DOUBLE'}
 
 
 def rows_of(pattern, columns):
@@ -48,7 +48,7 @@ class PersonCheckSeesEveryColumn(unittest.TestCase):
     columns = list(PERSON_TYPES)
 
     def setUp(self):
-        self.rows = rows_of('person_*.csv', self.columns)
+        self.rows = rows_of('person_[A-Z].csv', self.columns)
 
     def test_baseline_passes(self):
         self.assertEqual(compare_expected(table('fct_bp_person',PERSON_TYPES,self.rows),EXPECTED)['status'],'통과')
@@ -62,8 +62,8 @@ class PersonCheckSeesEveryColumn(unittest.TestCase):
                 self.assertEqual(result['status'],'실패',column+' 열을 망가뜨려도 통과함')
 
     def test_missing_duplicate_and_extra_rows_fail(self):
-        cases = {'missing':self.rows[1:], 'duplicate':self.rows+[self.rows[0]],
-                 'extra':self.rows+[['00000000-0000-0000-0000-000000000000']+self.rows[0][1:]]}
+        extra = list(self.rows[0]); extra[self.columns.index('person_id')] = '00000000-0000-0000-0000-000000000000'
+        cases = {'missing':self.rows[1:], 'duplicate':self.rows+[self.rows[0]], 'extra':self.rows+[extra]}
         for name,rows in cases.items():
             with self.subTest(case=name):
                 self.assertEqual(compare_expected(table('fct_bp_person',PERSON_TYPES,rows),EXPECTED)['status'],'실패')
@@ -73,7 +73,7 @@ class SummaryCheckSeesEveryColumn(unittest.TestCase):
     columns = list(SUMMARY_COLUMNS)
 
     def setUp(self):
-        self.rows = rows_of('summary_*.csv', self.columns)
+        self.rows = rows_of('summary_[A-Z].csv', self.columns)
 
     def test_baseline_passes(self):
         self.assertEqual(compare_summary(table('bp_summary',SUMMARY_TYPES,self.rows),EXPECTED)['status'],'통과')
@@ -88,7 +88,7 @@ class SummaryCheckSeesEveryColumn(unittest.TestCase):
 
     def test_rate_must_be_rounded_to_four_places(self):
         rows = [list(r) for r in self.rows]
-        rows[-1][3] = str(4/6)
+        rows[-1][self.columns.index('rate')] = str(4/6)
         self.assertEqual(compare_summary(table('bp_summary',SUMMARY_TYPES,rows),EXPECTED)['status'],'실패')
 
 

@@ -19,7 +19,8 @@ class ReportsLayer(unittest.TestCase):
     def graph(self, summary_layer, summary_deps):
         return {'sources':{'source.fhir.latest_resources':{'name':'latest_resources','resource_type':'source'}},
                 'nodes':{'model.stg':node('stg','staging',['source.fhir.latest_resources']),
-                         'model.int':node('int','intermediate',['model.stg']),
+                         'model.com':node('com','common',['model.stg']),
+                         'model.int':node('int','intermediate',['model.com']),
                          'model.fct':node('fct','marts',['model.int']),
                          'model.sum':node('sum',summary_layer,summary_deps)}}
 
@@ -31,6 +32,19 @@ class ReportsLayer(unittest.TestCase):
 
     def test_R1_reports_cannot_skip_to_staging(self):
         self.assertEqual(validate(self.graph('reports',['model.stg']))['status'],'실패')
+
+
+class CommonLayer(unittest.TestCase):
+    def test_M2_intermediate_reads_common_not_hospital_staging(self):
+        ok = ReportsLayer().graph('reports',['model.fct'])
+        self.assertEqual(validate(ok)['issues'],[])
+        ok['nodes']['model.int']['depends_on']['nodes'] = ['model.stg']
+        self.assertEqual(validate(ok)['status'],'실패')
+
+    def test_M2_hospital_staging_in_subfolder_is_staging(self):
+        g = ReportsLayer().graph('reports',['model.fct'])
+        g['nodes']['model.stg']['original_file_path'] = 'models/staging/hospital_b/stg.sql'
+        self.assertEqual(validate(g)['issues'],[])
 
 
 class StrictOverall(unittest.TestCase):
@@ -45,8 +59,8 @@ class StrictOverall(unittest.TestCase):
 
 
 class TypeContract(unittest.TestCase):
-    good = {'fct_bp_person':'person_id VARCHAR, as_of DATE, last_bp_date DATE, systolic DOUBLE, diastolic DOUBLE, controlled INTEGER, reason VARCHAR',
-            'bp_summary':'as_of DATE, denominator BIGINT, numerator HUGEINT, rate DOUBLE'}
+    good = {'fct_bp_person':'hospital VARCHAR, as_of_label VARCHAR, person_id VARCHAR, as_of DATE, last_bp_date DATE, systolic DOUBLE, diastolic DOUBLE, controlled INTEGER, reason VARCHAR',
+            'bp_summary':'hospital VARCHAR, as_of_label VARCHAR, denominator BIGINT, numerator HUGEINT, rate DOUBLE'}
 
     def connection(self, **override):
         con = duckdb.connect()
@@ -60,7 +74,8 @@ class TypeContract(unittest.TestCase):
     def test_wrong_types_fail(self):
         cases = {'as_of text':{'fct_bp_person':self.good['fct_bp_person'].replace('as_of DATE','as_of VARCHAR')},
                  'controlled boolean':{'fct_bp_person':self.good['fct_bp_person'].replace('controlled INTEGER','controlled BOOLEAN')},
-                 'rate text':{'bp_summary':self.good['bp_summary'].replace('rate DOUBLE','rate VARCHAR')}}
+                 'rate text':{'bp_summary':self.good['bp_summary'].replace('rate DOUBLE','rate VARCHAR')},
+                 'no hospital':{'bp_summary':self.good['bp_summary'].replace('hospital VARCHAR, ','')}}
         for name, override in cases.items():
             with self.subTest(case=name):
                 self.assertEqual(check_types(self.connection(**override))['status'],'실패')
