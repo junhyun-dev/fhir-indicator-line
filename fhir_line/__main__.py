@@ -18,6 +18,7 @@ def main():
     sub.add_parser('layers')
     p = sub.add_parser('check')
     p.add_argument('--expected',default=str(ROOT/'expected'))
+    p.add_argument('--strict',action='store_true',help='treat 기다림 as 실패 (request 03 onward)')
     args = parser.parse_args()
     if args.command=='split':
         from .batches import split
@@ -31,7 +32,7 @@ def main():
         result = check()
     else:
         from .ladder import check
-        result = check(args.expected)
+        result = check(args.expected,args.strict)
     print(json.dumps(result,indent=2,ensure_ascii=False))
     return 1 if result.get('status')=='실패' else 0
 

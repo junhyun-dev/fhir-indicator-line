@@ -5,7 +5,7 @@
 - **검사 명령 하나:** 끝내기 전에 `sh scripts/check.sh`를 돌리고, 출력 그대로 답 파일에 붙여요. 하나라도 실패하면 「됐다」고 하지 않아요.
 - **`expected/`는 읽기만:** 기대 결과는 Codex 밖에서 짝 세션이 손으로 센 값이에요. 고치거나 다시 만들거나 권한을 풀지 않아요. 숫자가 다르면 기준을 고치지 말고 「기대 결과가 틀린 것 같다」와 까닭을 답에 적어요.
 - **원본은 읽기만:** `.local/FHIR-LINE-01/runs/original/fhir/`와 `.local/public-data/`에는 쓰지 않아요. 작업은 이 저장소 안에서만 해요.
-- **층 방향:** staging은 source · seed만, intermediate는 staging만, marts는 intermediate · staging만 읽어요(`python -m fhir_line layers`). staging보다 위에서 `raw_resources`를 읽지 않아요.
+- **층 방향:** staging은 source · seed만, intermediate는 staging만, marts는 intermediate · staging만, reports(L6 요약)는 marts만 읽어요(`python -m fhir_line layers`). staging보다 위에서 `raw_resources`를 읽지 않아요.
 - **정의 번호:** 모델 머리 주석과 테스트 이름에 그것이 지키는 정의 번호(D1 ~ D7 · L0 ~ L2)를 적어요.
 - **요청 하나에 한 가지:** 구조 바꾸기(리팩터링)와 동작 바꾸기를 한 요청에 섞지 않아요. 쓰지 않게 된 모델 · 열 · 파일은 지우고 답의 「지운 것」에 적어요(`_old` · 주석으로 남기지 않음).
 - **새 패키지는 먼저 묻기:** `requirements.lock`에 없는 것을 받지 않아요. 필요하면 크기와 까닭을 답에 적고 멈춰요.

@@ -88,10 +88,39 @@ def compare_summary(connection, folder):
     return {'status':'통과' if passed else '실패','detail':'요약 네 열을 기준일마다 비교','comparisons':comparisons}
 
 
-def combine(person, summary):
-    """④ = 사람별 + 요약. 하나라도 실패면 실패, 하나라도 기다림이면 기다림."""
-    status = '실패' if '실패' in (person['status'],summary['status']) else '기다림' if '기다림' in (person['status'],summary['status']) else '통과'
-    return {'status':status,'detail':'사람별 '+person['status']+' · 요약 '+summary['status'],'person':person,'summary':summary}
+INTEGERS = ('TINYINT','SMALLINT','INTEGER','BIGINT','HUGEINT')
+NUMBERS = INTEGERS+('FLOAT','DOUBLE','DECIMAL')
+TYPE_CONTRACT = {  # 열 계약(요청 03 4절): 값이 같아도 자료형이 다르면 실패
+    'fct_bp_person':{'person_id':('VARCHAR',),'as_of':('DATE',),'last_bp_date':('DATE',),'systolic':NUMBERS,
+                     'diastolic':NUMBERS,'controlled':INTEGERS,'reason':('VARCHAR',)},
+    'bp_summary':{'as_of':('DATE',),'denominator':INTEGERS,'numerator':INTEGERS,'rate':NUMBERS}}
+
+
+def check_types(connection):
+    """④ 자료형: 두 결과 표의 열이 계약한 자료형인지."""
+    problems = []
+    for table, contract in TYPE_CONTRACT.items():
+        columns = {r[1]:r[2] for r in connection.execute(f"PRAGMA table_info('{table}')").fetchall()} if connection.execute(
+            "SELECT count(*) FROM information_schema.tables WHERE table_schema='main' AND table_name=?",[table]).fetchone()[0] else None
+        if columns is None:
+            return {'status':'기다림','detail':table+' 없음'}
+        for column, allowed in contract.items():
+            if not columns.get(column,'').startswith(allowed):
+                problems.append(f'{table}.{column}: {columns.get(column,"없음")}')
+    return {'status':'통과' if not problems else '실패','detail':'자료형 계약 '+('맞음' if not problems else ', '.join(problems))}
+
+
+def combine(**parts):
+    """④ = 사람별 + 요약 + 자료형. 하나라도 실패면 실패, 하나라도 기다림이면 기다림."""
+    states = [p['status'] for p in parts.values()]
+    status = '실패' if '실패' in states else '기다림' if '기다림' in states else '통과'
+    return {'status':status,'detail':' · '.join(f'{k} {v["status"]}' for k,v in parts.items()),**parts}
+
+
+def overall(ladder_rows, strict=False):
+    """전체 판정. strict(요청 03부터 check.sh)는 기다림도 실패로 센다(검토 R3)."""
+    states = [r['status'] for r in ladder_rows]
+    return '실패' if '실패' in states or (strict and '기다림' in states) else '통과'
 
 
 def source_anchor(connection):
@@ -130,7 +159,7 @@ def assess_counts(source_count, batches, duplicate_count, raw_count, latest_coun
             'issue':None if data_ok else 'L1/L2 실제 행 수 불일치'}
 
 
-def check(expected):
+def check(expected, strict=False):
     layer_result = check_layers()
     if layer_result['status']!='통과':
         report = {'status':'실패','layers':layer_result,'ladder':[]}
@@ -177,7 +206,7 @@ def check(expected):
                  'duplicated_resources':duplicates,'different_payload_resources':changed}
         if folder.exists():
             try:
-                fourth = combine(compare_expected(connection,folder),compare_summary(connection,folder))
+                fourth = combine(사람별=compare_expected(connection,folder),요약=compare_summary(connection,folder),자료형=check_types(connection))
             except (ValueError,InvalidOperation,csv.Error,OSError) as error:
                 fourth = {'status':'실패','detail':'expected 읽기/셀 자료형 오류: '+type(error).__name__+'; 기준을 고치지 않음'}
             fifth = source_anchor(connection)
@@ -185,9 +214,9 @@ def check(expected):
             fourth = {'status':'기다림','detail':'expected/ 없음; 사용자 모델/정답 대기'}
             fifth = {'status':'기다림','detail':'요청대로 expected/가 있을 때만 원천 기준 검사 실행'}
     ladder = [dict(step=str(i),**item) for i,item in enumerate((first,second,third,fourth,fifth),1)]
-    status = '실패' if any(r['status']=='실패' for r in ladder) else '통과'
-    report = {'status':status,'layers':layer_result,'ladder':ladder,
-              'expected_read_only':True,'D1_D7_models_implemented':False}
+    status = overall(ladder,strict)
+    report = {'status':status,'strict':strict,'layers':layer_result,'ladder':ladder,
+              'expected_read_only':True,'D1_D7_models_implemented':fourth.get('자료형',{}).get('status') in ('통과','실패')}
     write_report(report)
     return report
 
