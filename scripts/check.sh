@@ -10,8 +10,8 @@ echo "== 기대 결과: 해시와 읽기 전용"
 if [ -n "$(find expected -perm -u+w)" ]; then echo "expected/에 쓰기 권한이 있어요"; exit 1; fi
 
 echo "== 바뀌면 안 되는 층(표준 과정 v1.11 · 기준 커밋은 마일스톤마다 요청서에서 바꿔요)"
-FROZEN_BASE=                                          # M3 요청 07: 결정 0004로 계산 층을 OMOP으로 옮기는 중 — 07이 커밋되면 그 커밋으로
-FROZEN_PATHS="models/intermediate models/marts models/reports"
+FROZEN_BASE=3e99c30                                   # M3: 계산이 OMOP 위로 옮겨진 뒤(요청 07 · 결정 0004) — 새 병원 · 새 출처는 L4 ~ L6과 지표 개념을 0줄로
+FROZEN_PATHS="models/intermediate models/marts models/reports seeds/indicator_concepts.csv seeds/as_of_labels.csv"
 if [ -z "$FROZEN_BASE" ]; then
   echo "건너뜀: 결정 0004 · 요청 07로 L4 ~ L6을 바꾸는 반복이에요(숫자는 ④가 셀마다 봐요)"
 elif ! git diff --quiet "$FROZEN_BASE" -- $FROZEN_PATHS; then
