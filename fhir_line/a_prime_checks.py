@@ -111,10 +111,10 @@ def write_csv(path, fields, rows):
 
 
 def check(source=a_prime.DEFAULT, database=DATABASE, output=ROOT/'.local/FHIR-LINE-A-PRIME/actual'):
-    checker=frozen_checker()
     output=writable_path(output);output.mkdir(parents=True,exist_ok=True)
     with output_stream(output/'result.json') as stream:
         json.dump({'ok':False,'status':'실패','phase':'checking_actual_inputs'},stream)
+    checker=frozen_checker()
     tables=a_prime.read_input(source)
     write_projection(output/'input_source_facts.jsonl',a_prime.projection(tables))
     manifest=ROOT/'expected_a_prime/manifest.json'

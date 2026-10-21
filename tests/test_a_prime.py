@@ -9,6 +9,7 @@ import stat
 import subprocess
 import tempfile
 import unittest
+from unittest.mock import patch
 
 from fhir_line import a_prime, a_prime_checks
 from fhir_line.runtime import ROOT, connect, environment, writable_path
@@ -116,6 +117,40 @@ class InputContract(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'provenance'):
             a_prime_checks.check(self.directory,Path(self.temp.name)/'unused.duckdb',output)
         self.assertFalse(json.loads((output/'result.json').read_text())['ok'])
+
+    def test_0013_L2_initial_lock_failure_invalidates_previous_success(self):
+        output=Path(self.temp.name)/'actual';output.mkdir()
+        (output/'result.json').write_text('{"ok":true,"status":"통과"}')
+        with patch.object(a_prime_checks,'frozen_checker',side_effect=ValueError('injected lock failure')) as checker:
+            with self.assertRaisesRegex(ValueError,'injected lock failure'):
+                a_prime_checks.check(output=output)
+        checker.assert_called_once_with()
+        self.assertFalse(json.loads((output/'result.json').read_text())['ok'])
+
+    def test_0013_L2_initial_lock_failure_does_not_truncate_a_hardlink_target(self):
+        original=Path(self.temp.name)/'previous.json';original.write_text('{"ok":true}')
+        output=Path(self.temp.name)/'actual';output.mkdir()
+        (output/'result.json').hardlink_to(original)
+        with patch.object(a_prime_checks,'frozen_checker',side_effect=ValueError('injected lock failure')):
+            with self.assertRaisesRegex(ValueError,'injected lock failure'):
+                a_prime_checks.check(output=output)
+        self.assertEqual(json.loads(original.read_text()),{'ok':True})
+        self.assertFalse(json.loads((output/'result.json').read_text())['ok'])
+
+    def test_0013_L2_unsafe_initial_failure_paths_do_not_write_before_lock_check(self):
+        protected=ROOT/'answer_key_a_prime/README.md';before=protected.read_bytes()
+        link=Path(self.temp.name)/'protected';link.symlink_to(protected.parent,target_is_directory=True)
+        leaf=Path(self.temp.name)/'leaf';leaf.mkdir()
+        (leaf/'result.json').symlink_to(protected)
+        outside=ROOT.parent/(Path(self.temp.name).name+'-forbidden-output')
+        self.assertFalse(outside.exists())
+        for output in (ROOT/'expected_a_prime',link,leaf,outside):
+            with self.subTest(output=output),patch.object(a_prime_checks,'frozen_checker') as checker:
+                with self.assertRaises(ValueError):a_prime_checks.check(output=output)
+                checker.assert_not_called()
+        self.assertEqual(protected.read_bytes(),before)
+        self.assertTrue((leaf/'result.json').is_symlink())
+        self.assertFalse(outside.exists())
 
     def test_0013_L2_projection_output_replaces_a_hardlink_without_changing_original(self):
         source=Path(self.temp.name)/'shared.txt';source.write_text('original')
