@@ -14,7 +14,7 @@
 
 ## 2. 설계
 
-- `scripts/get_sources.sh`: (가) 자바가 없으면 Temurin JDK 17.0.20.1+1을 받아 `.local/`에 풀기(SHA256 `3808d1d1…08e`) (나) Synthea v4.0.0 `synthea-with-dependencies.jar`(SHA256 `ed43c20a…cc1`)로 `-s 12345 -cs 67890 -r 20251231 -e 20251231 -p 30` 한 번 → FHIR 38개를 지금 경로 `.local/FHIR-LINE-01/runs/original/fhir/`에 (다) MIMIC-IV 데모 2.2 zip을 PhysioNet에서 받아 지금 경로에 풀고 공식 `SHA256SUMS.txt`로 확인 (라) `expected/sources/*.sha256`과 대조. 이미 있고 해시가 맞으면 건너뜀. 원천 폴더는 받은 뒤 읽기 전용.
+- `scripts/get_sources.sh`: (가) 병원 A를 다시 만들어야 할 때는 늘 고정 해시로 받은 portable Temurin JDK 17.0.20.1+1(SHA256 `3808d1d1…08e`)을 `.local/`에 풀어 써요 — 시스템 자바는 쓰지 않고, A 원천 38개 해시가 이미 맞으면 건너뛰어요(요청 08 사전 검토 R3) (나) Synthea v4.0.0 `synthea-with-dependencies.jar`(SHA256 `ed43c20a…cc1`)로 `-s 12345 -cs 67890 -r 20251231 -e 20251231 -p 30` 한 번 → FHIR 38개를 지금 경로 `.local/FHIR-LINE-01/runs/original/fhir/`에 (다) MIMIC-IV 데모 2.2 zip을 PhysioNet에서 받아 지금 경로에 풀고 공식 `SHA256SUMS.txt`로 확인 (라) `expected/sources/*.sha256`과 대조. 이미 있고 해시가 맞으면 건너뜀. 원천 폴더는 받은 뒤 읽기 전용.
 - `scripts/quickstart.sh`: 가상 환경(`requirements.lock` 해시 고정) → `get_sources.sh` → 배치 나누기 · 적재 → `check.sh` → `answer_key` 다시 세기와 `cmp`.
 - `README.md`: 처음 보는 사람용으로 다시 써요 — 맨 위 「무엇을 · 결과 숫자 넷 · 어떻게 확인했나」, 그다음 명령 하나 · 걸리는 시간 · 받는 크기 · 결과 화면 보기, 그다음 구조(층 · OMOP · 결정 기록 링크). 지금 README의 층별 설명은 `docs/`로 옮겨요.
 
@@ -28,6 +28,6 @@
 
 ## 5. 위험 · 모르는 것
 
-- Synthea가 다른 자바 버전에서 같은 파일을 낼지 — JDK를 고정해 받는 길을 기본으로 두고, 이미 있는 자바를 쓰면 해시 대조가 잡아요.
+- Synthea가 다른 자바에서 같은 파일을 낼지는 모름 — 그래서 고정 JDK만 써요(R3). 「clone 직후」 증거는 구현을 커밋한 뒤 새 복제본에서 따로 돌려요(R2).
 - PhysioNet · GitHub 주소가 바뀌거나 느림(10/21 OMOP 데모 zip이 한 번 끊김) — 이어받기(`curl -C -`)와 해시 확인.
 - 받는 크기 약 430MB · 만든 뒤 약 1GB.
