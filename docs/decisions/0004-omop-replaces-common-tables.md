@@ -22,4 +22,6 @@ M2까지 병원 사이의 공통 모양은 우리가 지은 공통 테이블 넷
 
 ## 결과
 
-(반복이 끝나면 적어요.)
+◆ 요청 06(`c8ea151`)으로 OMOP을 공통 테이블 옆에 만들고(계산 층 0줄), 요청 07(`3e99c30`)로 계산 층이 OMOP · `indicator_concepts`만 읽게 바꾼 뒤 `models/common/` · `code_map.csv`를 지움. 두 병원 숫자 그대로(A 3/5 → 4/6 · B 4/9 → 3/9 · 사다리 ④ ●) · 갈아타기 전후 `int_bp_daily` 413행 · `fct_bp_person` 29행 두 방향 EXCEPT ALL 0 · 0 ● · 계산 층 바뀐 줄: `int_person_period` +18 · `int_bp_daily` +21/−16 · `fct_bp_person` +15/−13 · `dim_as_of` +2/−2 · `bp_summary` 0. 바뀌면 안 되는 층 기준을 `3e99c30`으로 옮기고 지표 개념 seed도 넣음(`7326906`).
+
+카드로 되돌림: ME-02(07 확인을 바꿈).

@@ -21,4 +21,6 @@ All of Us EHR 확장 표 `src_id`(지원 문서 · 검색 요약) · OHDSI 포�
 
 ## 결과
 
-(반복이 끝나면 적어요.)
+◆ `person_ext` 136행(A 36 · B 100) = `person` 136행 · 열 셋 계약은 사다리 ⑥ 모양이 봄 · 계산의 측정 기간은 `int_person_period`가 `measurement_year`에서 만듦(`c8ea151` · `3e99c30`).
+
+카드로 되돌림: FC-03(바꿈).

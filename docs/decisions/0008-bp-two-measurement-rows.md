@@ -17,4 +17,6 @@ HL7 FHIR to OMOP IG 1.0.0 `ConceptMap-BloodPressureCodes` · `StructureMap-Blood
 
 ## 결과
 
-(반복이 끝나면 적어요.)
+◆ 혈압 값 19,538행 = A 1,110 + B 18,428(원천에서 센 기대 결과와 같음) · 따라갈 행 4줄(A 8e2eb664 145/75 · B 10004422 140/60) 셀마다 같음 · 원래 글자 「140/60」은 두 행 모두 `value_source_value`(`c8ea151`).
+
+카드로 되돌림: 없음.

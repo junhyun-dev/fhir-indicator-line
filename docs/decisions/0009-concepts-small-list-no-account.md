@@ -19,4 +19,6 @@ dbt-synthea `seeds/vocabulary/concept_seed.csv` · `seeds/stcm/` · HL7 FHIR to 
 
 ## 결과
 
-(반복이 끝나면 적어요.)
+◆ `concept` 12행(11행은 로컬 dbt-synthea seed와 같음 · 262는 MIMIC 공식 OMOP 0.9가 응급실 거친 입원에 씀 ● 38행) · `source_to_concept_map` 28행 · `indicator_concepts` 8행 · 단위 0인 혈압 0 · 번호 없는 방문 39(A HH 34 · VR 5 · 원래 글자는 남음) · 병원 B `4019` · `I10` → 320128은 MIMIC 공식 OMOP 0.9와 같음(100행) ●(`c8ea151`).
+
+카드로 되돌림: MP-02(사후 확인).
