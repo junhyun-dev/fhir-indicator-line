@@ -17,3 +17,4 @@
 | [0009](0009-concepts-small-list-no-account.md) | 표준 번호는 쓰는 것만 작은 목록으로 | 받아들임(Claude) |
 | [0010](0010-definition-rules-in-calculation-layer.md) | 정의의 날짜 · 개념 규칙은 계산 층 한 곳에 | 받아들임(Claude) |
 | [0011](0011-observation-period-id-and-source-link.md) | 0007 보충 — `observation_period_id` = `person_id` · 사건 행 원래 id는 `omop_source_link` | 받아들임(Claude · 사전 검토 R2 · R3) |
+| [0012](0012-sources-by-script-and-hashes.md) | 데이터는 받는 스크립트 + 해시 목록으로 · 기대 결과 계산 스크립트는 저장소에 | 받아들임(Claude · 설계 02) |

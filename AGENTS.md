@@ -3,7 +3,7 @@
 같은 실수를 두 번 보면 한 줄씩 더하고, 자꾸 어기면 `scripts/check.sh`로 옮겨요. 쓰는 쪽: 짝 Claude 세션(Personal `builds/medical-data-hands-on`).
 
 - **검사 명령 하나:** 끝내기 전에 `sh scripts/check.sh`를 돌리고, 출력 그대로 답 파일에 붙여요. 하나라도 실패하면 「됐다」고 하지 않아요.
-- **`expected/`는 읽기만:** 기대 결과는 Codex 밖에서 짝 세션이 손으로 센 값이에요. 고치거나 다시 만들거나 권한을 풀지 않아요. 숫자가 다르면 기준을 고치지 말고 「기대 결과가 틀린 것 같다」와 까닭을 답에 적어요.
+- **`expected/` · `answer_key/`는 읽기만:** 기대 결과는 Codex 밖에서 짝 세션이 손으로 센 값이에요. 고치거나 다시 만들거나 권한을 풀지 않아요. 숫자가 다르면 기준을 고치지 말고 「기대 결과가 틀린 것 같다」와 까닭을 답에 적어요.
 - **원본은 읽기만:** `.local/FHIR-LINE-01/runs/original/fhir/`와 `.local/public-data/`에는 쓰지 않아요. 작업은 이 저장소 안에서만 해요.
 - **층 방향:** staging(병원마다 · `staging/hospital_a` …)은 source · seed만, omop(OMOP CDM 5.4 표 + 옆 표 · M3)은 staging · seed · omop만(결정 0011), intermediate는 omop · seed · intermediate만, marts는 intermediate · omop · seed만, reports(L6 요약)는 marts만 읽어요(`python -m fhir_line layers` · 공통 표 common은 M3 요청 07에서 지움).
 - **바뀌면 안 되는 층:** `scripts/check.sh`의 `FROZEN_BASE` 뒤로 `FROZEN_PATHS`(지금 L4 ~ L6)를 고치면 검사가 실패해요. `FROZEN_BASE`가 비어 있으면 그 반복은 결정 기록에 따라 계산 층을 바꾸는 중이에요. 지금 고정한 것: L4 ~ L6 + `seeds/indicator_concepts.csv` · `as_of_labels.csv`(M3 요청 07 뒤). 고쳐야 할 것 같으면 멈추고 까닭을 답에 적어요. 기준 커밋은 짝 Claude 세션이 요청서에서만 바꿔요.
