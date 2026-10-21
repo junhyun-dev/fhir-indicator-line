@@ -189,6 +189,7 @@ class ActualSqlContract(unittest.TestCase):
             MIMIC_SOURCE_DIR=str(write_sources(cls.directory/'mimic',{name:[] for name in HEADERS})),
             A_PRIME_SOURCE_DIR=str(cls.input))
         log=ROOT/'.local/FHIR-LINE-A-PRIME/fixture-build.log'
+        log.parent.mkdir(parents=True,exist_ok=True)
         with log.open('w') as output:
             result=subprocess.run([str(ROOT/'.venv/bin/dbt'),'--no-use-colors','build','--no-partial-parse'],
                 cwd=ROOT,env=env,stdout=output,stderr=subprocess.STDOUT,timeout=180)
