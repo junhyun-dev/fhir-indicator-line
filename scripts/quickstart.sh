@@ -26,11 +26,20 @@ started=$(date +%s)
 
 phase=가상환경
 if [ ! -x .venv/bin/python ]; then python3 -m venv .venv >> "$log" 2>&1; fi
-.venv/bin/python -m pip install --only-binary=:all: --require-hashes --no-input \
-  --index-url https://pypi.org/simple -r requirements.lock >> "$log" 2>&1
+if [ "${FHIR_OFFLINE:-0}" = 1 ]; then
+  .venv/bin/python -m pip install --no-index --only-binary=:all: --require-hashes --no-input \
+    -r requirements.lock >> "$log" 2>&1
+else
+  .venv/bin/python -m pip install --only-binary=:all: --require-hashes --no-input \
+    --index-url https://pypi.org/simple -r requirements.lock >> "$log" 2>&1
+fi
 printf '완료: %s\n' "$phase"
 phase=원천
-sh scripts/get_sources.sh >> "$log" 2>&1
+if [ "${FHIR_OFFLINE:-0}" = 1 ]; then
+  sh scripts/get_sources.sh --offline >> "$log" 2>&1
+else
+  sh scripts/get_sources.sh >> "$log" 2>&1
+fi
 printf '완료: %s (해시 확인)\n' "$phase"
 phase=배치나누기
 .venv/bin/python -m fhir_line split >> "$log" 2>&1
@@ -38,12 +47,15 @@ phase=배치1적재
 .venv/bin/python -m fhir_line load data/batches/batch_1 >> "$log" 2>&1
 phase=배치2적재
 .venv/bin/python -m fhir_line load data/batches/batch_2 >> "$log" 2>&1
+phase=A프라임생성
+.venv/bin/python -m fhir_line aprime-generate >> "$log" 2>&1
 phase=전체검사
 sh scripts/check.sh >> "$log" 2>&1
 printf '완료: check.sh 종료 0\n'
 phase=독립재계산
 .venv/bin/python scripts/source_data.py answers >> "$log" 2>&1
 printf '독립 재계산: 6파일 모두 같음(cmp)\n'
+printf 'A′ 독립 재계산: 4파일 모두 같음(cmp)\n'
 phase=결과
 .venv/bin/python scripts/source_data.py summary
 printf '완료: %s초 · 원문 로그 %s\n' "$(( $(date +%s) - started ))" "$log"

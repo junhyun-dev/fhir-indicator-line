@@ -4,6 +4,7 @@
 __pycache__/
 *.pyc
 data/batches/
+data/a_prime/
 data/*.duckdb*
 target/
 logs/

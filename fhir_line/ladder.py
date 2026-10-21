@@ -202,9 +202,16 @@ def check(expected, strict=False):
             fifth = {'status':'기다림','detail':'요청대로 expected/가 있을 때만 원천 기준 검사 실행'}
             sixth = {'status':'기다림','detail':'expected/ 없음'}
     ladder = [dict(step=str(i),**item) for i,item in enumerate((first,second,third,fourth,fifth,sixth),1)]
+    # ADR0013: the new frozen reference is a required comparison, not another hospital's old expected.
+    from .a_prime_checks import check as check_aprime
+    try:
+        aprime = check_aprime()
+    except (ValueError,OSError,KeyError,TypeError,omop.duckdb.Error) as error:
+        aprime = {'ok':False,'status':'실패','detail':'A-prime actual input/extraction failed: '+type(error).__name__}
+    ladder.append({'step':'7','status':aprime['status'],'detail':'A′ 원래 임상 경로: 입력·staging 원천4745/CSV·OMOP 비교; KCD 미연동'})
     status = overall(ladder,strict)
     report = {'status':status,'strict':strict,'layers':layer_result,'ladder':ladder,
-              'expected_read_only':True,'D1_D7_models_implemented':fourth.get('자료형',{}).get('status') in ('통과','실패')}
+              'expected_read_only':True,'a_prime':aprime,'D1_D7_models_implemented':fourth.get('자료형',{}).get('status') in ('통과','실패')}
     write_report(report)
     return report
 

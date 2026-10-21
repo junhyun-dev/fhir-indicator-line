@@ -1,0 +1,83 @@
+# D1-D3 / ADR0013: A-prime source contracts.
+version: 2
+models:
+- name: stg_aprime_person
+  data_tests:
+  - unique:
+      name: t_0013_D1_person_key_unique
+      arguments:
+        column_name: "person_id"
+  columns:
+  - name: person_id
+    data_tests:
+    - not_null:
+        name: t_0013_D2_person_person_not_null
+  - name: derived_from
+    data_tests:
+    - accepted_values:
+        name: t_0013_D2_person_derived_from_A
+        arguments:
+          values: ['A']
+- name: stg_aprime_diagnosis
+  data_tests:
+  - unique:
+      name: t_0013_D1_diagnosis_key_unique
+      arguments:
+        column_name: "condition_id || ':' || coding_index"
+  - same_clinical_day:
+      name: t_0013_D1_diagnosis_same_clinical_day
+      arguments:
+        clinical_column: start_day
+  columns:
+  - name: person_id
+    data_tests:
+    - not_null:
+        name: t_0013_D2_diagnosis_person_not_null
+  - name: derived_from
+    data_tests:
+    - accepted_values:
+        name: t_0013_D2_diagnosis_derived_from_A
+        arguments:
+          values: ['A']
+- name: stg_aprime_visit
+  data_tests:
+  - unique:
+      name: t_0013_D1_visit_key_unique
+      arguments:
+        column_name: "source_row_key"
+  - same_clinical_day:
+      name: t_0013_D1_visit_same_clinical_day
+      arguments:
+        clinical_column: start_day
+  columns:
+  - name: person_id
+    data_tests:
+    - not_null:
+        name: t_0013_D2_visit_person_not_null
+  - name: derived_from
+    data_tests:
+    - accepted_values:
+        name: t_0013_D2_visit_derived_from_A
+        arguments:
+          values: ['A']
+- name: stg_aprime_bp_value
+  data_tests:
+  - unique:
+      name: t_0013_D1_bp_value_key_unique
+      arguments:
+        column_name: "source_row_key"
+  - same_clinical_day:
+      name: t_0013_D1_bp_value_same_clinical_day
+      arguments:
+        clinical_column: bp_day
+  columns:
+  - name: person_id
+    data_tests:
+    - not_null:
+        name: t_0013_D2_bp_value_person_not_null
+  - name: derived_from
+    data_tests:
+    - accepted_values:
+        name: t_0013_D2_bp_value_derived_from_A
+        arguments:
+          values: ['A']

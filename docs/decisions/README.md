@@ -1,6 +1,6 @@
 # 결정 기록
 
-결정 하나 = 파일 하나(`NNNN-짧은-이름.md`). 칸은 제목 · 날짜 · 상태 / 맥락 / 결정 / 이유와 대안 / 참고한 것 / 결과예요(Personal `builds/standard-process.md` v2 4절 ⑨). 받아들인 기록은 고치지 않고, 틀린 가정이 드러나면 새 기록을 쓰고 옛 기록의 상태만 「대체됨 → 새 번호」로 바꿔요. 커밋 메시지에 결정 번호를 적어요(예: `결정 0004`). 쓰는 쪽: 짝 Claude 세션.
+결정 하나 = 파일 하나(`NNNN-짧은-이름.md`). 칸은 제목 · 날짜 · 상태 / 맥락 / 결정 / 이유와 대안 / 참고한 것 / 결과예요(Personal `builds/standard-process.md` v2 4절 ⑨). 받아들인 기록은 고치지 않고, 틀린 가정이 드러나면 새 기록을 쓰고 옛 기록의 상태만 「대체됨 → 새 번호」로 바꿔요. 커밋 메시지에 결정 번호를 적어요(예: `결정 0004`). 현재 쓰는 쪽: 의료 Codex. A′ 별도 사전/최종 검수: 방법 감독.
 
 0001 ~ 0003은 M1 · M2에서 이미 정한 것 가운데 지금도 살아 있는 것만 10/21에 따라 적은 거예요. M3(0004 ~)부터 이 방식으로 처음 써요.
 
@@ -18,3 +18,4 @@
 | [0010](0010-definition-rules-in-calculation-layer.md) | 정의의 날짜 · 개념 규칙은 계산 층 한 곳에 | 받아들임(Claude) |
 | [0011](0011-observation-period-id-and-source-link.md) | 0007 보충 — `observation_period_id` = `person_id` · 사건 행 원래 id는 `omop_source_link` | 받아들임(Claude · 사전 검토 R2 · R3) |
 | [0012](0012-sources-by-script-and-hashes.md) | 데이터는 받는 스크립트 + 해시 목록으로 · 기대 결과 계산 스크립트는 저장소에 | 받아들임(Claude · 설계 02) |
+| [0013](0013-a-prime-derived-source-and-precision.md) | A′는 파생 출처이며 소수 원값 전체를 보존 | 사용자 선택 수용 · 설계/기대값 사전 검수 준비 |

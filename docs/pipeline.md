@@ -26,6 +26,7 @@
 |---|---|---|
 | staging/hospital_a | stg_a_person, stg_a_condition, stg_a_visit, stg_a_bp_value | 사람 / 원래 진단 코드 / 방문 / 혈압 성분 |
 | staging/hospital_b | stg_b_person, stg_b_diagnosis, stg_b_visit, stg_b_bp_value | 사람 / 입원별 원래 진단 / 방문 / OMR·ICU 혈압 성분 |
+| staging/hospital_a_prime | stg_aprime_person, stg_aprime_diagnosis, stg_aprime_visit, stg_aprime_bp_value | A의 파생 사람 / 원래 코드·체계의 진단 / 방문 / 문자열에서 읽은 혈압 성분 |
 | omop | person, person_ext | 사람 / 병원·측정 연도 |
 | omop | observation_period, visit_occurrence, condition_occurrence, measurement | 관찰 기간 / 방문 / 매핑된 진단 / 혈압 값 하나 |
 | omop | cdm_source, omop_source_link, omop_load_counts | 출처 / 사건별 원천 키 / 병원·테이블별 적재·누락 집계 |
@@ -58,6 +59,20 @@ B의 measurement_year는 anchor_year, year_of_birth는 anchor_year-anchor_age다
 
 B staging 네 모델과 OMOP은 table로 저장해 gzip 스캔이 여러 view에 중첩되지 않게 한다. 계산 모델은 view여서 기준 시점 seed 변경을 반영한다. 같은 DuckDB 파일을 사용하고 memory_limit=512MB·threads=2·dbt concurrency=1을 유지한다. extension 자동 다운로드와 telemetry는 끄고 임시파일·캐시·로그는 이 저장소 안 경로를 사용한다.
 
+## A′: 원래 의미를 보존하는 문자열 입력
+
+`fhir_line/a_prime.py`가 읽기 전용 A 원본에서 CSV 넷과 manifest를 만듭니다. `data/a_prime/`는 Git에서 제외합니다. 같은 입력은 바이트를 확인해 재사용하고 다른 내용은 덮어쓰지 않습니다. 사람36명·진단1,455행·방문2,144행·혈압555묶음의 모든 기간과 소수값을 남깁니다.
+
+제품 파서는 `bp_text`를 정확한 Decimal로 읽고 원래 성분 값/자릿수와 비교합니다. 실제 원천의 한 예시는 환자 ID 앞8자 `5393ea7f`, 2025-12-01의 `124/92`입니다. staging은 LOINC8480-6/8462-4의124와92로 펼치고 UCUM mm[Hg]를 확인합니다. OMOP은 기존3004249/3012888·단위8876을 붙입니다. D5/D6의 연말 비교는 이 값을 사용하며 공식 CMS 최종 판정은 아닙니다.
+
+진단의 임상 의미는 original_system의 정확한 SNOMED URI와 original_code59621000에서만 얻습니다. KCD 후보 I109와 미확인 상태는 별도 열이고 source_code/condition_source_value에 대입하지 않습니다. 다른 체계의 같은 코드와 후보만 있는 입력은 고혈압으로 매핑하지 않습니다. 미대응 진단도 새 staging과 누락 집계에 남깁니다. A′는 A의 파생 출처여서 A와 합산하지 않습니다.
+
+검사⑦은 생성 CSV와 staging에서 각각4,745개 원천 사실을 추출해 고정 해시와 비교하고, 실제 OMOP3,372행·사람별11행·요약2행을 비교합니다. 실제 projection은 원본이나 기대값에서 복사하지 않습니다. 새 기대값/계산/검사/시험/설명8파일은0444, 두 디렉터리는0555로 고정했고 check.sh와 quickstart에서 먼저 검증합니다. 고정 파일의 준비 단계 문구는 snapshot이며 현재 상태는 verify_lock으로 확인합니다.
+
+A/B fixture는 A′ 입력을 암묵적으로 읽지 않습니다. 실제 제품의 scripts/dbt.py는 A_PRIME_SOURCE_DIR(기본data/a_prime)의 manifest/문자열을 확인한 뒤 빌드하고, 독립 fixture는 자신의 CSV 경로를 명시하거나 빈 A′ staging을 사용합니다. 제품 전체 검사는 A′를 빠뜨리면 실패하고 미등록 출처도 계속 거부합니다.
+
+실패한 비교는 이전 성공 result.json을 유지하지 않습니다. 파일 출력은 leaf symlink를 검사하고 임시 파일을 교체해 hardlink의 원본 inode를 바꾸지 않습니다. DB 빌드 후 검사 실패가 이미 만든 테이블을 자동으로 rollback한다는 보장은 없습니다. 실패 결과를 성공으로 표시하지 않고 고정 기대값을 수정하지 않습니다.
+
 ## 검사와 근거
 
 ```bash
@@ -69,7 +84,7 @@ PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m fhir_line check --strict
 
 의존 방향은 staging→omop→intermediate→marts→reports다. omop과 intermediate 내부 참조는 허용한다. 정확한 허용 범위는 AGENTS.md와 layers.py에 있고, 선언하지 않은 테이블 직접 읽기도 검사한다. 모델은 source/ref와 CTE로 표현한다. 공통 테이블 common과 code_map은 사용하지 않는다.
 
-check.sh는 읽기 전용 기대 CSV 해시·권한, Python 고정 입력·경계 테스트, 실제 dbt build, 의존 방향과 단계별 검증을 실행한다. ① raw=배치 합, latest=합−공통 자원이고 ② 원천 집계 ③ 중복 본문 ④ 사람·요약의 셀과 자료형 ⑤ 원문 해시 ⑥ OMOP 모양·건수·추적용 혈압·원천 연결을 확인한다. strict는 기다림도 실패다. 결과는 .local/FHIR-LINE-02/summaries/verification-ladder.json과 .md에 남는다.
+check.sh는 읽기 전용 기대 CSV 해시·권한, Python 고정 입력·경계 테스트, 실제 dbt build, 의존 방향과 단계별 검증을 실행한다. ① raw=배치 합, latest=합−공통 자원이고 ② 원천 집계 ③ 중복 본문 ④ 사람·요약의 셀과 자료형 ⑤ 원문 해시 ⑥ OMOP 모양·건수·추적용 혈압·원천 연결, ⑦ A′ 임상 보존을 확인한다. strict는 기다림도 실패다. 결과는 .local/FHIR-LINE-02/summaries/verification-ladder.json과 .md에 남는다.
 
 정상 M1/M2B/OMOP 시험은 실제 원본·expected와 격리한 작은 DB와 수제 입력을 사용하고 날짜 검사를 항상 적용한다. 늦게 기록된 원래 M1 사례는 별도 입력에서 0006 검사가 실패해야 통과하는 음성 테스트다. 정상 계산에서는 늦은 외래 방문 사례가 9월 말 제외·연말 포함을 확인하며 기존 임상 기대값을 유지한다.
 

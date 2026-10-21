@@ -1,0 +1,22 @@
+# D1-D3 / ADR0013: generated A-prime CSV; never an FHIR/expected shortcut.
+version: 2
+sources:
+  - name: a_prime
+    schema: main
+    tables:
+      - name: persons
+        meta:
+          external_location: >-
+            read_csv('{{ env_var('A_PRIME_SOURCE_DIR', '') | replace("'", "''") }}/persons.csv', header=true, all_varchar=true)
+      - name: diagnoses
+        meta:
+          external_location: >-
+            read_csv('{{ env_var('A_PRIME_SOURCE_DIR', '') | replace("'", "''") }}/diagnoses.csv', header=true, all_varchar=true)
+      - name: visits
+        meta:
+          external_location: >-
+            read_csv('{{ env_var('A_PRIME_SOURCE_DIR', '') | replace("'", "''") }}/visits.csv', header=true, all_varchar=true)
+      - name: bp_details
+        meta:
+          external_location: >-
+            read_csv('{{ env_var('A_PRIME_SOURCE_DIR', '') | replace("'", "''") }}/bp_details.csv', header=true, all_varchar=true)

@@ -2,7 +2,7 @@
 
 # 데이터 딕셔너리
 
-원천의 필드가 어느 staging 열과 OMOP 열로 이어지는지 정리합니다. 아래 수치는 현재 적재 DB를 읽기 전용으로 조회한 스냅샷입니다. 범위는 이 프로젝트가 사용하는 열이며, 이름·주소·전화 값은 싣지 않습니다.
+원천의 필드가 어느 staging 열과 OMOP 열로 이어지는지 정리합니다. 기존 A/B 프로파일은10/21 적재 DB의 읽기 전용 스냅샷이며, 아래 A′ 추가 계약은10/22 제품 출력으로 확인했습니다. 범위는 이 프로젝트가 사용하는 열이며, 이름·주소·전화 값은 싣지 않습니다.
 
 ## 원천 → staging → OMOP
 
@@ -26,7 +26,7 @@
 | A 자원 ID / B 원천 복합 키 | source_row_key → omop_event_rows | omop_source_link.omop_table/omop_id/hospital/source_row_key | 원래 사건 행과 OMOP 사건 번호를 함께 보존 |
 | 옮긴 사건들의 start_day/end_day | omop_event_rows | observation_period 시작/종료일 | 최소 시작일~최대 종료일; 지표의 측정 기간과 구분 |
 
-FHIR coding.system 자체로 분기하지 않고 병원별 source_vocabulary_id와 원래 코드로 매핑합니다. 혈압은 한 번의 관측에서 성분별 행으로 펼칩니다. 표준 번호와 이름은 맨 아래 코드 매핑 정의에서 찾을 수 있습니다.
+기존 A/B는 병원별 source_vocabulary_id와 원래 코드로 매핑합니다. A′는 원래 coding.system을 정확히 확인한 뒤 새 source_vocabulary_id로 구분합니다. 혈압은 한 번의 관측에서 성분별 행으로 펼칩니다. 표준 번호와 이름은 맨 아래 코드 매핑 정의에서 찾을 수 있습니다.
 
 ## 읽는 법
 
@@ -37,6 +37,24 @@ FHIR coding.system 자체로 분기하지 않고 병원별 source_vocabulary_id�
 - raw/latest의 payload_json NDV는 저장 계약의 SHA256(payload_hash) 기준입니다. 원문 본문과 파일 경로는 예시로 출력하지 않습니다.
 - CSV 프로파일은 dbt source와 같은 read_csv(header=true, all_varchar=true) 결과의 NULL 처리에 따릅니다.
 - 아래 접힌 표에 사용하는 열의 뜻·타입·프로파일이 있습니다. 공식 OMOP에서 사용하지 않아 모두 NULL인 열은 한 묶음으로 따로 표시합니다.
+
+## A′ 추가 입력과 열 계약(2026-10-22)
+
+A′는 A의 파생 출처이며 독립 환자 합산 대상이 아닙니다. 기존 A/B 프로파일은 그 출처의 수치로 유지합니다. 새 원본 입력은 data/a_prime/의 CSV 넷과 manifest이고 모두 Git 밖에 둡니다.
+
+| 입력·행 수·키 | 보존 필드/제품 형식 | staging/OMOP |
+|---|---|---|
+| persons.csv ·36행 ·person_id | birth_date·gender·사망 정보·measurement_year·derived_from=A | stg_aprime_person, year_of_birth/measurement_year INTEGER →person/person_ext |
+| diagnoses.csv ·1,455행 ·condition_id×coding_index | original_code/system·시작/끝/기록 원문·clinical_status, 별도 kcd_candidate_* | stg_aprime_diagnosis의 원래 code·정확한 system만 매핑. 고혈압10행 이관·미대응1,445행 집계 |
+| visits.csv ·2,144행 ·encounter_id | class_code/system·기간 원문·visit_kind·derived_from | stg_aprime_visit의 DATE 임상일, HH/VR도 개념0으로 유지 |
+| bp_details.csv ·555행 ·observation_id | panel_code/system·전체panel_codings·effective/status·bp_text·원래 성분별 code/system/value/unit·format_status | stg_aprime_bp_value의 성분1,110행. parsed_value_text VARCHAR·value DECIMAL(38,12) →기존 공식 measurement NUMERIC |
+| manifest.json ·묶음1개 | 원본파일SHA/bytes(파일명 없음)·CSV해시/크기/행수·파생관계·임상경로 | 입력 변경·중복·누락·파싱 불일치 거부 |
+
+원문 CSV 열은 all_varchar로 읽고 빈 문자열을 보존합니다. 임상 날짜 별칭은 DATE이며 원문 전체 timestamp도 남깁니다. 원래 성분 소수10개/묶음5개와 값/자릿수를 남기고 Decimal 문자열과 실제 SQL 숫자가 일치하는지 확인합니다. 보험청구 MT056 소수 규칙 전체 준수로 소개하지 않습니다.
+
+새 진단 매핑 구분은 hospital_a_prime_dx_snomed이며59621000→320128 한 쌍만 추가했습니다. 다른 URI는 hospital_a_prime_dx_unmapped로 남깁니다. KCD 후보의 목표 개념은 확정하지 않으며, 후보를 원래 코드로 fallback하지 않습니다. 단위는 정확한 UCUM mm[Hg]만 새 namespace로 수용하고 표시값mmHg는 별도 보존합니다. 기존 A/B 매핑 행은 그대로입니다.
+
+새 비교는 선택한 원천 사실4,745개와 OMOP 임상 사실3,372행·환자별11행·요약2행입니다. source_fact_hashes는 선언한 필드의 해시이며 FHIR 자원 전체 JSON 보존 검사는 아닙니다. 출처별 결과는 A′ 3/5→4/6이고, 원래 A와 같아도 새 독립 환자 집단으로 합산하지 않습니다.
 
 ## 원천 A
 

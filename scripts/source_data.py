@@ -2,6 +2,7 @@
 """L0-L2 / decision 0012: verified, project-local quickstart inputs; no indicator logic."""
 import argparse
 import hashlib
+import importlib.util
 import json
 import os
 from pathlib import Path, PurePosixPath
@@ -101,6 +102,27 @@ def prepare_expected(root=ROOT):
             raise ValueError('기존 작업실 expected 권한은 변경하지 않습니다; 새 복제본에서 시작하세요')
         lock_tree(folder)
     print('expected: 고정 해시 확인 · 읽기 전용')
+    # ADR0013: a clone loses write-bit protection; verify every byte before chmod.
+    prime = root / 'expected_a_prime'
+    if not prime.exists() and not (root/'fhir_line/a_prime.py').exists():
+        return  # Legacy isolated source-helper fixture, not a complete project checkout.
+    listing = prime / 'SHA256SUMS'
+    wanted = {'answer_key_a_prime/'+name for name in ('README.md','calculate.py','check.py','test_contract.py')}
+    wanted.update('expected_a_prime/'+name for name in ('manifest.json','person.csv','summary.csv','omop_facts.csv'))
+    if set(read_manifest(listing)) != wanted:
+        raise ValueError('A-prime frozen file list differs')
+    verify_manifest(root, listing)
+    if any(path.is_symlink() for path in [prime,root/'answer_key_a_prime',listing]):
+        raise ValueError('Symlink in frozen A-prime reference')
+    targets=[root/name for name in wanted]+[listing,prime,root/'answer_key_a_prime']
+    if any(path.stat().st_mode & 0o222 for path in targets):
+        if any((root/path).exists() for path in (A_PATH,B_PATH,Path('data/fhir.duckdb'),Path('data/batches'))):
+            raise ValueError('기존 작업실 A-prime 권한은 변경하지 않습니다; 새 복제본에서 시작하세요')
+        for path in targets:path.chmod(0o555 if path.is_dir() else 0o444)
+    spec=importlib.util.spec_from_file_location('prepared_aprime_check',root/'answer_key_a_prime/check.py')
+    checker=importlib.util.module_from_spec(spec);spec.loader.exec_module(checker)
+    checker.verify_lock(prime)
+    print('A-prime: 고정 8파일 해시 확인 · 읽기 전용')
 
 
 def allocated(path):
@@ -293,6 +315,21 @@ def compare_answers(root=ROOT):
             if result.returncode:
                 raise ValueError(f'기대 결과가 틀린 것 같다: 독립 재계산과 다름/비교 불가 ({name})')
     print('독립 재계산: 6파일 모두 같음(cmp)')
+    if not (root/'answer_key_a_prime').exists() and not (root/'fhir_line/a_prime.py').exists():
+        return  # Keep the standalone legacy A/B helper usable; full quickstart requires A-prime.
+    # ADR0013: execute the immutable source-only calculator into a disposable directory.
+    scratch=root/'.local/FHIR-LINE-A-PRIME'
+    scratch.mkdir(parents=True,exist_ok=True)
+    with tempfile.TemporaryDirectory(prefix='quickstart-recount-',dir=scratch) as tmp:
+        output=Path(tmp)
+        with (logs/f'aprime-answer-key-{time.time_ns()}.log').open('x') as log:
+            subprocess.run([sys.executable,str(root/'answer_key_a_prime/calculate.py'),
+                '--source',str(root/A_PATH),'--output',str(output)],cwd=root,env=env,
+                stdout=log,stderr=log,check=True)
+        for name in ('person.csv','summary.csv','omop_facts.csv','manifest.json'):
+            if subprocess.run(['cmp','-s',str(output/name),str(root/'expected_a_prime'/name)]).returncode:
+                raise ValueError('A-prime independent recalculation differs: '+name)
+    print('A-prime 독립 재계산: 4파일 모두 같음(cmp)')
 
 
 def summary(root=ROOT):

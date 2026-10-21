@@ -91,6 +91,14 @@ def compare_counts(connection, folder):
     with path.open(newline='') as f:
         expected = list(csv.DictReader(f))
     actual = actual_counts(connection)
+    # ADR0013: explicitly register only the frozen derived source, never ignore extras.
+    if any(h == 'A_PRIME' for h,_ in actual):
+        from .a_prime_checks import frozen_checker
+        checker = frozen_checker()
+        manifest = checker.read_manifest(ROOT/'expected_a_prime/manifest.json')
+        for table,count in manifest['omop_counts'].items():
+            expected.append({'hospital':'A_PRIME','omop_table':table,'carried':str(count),
+                             'not_carried':str(manifest['counts']['unmapped_diagnosis_codings'] if table=='condition_occurrence' else 0)})
     skipped = {(h,t):n for h,t,n in connection.execute(f'SELECT hospital, omop_table, not_carried FROM {LOAD_COUNTS}').fetchall()}
     rows, bad = [], []
     for r in expected:
