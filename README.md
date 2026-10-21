@@ -83,7 +83,7 @@ B: CSV.gz ─────────────────→ B staging ─�
 - **Synthea:** [공식 프로젝트](https://github.com/synthetichealth/synthea)에서 생성한 합성 기록이며 실제 환자 자료가 아닙니다.
 - **MIMIC-IV Clinical Database Demo 2.2:** [PhysioNet 공식 배포](https://physionet.org/content/mimic-iv-demo/2.2/), [DOI 10.13026/dp1f-ex47](https://doi.org/10.13026/dp1f-ex47). ODbL 1.0이며 원본 배포의 LICENSE.txt와 인용 안내를 따릅니다. 공개된 비식별 데모 100명 자료입니다.
 - **OMOP DDL:** OHDSI CommonDataModel의 공식 DuckDB DDL, Apache-2.0. [vendor/omop](vendor/omop/README.md)에 버전과 출처가 있습니다.
-- **이 저장소 코드 라이선스:** 정하는 중.
+- **이 저장소 코드:** [Apache-2.0](LICENSE). 원천 데이터는 저장소에 넣지 않으며 위 각 원천의 라이선스를 따릅니다.
 
 원천과 생성 데이터·DB·캐시를 Git에 넣지 않습니다.
 
