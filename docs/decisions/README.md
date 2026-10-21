@@ -18,4 +18,4 @@
 | [0010](0010-definition-rules-in-calculation-layer.md) | 정의의 날짜 · 개념 규칙은 계산 층 한 곳에 | 받아들임(Claude) |
 | [0011](0011-observation-period-id-and-source-link.md) | 0007 보충 — `observation_period_id` = `person_id` · 사건 행 원래 id는 `omop_source_link` | 받아들임(Claude · 사전 검토 R2 · R3) |
 | [0012](0012-sources-by-script-and-hashes.md) | 데이터는 받는 스크립트 + 해시 목록으로 · 기대 결과 계산 스크립트는 저장소에 | 받아들임(Claude · 설계 02) |
-| [0013](0013-a-prime-derived-source-and-precision.md) | A′는 파생 출처이며 소수 원값 전체를 보존 | 사용자 선택 수용 · 설계/기대값 사전 검수 준비 |
+| [0013](0013-a-prime-derived-source-and-precision.md) | A′는 파생 출처이며 소수 원값 전체를 보존 | 최종 검수 수용·완료 · 원래 임상 의미 보존(52726ab) |
