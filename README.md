@@ -64,7 +64,7 @@ PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m fhir_line layers
 PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m fhir_line check --strict
 ```
 
-wrapper가 프로필·DB·임시파일·로그 경로와 telemetry 설정을 전달하므로 전역 dbt 설정은 필요 없다. 확인 사다리 전에 dbt parse로 실제 의존 관계를 읽는다. staging은 source/seed, common은 staging/seed, intermediate는 common, marts는 intermediate/common, reports는 marts에만 의존한다. marts끼리 읽지 않는다. 선언하지 않은 직접 테이블 읽기도 거부한다. 동적 relation macro와 복잡한 직접 SQL 접근은 이 작은 검사기의 지원 범위가 아니므로 명시적 source/ref와 CTE로 표현한다.
+wrapper가 프로필·DB·임시파일·로그 경로와 telemetry 설정을 전달하므로 전역 dbt 설정은 필요 없다. 확인 사다리 전에 dbt parse로 실제 의존 관계를 읽는다. staging은 source/seed, common은 staging/seed, omop은 staging/seed/omop, intermediate는 common/omop/seed, marts는 intermediate/common/omop/seed, reports는 marts에만 의존한다. 현재 L4~L6 계산은 common을 읽는다. marts끼리 읽지 않는다. 선언하지 않은 직접 테이블 읽기도 거부한다. 동적 relation macro와 복잡한 직접 SQL 접근은 이 작은 검사기의 지원 범위가 아니므로 명시적 source/ref와 CTE로 표현한다.
 
 확인 사다리는 원본/배치/raw/latest 행 수, 자원 종류·혈압 수, 같은 자원 본문을 비교한다. ④는 `person_<병원>.csv`의 9열·모든 행을 해당 병원의 fct_bp_person과 비교한다. summary CSV는 hospital/as_of_label/denominator/numerator/rate 5열을 bp_summary와 비교한다. 사람별 결과에는 실제 as_of 날짜가 있고, 요약은 병원/기준일 이름으로 묶는다. 두 결과 모델의 자료형 계약도 검사한다. 행 순서는 무시하고 중복 행 수는 보존하며 숫자의 표현 차이는 해당 DB 자료형으로 정규화한다. ⑤는 지정 환자의 12/01 혈압 원문·해시를 세 층에서 비교한다. expected를 쓰거나 수정하지 않는다.
 
@@ -89,3 +89,21 @@ git diff --stat e5b86a5 -- models/intermediate models/marts models/reports
 ```
 
 L0~L2·설치 근거는 `.local/FHIR-LINE-02/summaries/FHIR-LINE-02.reply.md`, M1 계산·시험은 `.local/FHIR-LINE-03/summaries/FHIR-LINE-03.reply.md`, common 층으로 옮긴 근거는 `.local/FHIR-LINE-04/summaries/FHIR-LINE-04.reply.md`, B 연결 결과는 `.local/FHIR-LINE-05/summaries/FHIR-LINE-05.reply.md`에서 확인한다.
+
+## M3 요청 06: OMOP CDM 5.4 병렬 적재
+
+결정 0004~0011에 따라 `models/omop/`에 person, observation_period, visit_occurrence, condition_occurrence, measurement, cdm_source를 공식 DuckDB DDL의 열 순서·자료형으로 만든다. 현재 지표 계산은 기존 common을 계속 읽고, L4~L6 SQL은 바꾸지 않는다. 이 단계에서는 OMOP으로 옮긴 행 수·원래 값·원천 연결을 확인한다. OHDSI 품질 도구를 실행하거나 지표를 OMOP으로 전환하는 작업은 포함하지 않는다.
+
+`omop_people`는 병원과 원래 환자 ID의 MD5에서 양의 INTEGER person_id를 만든다. 충돌과 0은 검사 실패다. person_ext에는 person_id와 병원·측정 연도만 둔다. A의 출생 연도는 birthDate의 해, B는 anchor_year-anchor_age다. 원래 성별이 없으면 개념 0과 NULL 원문을 사용한다. person_id는 입력 환자가 늘어도 유지된다. 사건 ID는 omop_event_rows에서 테이블별로 병원·원천 키 순서의 row_number를 한 번 부여하므로 같은 입력에서 같고, 입력이 늘 때 기존 사건 ID가 유지된다는 계약은 없다.
+
+공식 테이블의 source_value에는 원래 코드·단위·값 문자열이 들어간다. omop_source_link는 `(omop_table, omop_id)`마다 병원과 원천 키를 하나씩 보존한다. A는 자원 ID(혈압은 성분 코드 포함), B는 입원 ID나 진단·OMR·ICU의 복합 키다. 원천 연결을 통해 반복되는 같은 코드도 구분한다. official 테이블에는 확장 열을 넣지 않는다.
+
+B 진단은 새 stg_b_diagnosis가 입원별 전체 원본 행을 노출한다. omop_diagnoses가 코드 버전을 구분해 표준 번호를 붙이고, 표준 번호가 있는 진단만 condition_occurrence로 옮긴다. 기존 stg_b_condition의 환자별 첫 진단은 common이 사용하므로 유지한다. omop_load_counts는 병원·테이블별 carried와 표준 번호가 없어 제외한 not_carried를 기록하며, 옮긴 진단이 0행이어도 그 병원의 집계 행을 남긴다.
+
+혈압 한 번은 measurement 두 행이다. A 성분의 원래 단위와 B ICU 단위는 보존하며, B OMR의 `140/60`은 두 행 모두 value_source_value에 남는다. OMR에는 단위 글자가 없으므로 unit_source_value는 NULL이다. 매핑에서만 `OMR_BP_NO_UNIT`이라는 누락 표시를 사용해 승인된 8876 의미를 붙인다. 알 수 없는 단위와 HH/VR 방문도 행을 유지하고 개념 0을 쓴다. 지표의 단위·입원일 필터는 이 층에 적용하지 않는다. value_as_number는 공식 DDL에 맞춰 DECIMAL(18,3)이다.
+
+observation_period는 옮긴 방문·진단·혈압의 가장 이른 시작일과 가장 늦은 종료일(없으면 시작일)·측정일로 만든다. 측정 연도로 자르지 않는다. ID는 person_id이며, 매핑되지 않은 진단의 날짜는 포함하지 않는다. 종료일 없는 방문은 공식 visit_end_date에서만 시작일로 채우고 staging/common의 원문 NULL은 유지한다.
+
+용어는 [dbt-synthea 33fdbfa9의 concept seed](https://github.com/OHDSI/dbt-synthea/blob/33fdbfa9/seeds/vocabulary/concept_seed.csv) 11행과 요청자가 확정한 262행을 사용한다. concept/source_to_concept_map 두 seed의 열 형식은 공식 DDL을 따른다. 원본 seed의 크기·SHA256과 선택 행의 근거는 `.local/FHIR-LINE-06/summaries/concept-provenance.json`에 있다. cdm_source의 두 날짜는 2026-10-21로 고정한다.
+
+사건 staging의 record_day와 임상 날짜는 0006 dbt 테스트가 비교한다. 실제 build에는 항상 적용한다. 기존 M1 fixture는 의도적인 늦은 진단을 포함하므로 그 fixture의 build에서만 `tag:record_day`를 제외하고, 별도 테스트가 같은 입력의 날짜 검사 실패를 확인한다. 새 OMOP fixture와 실제 자료에는 제외 옵션을 쓰지 않는다. `sh scripts/check.sh`의 ⑥은 공식 스키마·필수값·원천 건수·추적용 혈압·원천 연결을 확인한다. 요청 06의 실행 근거는 `.local/FHIR-LINE-06/summaries/FHIR-LINE-06.reply.md`에 남긴다.

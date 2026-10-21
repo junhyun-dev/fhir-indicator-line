@@ -1,0 +1,17 @@
+# D1,D2 / decisions 0006,0009,0011: new raw diagnosis contract.
+version: 2
+models:
+- name: stg_b_diagnosis
+  description: 'D1,D2; decisions 0006,0009,0011: every original per-admission diagnosis.'
+  data_tests:
+  - same_clinical_day:
+      name: t_0006_D1_record_day_b_diagnosis
+      arguments:
+        clinical_column: start_day
+  columns:
+  - name: source_row_key
+    data_tests:
+    - unique:
+        name: t_0011_D2_b_diagnosis_source_key_unique
+    - not_null:
+        name: t_0011_D2_b_diagnosis_source_key_not_null

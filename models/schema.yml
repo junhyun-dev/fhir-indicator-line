@@ -1,4 +1,4 @@
-# D1-D6/M2/M2B: preserve the grains and clinical checks through the common boundary.
+# D1-D6 / decisions 0006,0009: preserve common grains and reject late clinical records.
 version: 2
 seeds:
   - name: as_of_labels
@@ -57,6 +57,9 @@ models:
   - name: stg_a_visit
     description: D1/D2/D3 A visits with interpreted visit types.
     data_tests:
+      - same_clinical_day:
+          name: t_0006_D1_record_day_a_visit
+          arguments: {clinical_column: start_day}
       - unique:
           name: t_D1_D2_D3_M2_a_visit_key_unique
           arguments:
@@ -68,6 +71,9 @@ models:
   - name: stg_a_condition
     description: D1/D2 A diagnosis and source code, before semantic mapping.
     data_tests:
+      - same_clinical_day:
+          name: t_0006_D1_record_day_a_condition
+          arguments: {clinical_column: start_day}
       - unique:
           name: t_D1_D2_M2_a_condition_key_unique
           arguments:
@@ -75,6 +81,9 @@ models:
   - name: stg_a_bp_value
     description: D1/D3 A observation value paired with its own source code.
     data_tests:
+      - same_clinical_day:
+          name: t_0006_D1_record_day_a_bp
+          arguments: {clinical_column: bp_day}
       - unique:
           name: t_D1_D3_M2_a_bp_value_key_unique
           arguments:
@@ -96,6 +105,9 @@ models:
   - name: stg_b_condition
     description: D1/D2/M2B earliest admission for each versioned hypertension code.
     data_tests:
+      - same_clinical_day:
+          name: t_0006_D1_record_day_b_condition
+          arguments: {clinical_column: start_day}
       - unique:
           name: t_M2B_D1_D2_condition_key_unique
           arguments:
@@ -110,6 +122,9 @@ models:
   - name: stg_b_visit
     description: D1/D2/D3/M2B outpatient days and admission/ED intervals.
     data_tests:
+      - same_clinical_day:
+          name: t_0006_D1_record_day_b_visit
+          arguments: {clinical_column: start_day}
       - unique:
           name: t_M2B_D1_D2_D3_visit_key_unique
           arguments:
@@ -121,6 +136,9 @@ models:
   - name: stg_b_bp_value
     description: D1/D3/M2B one OMR half or ICU item value with its source code.
     data_tests:
+      - same_clinical_day:
+          name: t_0006_D1_record_day_b_bp
+          arguments: {clinical_column: bp_day}
       - unique:
           name: t_M2B_D1_D3_bp_value_key_unique
           arguments:

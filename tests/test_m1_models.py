@@ -1,4 +1,4 @@
-"""D1-D7/M2 / t01-t15: handmade FHIR through the actual SQL, in one isolated build.
+"""D1-D7 / decisions 0004,0006: retain the M1 counterexample and test its rejection.
 
 No original/expected inputs are used here. Expected outcomes are specified per case.
 """
@@ -168,17 +168,36 @@ class IndicatorModels(unittest.TestCase):
                    FHIR_DUCKDB_EXTENSIONS=str(folder/'extensions'),DBT_LOG_PATH=str(folder/'logs'),
                    DBT_TARGET_PATH=str(folder/'target'),TMPDIR=str(folder/'tmp'),XDG_CACHE_HOME=str(folder/'xdg'),
                    MIMIC_SOURCE_DIR=str(write_sources(folder/'empty-mimic')))
+        cls.fixture_environment = env
+        cls.fixture_folder = folder
         log = ROOT/'.local/FHIR-LINE-05/logs/fixture-a-dbt-build.log'
         log.parent.mkdir(parents=True,exist_ok=True)
         with log.open('w') as out:
-            result = subprocess.run([str(ROOT/'.venv/bin/dbt'),'--no-use-colors','build','--no-partial-parse'],
-                                    cwd=ROOT,env=env,stdout=out,stderr=subprocess.STDOUT,timeout=90)
+            # Decision 0006/R1: the M1 fixture deliberately includes a late diagnosis.
+            result = subprocess.run([str(ROOT/'.venv/bin/dbt'),'--no-use-colors','build','--no-partial-parse',
+                                     '--exclude','tag:record_day'],
+                                    cwd=ROOT,env=env,stdout=out,stderr=subprocess.STDOUT,timeout=180)
         if result.returncode:
             raise RuntimeError('Fixture dbt build failed; see '+str(log))
 
     def query(self, sql, parameters=()):
         with connect(self.database,read_only=True) as con:
             return con.execute(sql,parameters).fetchall()
+
+    def test_0006_D1_late_record_is_rejected_by_clinical_day_guard(self):
+        log = ROOT/'.local/FHIR-LINE-06/logs/fixture-a-record-day-negative.log'
+        log.parent.mkdir(parents=True,exist_ok=True)
+        with log.open('w') as output:
+            result = subprocess.run([str(ROOT/'.venv/bin/dbt'),'--no-use-colors','test','--no-partial-parse',
+                                     '--select','tag:record_day'],cwd=ROOT,env=self.fixture_environment,
+                                    stdout=output,stderr=subprocess.STDOUT,timeout=90)
+        self.assertEqual(result.returncode,1,'The deliberate late record must fail its guard')
+        results = json.loads((self.fixture_folder/'target/run_results.json').read_text())['results']
+        failed = [r for r in results if r['status']!='pass']
+        self.assertEqual(len(failed),1,[(r['unique_id'],r['status']) for r in failed])
+        self.assertIn('t_0006_D1_record_day_a_condition',failed[0]['unique_id'])
+        self.assertEqual(failed[0]['status'],'fail')
+        self.assertEqual(failed[0]['failures'],1)
 
     def person(self, label, as_of=DECEMBER):
         rows = self.query('''SELECT last_bp_date,systolic,diastolic,controlled,reason

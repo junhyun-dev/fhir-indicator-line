@@ -1,4 +1,4 @@
-# L2/D1-D7: Codex implements the models; paired Claude owns expected/ and checks.
+# L2/D1-D7 / decisions 0004-0011: paired Claude owns expected/ and checks.
 name: fhir_indicator_line
 version: '1.0.0'
 config-version: 2
@@ -28,3 +28,27 @@ seeds:
         source_unit: varchar
         concept: varchar
         std_unit: varchar
+    concept:
+      # Decision 0009: eleven upstream rows plus the approved Visit 262 row.
+      +column_types:
+        concept_id: integer
+        concept_name: varchar
+        domain_id: varchar
+        vocabulary_id: varchar
+        concept_class_id: varchar
+        standard_concept: varchar
+        concept_code: varchar
+        valid_start_date: date
+        valid_end_date: date
+        invalid_reason: varchar
+    source_to_concept_map:
+      +column_types:
+        source_code: varchar
+        source_concept_id: integer
+        source_vocabulary_id: varchar
+        source_code_description: varchar
+        target_concept_id: integer
+        target_vocabulary_id: varchar
+        valid_start_date: date
+        valid_end_date: date
+        invalid_reason: varchar

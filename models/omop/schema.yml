@@ -1,0 +1,313 @@
+# D1-D3 / decisions 0004-0011: OMOP contracts, source mappings and person relationships.
+version: 2
+seeds:
+- name: concept
+  description: 'D2/D3; decision 0009: approved subset and source-specific mappings.'
+  columns:
+  - name: concept_id
+    data_tests:
+    - unique:
+        name: t_0009_D2_concept_id_unique
+    - not_null:
+        name: t_0009_D2_concept_id_not_null
+- name: source_to_concept_map
+  description: 'D2/D3; decision 0009: approved subset and source-specific mappings.'
+  data_tests:
+  - unique:
+      name: t_0009_D2_source_mapping_key_unique
+      arguments:
+        column_name: source_vocabulary_id || ':' || source_code
+  columns:
+  - name: source_code
+    data_tests:
+    - not_null:
+        name: t_0009_D2_mapping_source_code_not_null
+  - name: source_vocabulary_id
+    data_tests:
+    - not_null:
+        name: t_0009_D2_mapping_source_vocabulary_id_not_null
+  - name: target_concept_id
+    data_tests:
+    - not_null:
+        name: t_0009_D2_mapping_target_concept_id_not_null
+    - relationships:
+        name: t_0009_D2_mapping_target_exists
+        arguments:
+          to: ref('concept')
+          field: concept_id
+        config:
+          where: target_concept_id > 0
+  - name: target_vocabulary_id
+    data_tests:
+    - not_null:
+        name: t_0009_D2_mapping_target_vocabulary_id_not_null
+models:
+- name: person
+  description: 'D1-D3; decisions 0004-0011: official CDM 5.4 shape.'
+  columns:
+  - name: person_id
+    data_tests:
+    - not_null:
+        name: t_0004_D1_person_person_id_not_null
+    - unique:
+        name: t_0007_D2_person_id_unique
+    - positive_id:
+        name: t_0007_D2_person_id_positive
+    - relationships:
+        name: t_0005_D2_person_person_relationship
+        arguments:
+          to: ref('person_ext')
+          field: person_id
+  - name: gender_concept_id
+    data_tests:
+    - not_null:
+        name: t_0004_D1_person_gender_concept_id_not_null
+  - name: year_of_birth
+    data_tests:
+    - not_null:
+        name: t_0004_D1_person_year_of_birth_not_null
+  - name: race_concept_id
+    data_tests:
+    - not_null:
+        name: t_0004_D1_person_race_concept_id_not_null
+  - name: ethnicity_concept_id
+    data_tests:
+    - not_null:
+        name: t_0004_D1_person_ethnicity_concept_id_not_null
+- name: observation_period
+  description: 'D1-D3; decisions 0004-0011: official CDM 5.4 shape.'
+  columns:
+  - name: observation_period_id
+    data_tests:
+    - not_null:
+        name: t_0004_D1_observation_period_observation_period_id_not_null
+    - unique:
+        name: t_0007_D2_observation_period_id_unique
+    - positive_id:
+        name: t_0007_D2_observation_period_id_positive
+  - name: person_id
+    data_tests:
+    - not_null:
+        name: t_0004_D1_observation_period_person_id_not_null
+    - relationships:
+        name: t_0005_D2_observation_period_person_relationship
+        arguments:
+          to: ref('person')
+          field: person_id
+  - name: observation_period_start_date
+    data_tests:
+    - not_null:
+        name: t_0004_D1_observation_period_observation_period_start_date_not_null
+  - name: observation_period_end_date
+    data_tests:
+    - not_null:
+        name: t_0004_D1_observation_period_observation_period_end_date_not_null
+  - name: period_type_concept_id
+    data_tests:
+    - not_null:
+        name: t_0004_D1_observation_period_period_type_concept_id_not_null
+- name: visit_occurrence
+  description: 'D1-D3; decisions 0004-0011: official CDM 5.4 shape.'
+  columns:
+  - name: visit_occurrence_id
+    data_tests:
+    - not_null:
+        name: t_0004_D1_visit_occurrence_visit_occurrence_id_not_null
+    - unique:
+        name: t_0007_D2_visit_occurrence_id_unique
+    - positive_id:
+        name: t_0007_D2_visit_occurrence_id_positive
+  - name: person_id
+    data_tests:
+    - not_null:
+        name: t_0004_D1_visit_occurrence_person_id_not_null
+    - relationships:
+        name: t_0005_D2_visit_occurrence_person_relationship
+        arguments:
+          to: ref('person')
+          field: person_id
+  - name: visit_concept_id
+    data_tests:
+    - not_null:
+        name: t_0004_D1_visit_occurrence_visit_concept_id_not_null
+  - name: visit_start_date
+    data_tests:
+    - not_null:
+        name: t_0004_D1_visit_occurrence_visit_start_date_not_null
+  - name: visit_end_date
+    data_tests:
+    - not_null:
+        name: t_0004_D1_visit_occurrence_visit_end_date_not_null
+  - name: visit_type_concept_id
+    data_tests:
+    - not_null:
+        name: t_0004_D1_visit_occurrence_visit_type_concept_id_not_null
+- name: condition_occurrence
+  description: 'D1-D3; decisions 0004-0011: official CDM 5.4 shape.'
+  columns:
+  - name: condition_occurrence_id
+    data_tests:
+    - not_null:
+        name: t_0004_D1_condition_occurrence_condition_occurrence_id_not_null
+    - unique:
+        name: t_0007_D2_condition_occurrence_id_unique
+    - positive_id:
+        name: t_0007_D2_condition_occurrence_id_positive
+  - name: person_id
+    data_tests:
+    - not_null:
+        name: t_0004_D1_condition_occurrence_person_id_not_null
+    - relationships:
+        name: t_0005_D2_condition_occurrence_person_relationship
+        arguments:
+          to: ref('person')
+          field: person_id
+  - name: condition_concept_id
+    data_tests:
+    - not_null:
+        name: t_0004_D1_condition_occurrence_condition_concept_id_not_null
+  - name: condition_start_date
+    data_tests:
+    - not_null:
+        name: t_0004_D1_condition_occurrence_condition_start_date_not_null
+  - name: condition_type_concept_id
+    data_tests:
+    - not_null:
+        name: t_0004_D1_condition_occurrence_condition_type_concept_id_not_null
+- name: measurement
+  description: 'D1-D3; decisions 0004-0011: official CDM 5.4 shape.'
+  columns:
+  - name: measurement_id
+    data_tests:
+    - not_null:
+        name: t_0004_D1_measurement_measurement_id_not_null
+    - unique:
+        name: t_0007_D2_measurement_id_unique
+    - positive_id:
+        name: t_0007_D2_measurement_id_positive
+  - name: person_id
+    data_tests:
+    - not_null:
+        name: t_0004_D1_measurement_person_id_not_null
+    - relationships:
+        name: t_0005_D2_measurement_person_relationship
+        arguments:
+          to: ref('person')
+          field: person_id
+  - name: measurement_concept_id
+    data_tests:
+    - not_null:
+        name: t_0004_D1_measurement_measurement_concept_id_not_null
+  - name: measurement_date
+    data_tests:
+    - not_null:
+        name: t_0004_D1_measurement_measurement_date_not_null
+  - name: measurement_type_concept_id
+    data_tests:
+    - not_null:
+        name: t_0004_D1_measurement_measurement_type_concept_id_not_null
+- name: cdm_source
+  description: 'D1-D3; decisions 0004-0011: official CDM 5.4 shape.'
+  columns:
+  - name: cdm_source_name
+    data_tests:
+    - not_null:
+        name: t_0004_D1_cdm_source_cdm_source_name_not_null
+  - name: cdm_source_abbreviation
+    data_tests:
+    - not_null:
+        name: t_0004_D1_cdm_source_cdm_source_abbreviation_not_null
+  - name: cdm_holder
+    data_tests:
+    - not_null:
+        name: t_0004_D1_cdm_source_cdm_holder_not_null
+  - name: source_release_date
+    data_tests:
+    - not_null:
+        name: t_0004_D1_cdm_source_source_release_date_not_null
+  - name: cdm_release_date
+    data_tests:
+    - not_null:
+        name: t_0004_D1_cdm_source_cdm_release_date_not_null
+  - name: cdm_version_concept_id
+    data_tests:
+    - not_null:
+        name: t_0004_D1_cdm_source_cdm_version_concept_id_not_null
+  - name: vocabulary_version
+    data_tests:
+    - not_null:
+        name: t_0004_D1_cdm_source_vocabulary_version_not_null
+- name: person_ext
+  description: 'D2; decision 0005: exactly one hospital and measurement year per person.'
+  columns:
+  - name: person_id
+    data_tests:
+    - unique:
+        name: t_0005_D2_person_ext_unique
+    - not_null:
+        name: t_0005_D2_person_ext_not_null
+    - relationships:
+        name: t_0005_D2_person_ext_relationship
+        arguments:
+          to: ref('person')
+          field: person_id
+  - name: hospital
+    data_tests:
+    - not_null:
+        name: t_0005_D2_person_ext_hospital_not_null
+  - name: measurement_year
+    data_tests:
+    - not_null:
+        name: t_0005_D2_person_ext_year_not_null
+- name: omop_source_link
+  description: 'D1-D3; decision 0011: source event lineage.'
+  data_tests:
+  - unique:
+      name: t_0011_D1_source_link_event_unique
+      arguments:
+        column_name: omop_table || ':' || cast(omop_id as varchar)
+  - unique:
+      name: t_0011_D1_source_link_original_unique
+      arguments:
+        column_name: hospital || ':' || omop_table || ':' || source_row_key
+  columns:
+  - name: omop_table
+    data_tests:
+    - not_null:
+        name: t_0011_D1_source_link_omop_table_not_null
+  - name: omop_id
+    data_tests:
+    - not_null:
+        name: t_0011_D1_source_link_omop_id_not_null
+  - name: hospital
+    data_tests:
+    - not_null:
+        name: t_0011_D1_source_link_hospital_not_null
+  - name: source_row_key
+    data_tests:
+    - not_null:
+        name: t_0011_D1_source_link_source_row_key_not_null
+- name: omop_load_counts
+  description: 'D1-D3; decision 0009: omissions remain visible even for zero carried rows.'
+  data_tests:
+  - unique:
+      name: t_0009_D1_load_counts_key_unique
+      arguments:
+        column_name: hospital || ':' || omop_table
+  columns:
+  - name: hospital
+    data_tests:
+    - not_null:
+        name: t_0009_D1_load_counts_hospital_not_null
+  - name: omop_table
+    data_tests:
+    - not_null:
+        name: t_0009_D1_load_counts_omop_table_not_null
+  - name: carried
+    data_tests:
+    - not_null:
+        name: t_0009_D1_load_counts_carried_not_null
+  - name: not_carried
+    data_tests:
+    - not_null:
+        name: t_0009_D1_load_counts_not_carried_not_null

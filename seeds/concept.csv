@@ -1,0 +1,13 @@
+concept_id,concept_name,domain_id,vocabulary_id,concept_class_id,standard_concept,concept_code,valid_start_date,valid_end_date,invalid_reason
+320128,Essential hypertension,Condition,SNOMED,Disorder,S,59621000,2002-01-31,2099-12-31,
+32817,EHR,Type Concept,Type Concept,Type Concept,S,OMOP4976890,2020-08-20,2099-12-31,
+8876,millimeter mercury column,Unit,UCUM,Unit,S,mm[Hg],1970-01-01,2099-12-31,
+9203,Emergency Room Visit,Visit,Visit,Visit,S,ER,1970-01-01,2099-12-31,
+9201,Inpatient Visit,Visit,Visit,Visit,S,IP,1970-01-01,2099-12-31,
+9202,Outpatient Visit,Visit,Visit,Visit,S,OP,1970-01-01,2099-12-31,
+3012888,Diastolic blood pressure,Measurement,LOINC,Clinical Observation,S,8462-4,1996-09-06,2099-12-31,
+3004249,Systolic blood pressure,Measurement,LOINC,Clinical Observation,S,8480-6,1996-09-06,2099-12-31,
+8532,FEMALE,Gender,Gender,Gender,S,F,1970-01-01,2099-12-31,
+8507,MALE,Gender,Gender,Gender,S,M,1970-01-01,2099-12-31,
+798878,OMOP CDM Version 5.4.1,Metadata,CDM,CDM,S,CDM v5.4.1,2023-02-08,2099-12-31,
+262,Emergency Room and Inpatient Visit,Visit,Visit,Visit,S,ERIP,1970-01-01,2099-12-31,
