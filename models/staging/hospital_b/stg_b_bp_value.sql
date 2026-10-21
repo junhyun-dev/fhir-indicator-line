@@ -2,22 +2,21 @@
 {{ config(materialized='table') }}
 with omr_bp as (
     select subject_id as person_id,
-           'omr_bp:' || subject_id || ':' || chartdate || ':' || seq_num as observation_id,
            {{ fhir_day('chartdate') }} as bp_day, result_value,
            subject_id || ':' || chartdate || ':' || seq_num as original_key
     from {{ source('mimic', 'omr') }}
     where result_name = 'Blood Pressure'
 ), omr_values as (
-    select observation_id, person_id, 'omr_systolic'::varchar as source_code,
+    select person_id, 'omr_systolic'::varchar as source_code,
            try_cast(split_part(result_value, '/', 1) as double) as value, bp_day, result_value, original_key
     from omr_bp
     union all
-    select observation_id, person_id, 'omr_diastolic'::varchar as source_code,
+    select person_id, 'omr_diastolic'::varchar as source_code,
            try_cast(split_part(result_value, '/', 2) as double) as value, bp_day, result_value, original_key
     from omr_bp
 )
-select 'B'::varchar as hospital, observation_id, person_id, source_code,
-       value, ''::varchar as source_unit, bp_day, bp_day as record_day,
+select 'B'::varchar as hospital, person_id, source_code,
+       value, bp_day, bp_day as record_day,
        'hospital_b_omr'::varchar as source_vocabulary_id,
        'hospital_b_omr_unit'::varchar as unit_vocabulary_id,
        'OMR_BP_NO_UNIT'::varchar as unit_mapping_code,
@@ -26,10 +25,8 @@ select 'B'::varchar as hospital, observation_id, person_id, source_code,
 from omr_values
 union all
 select 'B'::varchar as hospital,
-       'icu:' || subject_id || ':' || hadm_id || ':' || stay_id || ':' || itemid || ':'
-         || charttime || ':' || storetime as observation_id,
        subject_id as person_id, itemid as source_code,
-       try_cast(valuenum as double) as value, valueuom as source_unit,
+       try_cast(valuenum as double) as value,
        {{ fhir_day('charttime') }} as bp_day, {{ fhir_day('charttime') }} as record_day,
        'hospital_b_icu'::varchar as source_vocabulary_id,
        'hospital_b_icu_unit'::varchar as unit_vocabulary_id,

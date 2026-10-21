@@ -1,5 +1,5 @@
 -- D1,D2 / decisions 0006,0009,0011: original diagnosis rows and written dates.
-select distinct 'A'::varchar as hospital, r.id as condition_id,
+select distinct 'A'::varchar as hospital, r.id::varchar as source_row_key,
        regexp_extract(json_extract_string(r.payload_json, '$.subject.reference'), '[^:]+$', 0) as person_id,
        json_extract_string(coding.value, '$.code') as source_code,
        {{ fhir_day("json_extract_string(r.payload_json, '$.onsetDateTime')") }} as start_day,

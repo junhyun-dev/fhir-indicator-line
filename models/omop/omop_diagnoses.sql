@@ -1,7 +1,7 @@
 -- D1,D2 / decisions 0006,0009,0011: preserve every source diagnosis for omission counts.
 {{ config(materialized='table') }}
 with diagnoses as (
-    select hospital, person_id as source_person_id, condition_id as source_row_key,
+    select hospital, person_id as source_person_id, source_row_key,
            source_code, source_vocabulary_id, start_day, end_day
     from {{ ref('stg_a_condition') }}
     union all

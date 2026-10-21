@@ -129,12 +129,13 @@ class FoundationTests(unittest.TestCase):
 
 class LayerTests(unittest.TestCase):
     def manifest(self):
+        # L2 / decision 0004: the accepted graph now passes through OMOP.
         def node(name,layer_name,deps,sql):
             return {'name':name,'resource_type':'model','original_file_path':f'models/{layer_name}/{name}.sql','depends_on':{'nodes':deps},'raw_code':sql}
         return {'sources':{'source.fhir.latest_resources':{'name':'latest_resources','resource_type':'source'}},
                 'nodes':{'model.stg':node('stg','staging',['source.fhir.latest_resources'],"select * from {{ source('fhir','latest_resources') }}"),
-                         'model.com':node('com','common',['model.stg'],"select * from {{ ref('stg') }}"),
-                         'model.int':node('int','intermediate',['model.com'],"with x as (select * from {{ ref('com') }}) select * from x"),
+                         'model.omop':node('omop','omop',['model.stg'],"select * from {{ ref('stg') }}"),
+                         'model.int':node('int','intermediate',['model.omop'],"with x as (select * from {{ ref('omop') }}) select * from x"),
                          'model.fct':node('fct','marts',['model.int'],"select * from {{ ref('int') }}")}}
 
     def test_L2_layers_empty_and_correct_graph_pass(self):

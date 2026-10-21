@@ -1,12 +1,16 @@
-# L2/D1-D7 / decisions 0004-0011: paired Claude owns expected/ and checks.
+# L2/D1-D7 / decisions 0004-0011: indicator meanings live in one seed.
 name: fhir_indicator_line
-version: '1.0.0'
+version: 1.0.0
 config-version: 2
 profile: fhir_indicator_line
-model-paths: [models]
-seed-paths: [seeds]
-test-paths: [dbt_tests]
-clean-targets: [.local/FHIR-LINE-02/dbt-target]
+model-paths:
+- models
+seed-paths:
+- seeds
+test-paths:
+- dbt_tests
+clean-targets:
+- .local/FHIR-LINE-02/dbt-target
 models:
   fhir_indicator_line:
     +materialized: view
@@ -17,19 +21,7 @@ seeds:
         as_of_label: varchar
         month: integer
         day: integer
-    code_map:
-      # D3/M2B: only B's declared missing-unit mappings become empty strings.
-      +post-hook:
-        - "update {{ this }} set source_unit = '' where hospital = 'B' and source_unit is null"
-      +column_types:
-        hospital: varchar
-        source_system: varchar
-        source_code: varchar
-        source_unit: varchar
-        concept: varchar
-        std_unit: varchar
     concept:
-      # Decision 0009: eleven upstream rows plus the approved Visit 262 row.
       +column_types:
         concept_id: integer
         concept_name: varchar
@@ -52,3 +44,7 @@ seeds:
         valid_start_date: date
         valid_end_date: date
         invalid_reason: varchar
+    indicator_concepts:
+      +column_types:
+        concept_set: varchar
+        concept_id: integer

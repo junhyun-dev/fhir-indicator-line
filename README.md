@@ -1,6 +1,6 @@
 # fhir-indicator-line
 
-병원 A의 합성 FHIR와 병원 B의 MIMIC-IV 데모 CSV를 공통 표로 연결해 혈압 지표를 계산하는 학습 프로젝트다. A의 Bundle은 두 배치로 나누고 본문을 보존하며 최신 자원 하나를 고른다. 병원별 staging이 자료의 모양·시계·방문 종류·나이를 해석하고, common 층이 코드 매핑 표로 공통 뜻을 붙인다. L4~L6은 이 공통 표만으로 같은 규칙을 적용한다. Codex가 구현하고 `expected/` 기대 결과(읽기 전용)와 그 비교 검사는 짝 Claude 세션이 쓴다. 검사 명령은 `sh scripts/check.sh` 하나이고, 지킬 것은 `AGENTS.md`에 있다.
+병원 A의 합성 FHIR와 병원 B의 MIMIC-IV 데모 CSV를 OMOP CDM 5.4로 연결해 혈압 지표를 계산하는 학습 프로젝트다. A의 Bundle은 두 배치로 나누고 본문을 보존하며 최신 자원을 고른다. 병원별 staging은 원천 사실을 해석하고 OMOP이 표준 코드를 붙인다. 계산 층은 OMOP과 지표 개념 seed만 읽는다. Codex가 구현하고, 읽기 전용 expected와 비교 검사·설계·결정 문서는 짝 Claude 세션이 관리한다. 검사 명령은 sh scripts/check.sh이며 작업 규칙은 AGENTS.md에 있다.
 
 ```bash
 mkdir -p .cache/FHIR-LINE-02/tmp .cache/FHIR-LINE-02/pip
@@ -27,35 +27,51 @@ sh scripts/check.sh
 
 `raw_resources`는 `(batch_id, resource_type, id)`가 키다. 배치 번호는 양의 정수이며 열은 `batch_id`, `resource_type`, `id`, `full_url`, `payload_json`, `payload_hash`, `source_file`, `received_at`이다. payload는 원문 문자열이고 hash는 그 UTF-8 SHA256이다. 로더는 INSERT만 한다. 같은 배치 재시도는 기존 수신시각·본문을 유지하며, 같은 키의 다른 본문은 전체 배치 transaction을 실패시킨다. 파일이 바뀌면 manifest 검증 단계에서 실패한다.
 
-배치·DB 출력은 프로젝트 밖, `expected/`, 기존 `.local/FHIR-LINE-01/` 아래를 거부한다. 지문은 원문 UTF-8 기준이므로 공백 변경도 다른 본문이다.
+배치·DB 출력은 프로젝트 밖, `expected/`, 기존 `.local/FHIR-LINE-01/` 아래를 거부한다. 해시는 원문 UTF-8 기준이므로 공백 변경도 다른 본문이다.
 
 `latest_resources`는 `(resource_type, id)`마다 한 행인 view다. 이미 본 본문 hash의 최초 배치 번호를 `change_batch_id`로 삼고 그 번호가 가장 큰 본문을 고른다. 같은 본문의 재수신·역순 도착이 새 수정 차례를 만들지 않는다. 145/75(batch 1) → 135/75(batch 2) → 예전 본문 재수신 뒤에도 135/75를 남긴다. 실제로 과거 내용으로 되돌리는 업무 계약이나 삭제 전파는 이번 범위에 없다.
 
 `meta.lastUpdated`는 원본 자원 갱신시각, `Encounter.period`/`Observation.effectiveDateTime`은 임상 시각, `received_at`은 이 로더의 배치 수신시각이다. 서로 대신하지 않는다. 다른 도구로 DB를 직접 UPDATE하는 것을 막는 권한 시스템은 만들지 않았다.
 
-## dbt 계산 층과 확인 사다리
-
-A staging은 `source('fhir', 'latest_resources')`, B staging은 선언된 mimic CSV source를 읽는다. 아래 공통 표부터 두 병원이 같은 계산을 따른다. `seeds/as_of_labels.csv`는 sep30/dec31의 월·일을 정하고, `seeds/code_map.csv`는 병원별 원래 코드·단위를 공통 concept/std_unit으로 매핑한다. A의 2025년·연말 나이·6/30 경계와 FHIR 날짜/원소 해석은 `models/staging/hospital_a/`에 있다.
+## OMOP과 지표 계산
 
 | 층 | 모델 | 한 행 |
 |---|---|---|
-| L3 staging/hospital_a | stg_a_person_period | 병원×기준일 이름×사람; 실제 기준일·측정 기간·나이 |
-| L3 staging/hospital_a | stg_a_condition, stg_a_visit, stg_a_bp_value | 진단×원래 코드 / 방문 / 관찰×원래 코드와 값 |
-| L3 staging/hospital_b | stg_b_person_period | B의 사람×기준일 이름; anchor_year의 시계와 anchor_age |
-| L3 staging/hospital_b | stg_b_condition, stg_b_visit, stg_b_bp_value | 버전별 진단 코드의 첫 입원 / 외래 날·입원 기간 / OMR·ICU 값 |
-| common | person_period, condition, visit, bp_value | 병원별 줄을 같은 열로 연결; 진단·혈압에는 공통 뜻 부여 |
-| L4 intermediate | int_bp_daily | 병원×기준일 이름×사람×사용할 혈압 날짜 |
-| L5 marts | fct_bp_person | 병원×기준일 이름×평가 대상 한 사람 |
-| L5 marts | dim_as_of | 대상이 없는 경우에도 요약에 전할 병원×기준일 이름 |
-| L6 reports | bp_summary | 병원×기준일 이름별 분모·분자·비율 |
+| staging/hospital_a | stg_a_person, stg_a_condition, stg_a_visit, stg_a_bp_value | 사람 / 원래 진단 코드 / 방문 / 혈압 성분 |
+| staging/hospital_b | stg_b_person, stg_b_diagnosis, stg_b_visit, stg_b_bp_value | 사람 / 입원별 원래 진단 / 방문 / OMR·ICU 혈압 성분 |
+| omop | person, person_ext | 사람 / 병원·측정 연도 |
+| omop | observation_period, visit_occurrence, condition_occurrence, measurement | 관찰 기간 / 방문 / 매핑된 진단 / 혈압 값 하나 |
+| omop | cdm_source, omop_source_link, omop_load_counts | 출처 / 사건별 원천 키 / 병원·테이블별 적재·누락 집계 |
+| intermediate | int_person_period | 병원×기준 시점×사람의 기간·나이 |
+| intermediate | int_bp_daily | 병원×기준 시점×사람×유효 혈압 날짜 |
+| marts | fct_bp_person, dim_as_of | 대상 한 사람 / 요약에 남길 병원×기준 시점 |
+| reports | bp_summary | 병원×기준 시점별 분모·분자·비율 |
 
-D1은 날짜 문자열의 앞 10자를 쓰고 해당 사람의 기준일 뒤 기록을 보지 않는다. 공통 person_period에는 hospital/as_of_label/person_id 키와 실제 as_of, 측정 시작/끝, period_end_day, hypertension_cutoff_day, age_at_year_end가 있다. D2 대상 판정은 fct_bp_person의 eligible CTE 한 곳에 있다: 연말 나이 18~85세, 상반기까지 시작해 측정 연도와 겹친 고혈압, 기간 내 outpatient 방문이다. A의 AMB/IMP/EMER 해석은 A staging만 안다.
+공식 CDM 테이블 여섯의 열 순서·자료형은 vendor/omop의 공식 DuckDB DDL과 같다. person_ext는 person_id·hospital·measurement_year만 가진 1:1 확장 테이블이다. 사람 ID는 병원과 원래 ID의 MD5에서 INTEGER로 만들어 입력 환자가 늘어도 유지하며, 충돌·0은 검사가 실패한다. 사건은 omop_event_rows에서 테이블별 정렬 후 번호를 한 번 부여하고 공식 테이블과 원천 연결이 공유한다. 사건 ID는 같은 입력에서 같으며, 입력이 늘 때의 기존 번호 유지는 보장하지 않는다.
 
-code_map은 진단에서 `(hospital, source_code)`, 혈압에서 `(hospital, source_code, source_unit)`으로 연결한다. source_system은 출처 설명이며 필터가 아니다. common의 condition은 essential_hypertension, bp_value는 systolic/diastolic 뜻을 붙이고, 매핑되지 않은 코드는 제외한다. 혈압은 A staging에서 panel 85354-9의 원소별 code/value/quantity.code를 꺼내고, 단위가 매핑되지 않은 원소는 common에서 제외한다. 단위를 변환하거나 표시 문자열로 대체하지 않는다.
+omop_people와 omop_diagnoses는 사람 사실·매핑과 미매핑 진단 집계에 쓰는 내부 모델이다. 원래 코드·단위·값 글자는 공식 source_value 열에, 사건의 원래 행 키는 omop_source_link에 보존한다. A는 자원 ID와 성분 코드, B는 입원 ID 또는 진단·OMR·ICU의 복합 키를 쓴다. 공식 테이블에 임의 열을 추가하지 않는다. B 진단은 원본 입원별 행을 유지하고 D2에서 EXISTS로 판단한다.
 
-D3·D4는 같은 병원·사람의 inpatient_or_ed 기간(양 끝 포함)을 제외하고 매핑된 숫자를 성분별로 그 날의 최솟값으로 묶는다. 성분 위치는 쓰지 않는다. 쓸 성분이 없는 날은 없애고, 하나만 있는 날은 남긴다. D5·D6은 마지막 유효일을 골라 `혈압 없음` → `마지막 날에 한쪽 값만` → 140/90 임계값 순서로 분류한다. 혈압 없는 대상도 분모에 남는다. dim_as_of가 걸러내지 않은 person_period의 병원/label을 전달하므로 대상 0명인 기준일도 분모·분자 0, rate NULL이다. 원천에 사람이 0명인 병원의 요약 행까지 보장하지는 않는다. **D7 제외 대상은 빼지 않는 학습용 계산**이며 CMS 지표 전체 구현은 아니다.
+int_person_period가 person/person_ext와 as_of_labels를 읽어 1/1~12/31, 6/30, 실제 기준일, 기간 끝과 연말 나이를 한 곳에서 만든다(결정 0010). 내부 조인에는 omop_person_id INTEGER를 사용하고 fct와 daily의 person_id는 기존 원래 ID 글자다. 병원 staging에는 기준 시점 cross join이나 지표 날짜·나이 계산을 두지 않는다. observation_period는 옮긴 기록의 관찰 범위이며 지표 측정 기간으로 대체하지 않는다.
 
-A와 공통 계산 모델은 view라서 현재 latest_resources와 B staging 결과를 읽는다. B staging 네 개는 dbt build 때 테이블로 만든다. 실제 자료에서 외부 gzip 스캔을 여러 view에 중첩하면 512MB 한도를 넘기므로, B 전용 단계의 계산 결과를 한 번 저장하고 이후 층이 재사용한다. as_of는 기록 날짜의 가시성을 뜻하며, 과거 배치 버전으로 되돌린 데이터베이스 snapshot을 뜻하지 않는다. 서로 다른 시각인 원본 갱신시각·임상 시각·수신시각을 합치지 않는다.
+seeds/indicator_concepts.csv의 여섯 개념 묶음이 수축기·이완기·단위·고혈압·외래·입원/응급을 정한다. 계산 SQL에는 병원 분기, 원래 코드, 표준 번호 숫자가 없다. 병원별 코드 매핑은 source_to_concept_map, 날짜·원천 종류 해석은 그 병원의 staging에서 맡는다. concept/source_to_concept_map의 승인된 용어 부분집합은 유지하며 추가 패키지나 전체 용어 다운로드가 필요하지 않다. 참조 구현이 필요하면 이 PC의 ~/dev/projects/upstream/dbt-synthea(33fdbfa) 사본을 먼저 읽는다.
+
+D1은 원문 날짜의 앞 10자를 사용하고 시간대를 바꾸지 않는다. 기준일 뒤 임상 기록은 보지 않는다. record_day는 사건 staging에 남기고 임상 날짜와 같은지 dbt 테스트가 확인한다. 다른 행이 들어오면 빌드가 멈춘다(0006). OMOP과 계산에는 수신 날짜를 대신 만들어 넣지 않는다.
+
+D2는 fct_bp_person의 eligible CTE 한 곳에서 판단한다. 연말 나이 18~85, 6월 말까지 시작해 측정 연도와 겹치는 고혈압, 측정 기간 안 외래 방문이 필요하다. 진단의 임상 시작일도 기준일 이하여야 한다. D3·D4는 혈압 단위 묶음과 값이 있는 성분을 사용하고 입원·응급 기간 양 끝을 포함해 제외한 뒤 같은 날 성분별 최솟값을 구한다. D5·D6은 마지막 유효일을 골라 혈압 없음 → 마지막 날에 한쪽 값만 → 140/90 순서로 판정한다. 혈압 값은 기존 출력 계약에 맞게 DOUBLE이다.
+
+혈압 없는 대상도 분모에 남는다. dim_as_of는 필터 전 사람·기준 시점에서 가져와 분모 0·분자 0·rate NULL을 유지한다. 원천에 사람이 없는 병원의 요약까지 보장하지는 않는다. D7 제외 대상은 빼지 않는 학습용 계산이며 CMS 전체 구현은 아니다.
+
+## 병원 B와 원본 보존
+
+staging/hospital_b/sources.yml은 기존 다섯 gzip CSV(patients/admissions/diagnoses_icd/omr/chartevents)를 native read_csv, all_varchar로 읽는다. 기본 경로는 .local/public-data/mimic-iv-demo-2.2/extracted/mimic-iv-clinical-database-demo-2.2이며 MIMIC_SOURCE_DIR로 시험 입력만 바꿀 수 있다. 기존 원본은 읽기 전용이고 별도 로더나 원본 사본을 만들지 않는다.
+
+B의 measurement_year는 anchor_year, year_of_birth는 anchor_year-anchor_age다. ICD 코드는 버전별로 매핑한다. 외래는 입원·응급 기간 밖의 OMR 기록 날짜이며 결과 이름으로 한정하지 않는다. 응급실 등록일(없으면 입원일)~퇴원일 구간을 유지하고, 응급실을 거친 입원의 표준 개념은 입원/응급 묶음에 포함한다.
+
+정확한 Blood Pressure OMR 한 행은 혈압 성분 두 행이다. 140/60 같은 원문은 두 행에 남고 unit_source_value는 NULL이다. 매핑에서만 OMR_BP_NO_UNIT 표시로 승인된 단위를 붙인다. ICU는 charttime을 임상 날짜로, storetime은 원래 행 키에만 사용한다. 알 수 없는 단위·방문 개념 0도 OMOP 행은 유지하고 계산이 지표 개념 묶음으로 선택한다.
+
+B staging 네 모델과 OMOP은 table로 저장해 gzip 스캔이 여러 view에 중첩되지 않게 한다. 계산 모델은 view여서 기준 시점 seed 변경을 반영한다. 같은 DuckDB 파일을 사용하고 memory_limit=512MB·threads=2·dbt concurrency=1을 유지한다. extension 자동 다운로드와 telemetry는 끄고 임시파일·캐시·로그는 이 저장소 안 경로를 사용한다.
+
+## 검사와 근거
 
 ```bash
 PYTHONDONTWRITEBYTECODE=1 .venv/bin/python scripts/dbt.py debug
@@ -64,46 +80,10 @@ PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m fhir_line layers
 PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m fhir_line check --strict
 ```
 
-wrapper가 프로필·DB·임시파일·로그 경로와 telemetry 설정을 전달하므로 전역 dbt 설정은 필요 없다. 확인 사다리 전에 dbt parse로 실제 의존 관계를 읽는다. staging은 source/seed, common은 staging/seed, omop은 staging/seed/omop, intermediate는 common/omop/seed, marts는 intermediate/common/omop/seed, reports는 marts에만 의존한다. 현재 L4~L6 계산은 common을 읽는다. marts끼리 읽지 않는다. 선언하지 않은 직접 테이블 읽기도 거부한다. 동적 relation macro와 복잡한 직접 SQL 접근은 이 작은 검사기의 지원 범위가 아니므로 명시적 source/ref와 CTE로 표현한다.
+의존 방향은 staging→omop→intermediate→marts→reports다. omop과 intermediate 내부 참조는 허용한다. 정확한 허용 범위는 AGENTS.md와 layers.py에 있고, 선언하지 않은 테이블 직접 읽기도 검사한다. 모델은 source/ref와 CTE로 표현한다. 공통 테이블 common과 code_map은 사용하지 않는다.
 
-확인 사다리는 원본/배치/raw/latest 행 수, 자원 종류·혈압 수, 같은 자원 본문을 비교한다. ④는 `person_<병원>.csv`의 9열·모든 행을 해당 병원의 fct_bp_person과 비교한다. summary CSV는 hospital/as_of_label/denominator/numerator/rate 5열을 bp_summary와 비교한다. 사람별 결과에는 실제 as_of 날짜가 있고, 요약은 병원/기준일 이름으로 묶는다. 두 결과 모델의 자료형 계약도 검사한다. 행 순서는 무시하고 중복 행 수는 보존하며 숫자의 표현 차이는 해당 DB 자료형으로 정규화한다. ⑤는 지정 환자의 12/01 혈압 원문·해시를 세 층에서 비교한다. expected를 쓰거나 수정하지 않는다.
+check.sh는 읽기 전용 기대 CSV 해시·권한, Python 고정 입력·경계 테스트, 실제 dbt build, 의존 방향과 단계별 검증을 실행한다. ① raw=배치 합, latest=합−공통 자원이고 ② 원천 집계 ③ 중복 본문 ④ 사람·요약의 셀과 자료형 ⑤ 원문 해시 ⑥ OMOP 모양·건수·추적용 혈압·원천 연결을 확인한다. strict는 기다림도 실패다. 결과는 .local/FHIR-LINE-02/summaries/verification-ladder.json과 .md에 남는다.
 
-`sh scripts/check.sh`는 기대 CSV의 해시·읽기 전용 상태, 기존 검사기 시험, 작은 별도 DuckDB의 테스트 01~15와 Q3 및 M2 경계 시험, 실제 dbt build, 층 방향, 사다리의 순서로 실행한다. M2 시험은 L4~L6 SQL에 A의 원본 코드/필드 이름이 새는지 확인한다. 가짜 FHIR를 쓰는 시험은 실제 기대 파일과 원본을 사용하지 않고 dbt를 한 번만 실행한다. 기본 check는 기대 폴더/모델 부재를 기다림으로 표시할 수 있지만, 종료 명령의 `check --strict`는 기다림도 실패로 센다.
+정상 M1/M2B/OMOP 시험은 실제 원본·expected와 격리한 작은 DB와 수제 입력을 사용하고 날짜 검사를 항상 적용한다. 늦게 기록된 원래 M1 사례는 별도 입력에서 0006 검사가 실패해야 통과하는 음성 테스트다. 정상 계산에서는 늦은 외래 방문 사례가 9월 말 제외·연말 포함을 확인하며 기존 임상 기대값을 유지한다.
 
-①은 `raw=배치1+배치2`, `latest=배치1+배치2−공통 (resource_type,id) 수=원본 자원 수`를 검사한다. 날짜 없는 자원을 두 번 받으면 raw에 배치마다 한 행씩 남고 latest에는 하나가 남는다. 공통 자원 수는 따로 보고한다. strict에서 모든 칸을 통과하면 exit 0, 실패나 기다림이 있으면 exit 1이다. 결과는 `.local/FHIR-LINE-02/summaries/verification-ladder.json`과 `.md`에 남는다.
-
-## 병원 B: 읽기 전용 MIMIC-IV 데모
-
-`models/staging/hospital_b/sources.yml`은 patients/admissions/diagnoses_icd/omr/chartevents 다섯 source를 선언한다. DuckDB의 native read_csv로 gzip CSV를 문자열로 읽고 B staging에서 필요한 날짜/숫자를 해석한다. 같은 DuckDB 파일에 B staging 결과 네 개를 저장하며 원본 사본이나 별도 L1 로더는 만들지 않는다. 원본 변경을 반영하려면 dbt build를 다시 실행한다. 기본 위치는 `.local/public-data/mimic-iv-demo-2.2/extracted/mimic-iv-clinical-database-demo-2.2/`이며 프로세스 환경변수 `MIMIC_SOURCE_DIR`로 시험용 경로를 지정할 수 있다. 이미 받은 원본과 SHA256/ODbL 파일은 읽기만 한다.
-
-B의 측정 연도/기준일/6월 말은 사람마다 anchor_year로 만들고 나이는 anchor_age를 쓴다. ICD-10 I10과 ICD-9 4010/4011/4019는 버전을 함께 확인하고, 그 사람의 해당 코드가 붙은 첫 입원일을 시작/record_day로 쓴다. 끝은 NULL이다. 외래는 결과 이름과 무관한 OMR 기록 날이며, 응급실 등록일(없으면 입원일)~퇴원일에 겹치는 날은 뺀다.
-
-OMR의 정확한 Blood Pressure 줄을 omr_systolic/omr_diastolic 두 값으로 가른다. source_unit은 빈 문자열이며 code_map seed의 post_hook이 B의 NULL 단위만 빈 문자열로 맞춘다. A seed 행은 건드리지 않는다. ICU는 220179/220180의 valuenum과 valueuom=mmHg를 읽고 code_map에서 mm[Hg] 뜻을 붙인다. record_day와 BP 날짜는 charttime의 날짜이고 storetime은 안정된 원본 행 식별자에만 사용한다. 입원/응급실 날 제외는 기존 L4가 담당한다.
-
-A 수제 시험은 헤더만 있는 B CSV.gz를 가리켜 실제 B 자료와 격리한다. B의 작은 시험은 수제 CSV.gz와 빈 A raw를 갖는 별도 DuckDB에 dbt를 한 번 실행한다. M2B 시험은 113/44, 외래/입원일 겹침, 6월 말 경계와 ICD 버전, 사람별 다른 연도, ICU 입원일 제외, 마지막 140/60을 확인한다. 실제 전체 검사는 기존 A 원본과 B 데모 100명을 함께 읽는다.
-
-다음 병원을 연결할 자리는 `models/common/` 네 파일의 hospital_rows CTE다. 그 병원의 staging 네 모델을 만든 뒤 각 CTE에 같은 열의 SELECT를 UNION ALL로 더하고 code_map에 병원 매핑 행을 추가한다. 병원별 시계·나이·방문 해석은 새 staging에 두고 L4~L6의 계산은 유지한다. 요청 05에서는 다음 명령의 출력이 비어 있어야 한다.
-
-```bash
-git diff --stat e5b86a5 -- models/intermediate models/marts models/reports
-```
-
-L0~L2·설치 근거는 `.local/FHIR-LINE-02/summaries/FHIR-LINE-02.reply.md`, M1 계산·시험은 `.local/FHIR-LINE-03/summaries/FHIR-LINE-03.reply.md`, common 층으로 옮긴 근거는 `.local/FHIR-LINE-04/summaries/FHIR-LINE-04.reply.md`, B 연결 결과는 `.local/FHIR-LINE-05/summaries/FHIR-LINE-05.reply.md`에서 확인한다.
-
-## M3 요청 06: OMOP CDM 5.4 병렬 적재
-
-결정 0004~0011에 따라 `models/omop/`에 person, observation_period, visit_occurrence, condition_occurrence, measurement, cdm_source를 공식 DuckDB DDL의 열 순서·자료형으로 만든다. 현재 지표 계산은 기존 common을 계속 읽고, L4~L6 SQL은 바꾸지 않는다. 이 단계에서는 OMOP으로 옮긴 행 수·원래 값·원천 연결을 확인한다. OHDSI 품질 도구를 실행하거나 지표를 OMOP으로 전환하는 작업은 포함하지 않는다.
-
-`omop_people`는 병원과 원래 환자 ID의 MD5에서 양의 INTEGER person_id를 만든다. 충돌과 0은 검사 실패다. person_ext에는 person_id와 병원·측정 연도만 둔다. A의 출생 연도는 birthDate의 해, B는 anchor_year-anchor_age다. 원래 성별이 없으면 개념 0과 NULL 원문을 사용한다. person_id는 입력 환자가 늘어도 유지된다. 사건 ID는 omop_event_rows에서 테이블별로 병원·원천 키 순서의 row_number를 한 번 부여하므로 같은 입력에서 같고, 입력이 늘 때 기존 사건 ID가 유지된다는 계약은 없다.
-
-공식 테이블의 source_value에는 원래 코드·단위·값 문자열이 들어간다. omop_source_link는 `(omop_table, omop_id)`마다 병원과 원천 키를 하나씩 보존한다. A는 자원 ID(혈압은 성분 코드 포함), B는 입원 ID나 진단·OMR·ICU의 복합 키다. 원천 연결을 통해 반복되는 같은 코드도 구분한다. official 테이블에는 확장 열을 넣지 않는다.
-
-B 진단은 새 stg_b_diagnosis가 입원별 전체 원본 행을 노출한다. omop_diagnoses가 코드 버전을 구분해 표준 번호를 붙이고, 표준 번호가 있는 진단만 condition_occurrence로 옮긴다. 기존 stg_b_condition의 환자별 첫 진단은 common이 사용하므로 유지한다. omop_load_counts는 병원·테이블별 carried와 표준 번호가 없어 제외한 not_carried를 기록하며, 옮긴 진단이 0행이어도 그 병원의 집계 행을 남긴다.
-
-혈압 한 번은 measurement 두 행이다. A 성분의 원래 단위와 B ICU 단위는 보존하며, B OMR의 `140/60`은 두 행 모두 value_source_value에 남는다. OMR에는 단위 글자가 없으므로 unit_source_value는 NULL이다. 매핑에서만 `OMR_BP_NO_UNIT`이라는 누락 표시를 사용해 승인된 8876 의미를 붙인다. 알 수 없는 단위와 HH/VR 방문도 행을 유지하고 개념 0을 쓴다. 지표의 단위·입원일 필터는 이 층에 적용하지 않는다. value_as_number는 공식 DDL에 맞춰 DECIMAL(18,3)이다.
-
-observation_period는 옮긴 방문·진단·혈압의 가장 이른 시작일과 가장 늦은 종료일(없으면 시작일)·측정일로 만든다. 측정 연도로 자르지 않는다. ID는 person_id이며, 매핑되지 않은 진단의 날짜는 포함하지 않는다. 종료일 없는 방문은 공식 visit_end_date에서만 시작일로 채우고 staging/common의 원문 NULL은 유지한다.
-
-용어는 [dbt-synthea 33fdbfa9의 concept seed](https://github.com/OHDSI/dbt-synthea/blob/33fdbfa9/seeds/vocabulary/concept_seed.csv) 11행과 요청자가 확정한 262행을 사용한다. concept/source_to_concept_map 두 seed의 열 형식은 공식 DDL을 따른다. 원본 seed의 크기·SHA256과 선택 행의 근거는 `.local/FHIR-LINE-06/summaries/concept-provenance.json`에 있다. cdm_source의 두 날짜는 2026-10-21로 고정한다.
-
-사건 staging의 record_day와 임상 날짜는 0006 dbt 테스트가 비교한다. 실제 build에는 항상 적용한다. 기존 M1 fixture는 의도적인 늦은 진단을 포함하므로 그 fixture의 build에서만 `tag:record_day`를 제외하고, 별도 테스트가 같은 입력의 날짜 검사 실패를 확인한다. 새 OMOP fixture와 실제 자료에는 제외 옵션을 쓰지 않는다. `sh scripts/check.sh`의 ⑥은 공식 스키마·필수값·원천 건수·추적용 혈압·원천 연결을 확인한다. 요청 06의 실행 근거는 `.local/FHIR-LINE-06/summaries/FHIR-LINE-06.reply.md`에 남긴다.
+L0~L2 근거는 .local/FHIR-LINE-02/summaries/FHIR-LINE-02.reply.md, M1은 FHIR-LINE-03, M2 공통화는 04, B 연결은 05, OMOP 추가는 06의 같은 summaries 답 파일에 있다. 현재 OMOP 계산 전환은 .local/FHIR-LINE-07/summaries/FHIR-LINE-07.reply.md에서 확인한다. 전환 전 daily·person 결과는 .local/FHIR-LINE-07/before/에 보존하고 기존 열로 두 방향 EXCEPT ALL을 비교한다.

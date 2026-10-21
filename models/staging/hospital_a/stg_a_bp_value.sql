@@ -1,9 +1,8 @@
 -- D1,D3 / decisions 0006,0008,0009,0011: retain panel components and original units.
-select distinct 'A'::varchar as hospital, r.id as observation_id,
+select distinct 'A'::varchar as hospital,
        regexp_extract(json_extract_string(r.payload_json, '$.subject.reference'), '[^:]+$', 0) as person_id,
        json_extract_string(coding.value, '$.code') as source_code,
        try_cast(json_extract_string(component.value, '$.valueQuantity.value') as double) as value,
-       json_extract_string(component.value, '$.valueQuantity.code') as source_unit,
        {{ fhir_day("json_extract_string(r.payload_json, '$.effectiveDateTime')") }} as bp_day,
        {{ fhir_day("json_extract_string(r.payload_json, '$.effectiveDateTime')") }} as record_day,
        'hospital_a_bp'::varchar as source_vocabulary_id,

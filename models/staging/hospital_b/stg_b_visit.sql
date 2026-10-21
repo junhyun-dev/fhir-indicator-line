@@ -10,15 +10,12 @@ with admissions as (
     select distinct subject_id as person_id, {{ fhir_day('chartdate') }} as visit_day
     from {{ source('mimic', 'omr') }}
 )
-select 'B'::varchar as hospital, 'admission:' || hadm_id as visit_id,
-       person_id, 'inpatient_or_ed'::varchar as visit_type, start_day, end_day, start_day as record_day,
+select 'B'::varchar as hospital, person_id, start_day, end_day, start_day as record_day,
        source_code, 'hospital_b_visit'::varchar as source_vocabulary_id,
        hadm_id::varchar as source_row_key
 from admissions
 union all
-select 'B'::varchar as hospital,
-       'omr:' || omr.person_id || ':' || cast(omr.visit_day as varchar) as visit_id,
-       omr.person_id, 'outpatient'::varchar as visit_type,
+select 'B'::varchar as hospital, omr.person_id,
        omr.visit_day as start_day, omr.visit_day as end_day, omr.visit_day as record_day,
        'omr_day'::varchar as source_code, 'hospital_b_visit'::varchar as source_vocabulary_id,
        omr.person_id || ':' || cast(omr.visit_day as varchar) as source_row_key

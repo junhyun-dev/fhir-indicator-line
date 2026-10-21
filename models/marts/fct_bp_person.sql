@@ -1,24 +1,26 @@
--- D1,D2,D5,D6,D7,M2 / t01-t15: eligibility stays here, using only common meanings.
+-- D1,D2,D5,D6,D7 / decisions 0001,0004,0006,0010: eligibility once, using OMOP concept sets.
 with eligible as (
     select periods.hospital, periods.as_of_label, periods.person_id, periods.as_of
-    from {{ ref('person_period') }} periods
+    from {{ ref('int_person_period') }} periods
     where periods.age_at_year_end between 18 and 85
       and exists (
           select 1
-          from {{ ref('condition') }} diagnosis
-          where diagnosis.hospital = periods.hospital and diagnosis.person_id = periods.person_id
-            and diagnosis.concept = 'essential_hypertension'
-            and (diagnosis.record_day is null or diagnosis.record_day <= periods.as_of)
-            and diagnosis.start_day <= periods.hypertension_cutoff_day
-            and (diagnosis.end_day is null or diagnosis.end_day >= periods.measurement_start_day)
+          from {{ ref('condition_occurrence') }} diagnosis
+          join {{ ref('indicator_concepts') }} condition_set
+            on condition_set.concept_id = diagnosis.condition_concept_id
+           and condition_set.concept_set = 'essential_hypertension'
+          where diagnosis.person_id = periods.omop_person_id
+            and diagnosis.condition_start_date <= periods.hypertension_cutoff_day
+            and diagnosis.condition_start_date <= periods.as_of
+            and (diagnosis.condition_end_date is null or diagnosis.condition_end_date >= periods.measurement_start_day)
       )
       and exists (
           select 1
-          from {{ ref('visit') }} visits
-          where visits.hospital = periods.hospital and visits.person_id = periods.person_id
-            and visits.visit_type = 'outpatient'
-            and (visits.record_day is null or visits.record_day <= periods.as_of)
-            and visits.start_day between periods.measurement_start_day and periods.period_end_day
+          from {{ ref('visit_occurrence') }} visits
+          join {{ ref('indicator_concepts') }} outpatient
+            on outpatient.concept_id = visits.visit_concept_id and outpatient.concept_set = 'outpatient_visit'
+          where visits.person_id = periods.omop_person_id
+            and visits.visit_start_date between periods.measurement_start_day and periods.period_end_day
       )
 ), ranked_days as (
     select hospital, as_of_label, person_id, bp_date, systolic_min, diastolic_min,

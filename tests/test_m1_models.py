@@ -1,4 +1,4 @@
-"""D1-D7 / decisions 0004,0006: retain the M1 counterexample and test its rejection.
+"""D1-D7 / decisions 0004,0006,0010: unchanged clinical expectations over OMOP.
 
 No original/expected inputs are used here. Expected outcomes are specified per case.
 """
@@ -118,7 +118,7 @@ def cases():
     for label,options in (
         ('t10-july',{'onset':'2025-07-01','recorded':'2025-07-01'}),
         ('t10-cutoff',{'onset':'2025-06-30','recorded':'2025-06-30'}),
-        ('t10-recorded',{'recorded':'2025-10-01'}),
+        ('t10-late-visit',{'visit':'2025-10-01'}),
         ('t10-code',{'code':'not-hypertension'}),
         ('t10-abated',{'abatement':'2024-12-31'}),
         ('t10-boundary',{'abatement':'2025-01-01'}),
@@ -142,6 +142,17 @@ def cases():
     return f.resources
 
 
+def fixture_rows(resources):
+    """L2 / decision 0006: encode the normal and rejected inputs identically."""
+    rows = []
+    for resource in resources:
+        payload = json.dumps(resource,ensure_ascii=False,separators=(',',':'))
+        rows.append((1,resource['resourceType'],resource['id'],'urn:uuid:'+resource['id'],payload,
+                     hashlib.sha256(payload.encode()).hexdigest(),'handmade-fixture.json',
+                     dt.datetime(2026,1,1,tzinfo=dt.timezone.utc)))
+    return rows
+
+
 class IndicatorModels(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -152,15 +163,9 @@ class IndicatorModels(unittest.TestCase):
         folder = Path(cls.scratch.name)
         cls.database = folder/'fixture.duckdb'
         resources = cases()
-        received = dt.datetime(2026,1,1,tzinfo=dt.timezone.utc)
-        rows = []
-        for r in resources:
-            payload = json.dumps(r,ensure_ascii=False,separators=(',',':'))
-            rows.append((1,r['resourceType'],r['id'],'urn:uuid:'+r['id'],payload,
-                         hashlib.sha256(payload.encode()).hexdigest(),'handmade-fixture.json',received))
         with connect(cls.database) as con:
             initialize(con)
-            append_rows(con,rows)
+            append_rows(con,fixture_rows(resources))
         env = environment()
         for label in ('tmp','logs','target','duckdb','extensions','xdg'):
             (folder/label).mkdir()
@@ -170,12 +175,10 @@ class IndicatorModels(unittest.TestCase):
                    MIMIC_SOURCE_DIR=str(write_sources(folder/'empty-mimic')))
         cls.fixture_environment = env
         cls.fixture_folder = folder
-        log = ROOT/'.local/FHIR-LINE-05/logs/fixture-a-dbt-build.log'
+        log = ROOT/'.local/FHIR-LINE-07/logs/fixture-a-dbt-build.log'
         log.parent.mkdir(parents=True,exist_ok=True)
         with log.open('w') as out:
-            # Decision 0006/R1: the M1 fixture deliberately includes a late diagnosis.
-            result = subprocess.run([str(ROOT/'.venv/bin/dbt'),'--no-use-colors','build','--no-partial-parse',
-                                     '--exclude','tag:record_day'],
+            result = subprocess.run([str(ROOT/'.venv/bin/dbt'),'--no-use-colors','build','--no-partial-parse'],
                                     cwd=ROOT,env=env,stdout=out,stderr=subprocess.STDOUT,timeout=180)
         if result.returncode:
             raise RuntimeError('Fixture dbt build failed; see '+str(log))
@@ -185,15 +188,31 @@ class IndicatorModels(unittest.TestCase):
             return con.execute(sql,parameters).fetchall()
 
     def test_0006_D1_late_record_is_rejected_by_clinical_day_guard(self):
-        log = ROOT/'.local/FHIR-LINE-06/logs/fixture-a-record-day-negative.log'
+        # Keep the original unsupported input; it must fail instead of reaching calculation.
+        rejected = Fixture()
+        rejected.patient('t10-recorded',recorded='2025-10-01')
+        rejected.bp('t10-recorded','t10-recorded-bp','2025-02-01')
+        folder = self.fixture_folder/'late-record-rejected'
+        folder.mkdir()
+        database = folder/'fixture.duckdb'
+        with connect(database) as con:
+            initialize(con)
+            append_rows(con,fixture_rows(rejected.resources))
+        env = self.fixture_environment.copy()
+        for label in ('tmp','logs','target','duckdb','extensions','xdg'):
+            (folder/label).mkdir()
+        env.update(FHIR_DB_PATH=str(database),FHIR_DUCKDB_TEMP=str(folder/'duckdb'),
+                   FHIR_DUCKDB_EXTENSIONS=str(folder/'extensions'),DBT_LOG_PATH=str(folder/'logs'),
+                   DBT_TARGET_PATH=str(folder/'target'),TMPDIR=str(folder/'tmp'),XDG_CACHE_HOME=str(folder/'xdg'))
+        log = ROOT/'.local/FHIR-LINE-07/logs/fixture-a-record-day-negative.log'
         log.parent.mkdir(parents=True,exist_ok=True)
         with log.open('w') as output:
-            result = subprocess.run([str(ROOT/'.venv/bin/dbt'),'--no-use-colors','test','--no-partial-parse',
-                                     '--select','tag:record_day'],cwd=ROOT,env=self.fixture_environment,
+            result = subprocess.run([str(ROOT/'.venv/bin/dbt'),'--no-use-colors','build','--no-partial-parse',
+                                     '--select','+stg_a_condition'],cwd=ROOT,env=env,
                                     stdout=output,stderr=subprocess.STDOUT,timeout=90)
         self.assertEqual(result.returncode,1,'The deliberate late record must fail its guard')
-        results = json.loads((self.fixture_folder/'target/run_results.json').read_text())['results']
-        failed = [r for r in results if r['status']!='pass']
+        results = json.loads((folder/'target/run_results.json').read_text())['results']
+        failed = [r for r in results if r['status'] not in ('pass','success')]
         self.assertEqual(len(failed),1,[(r['unique_id'],r['status']) for r in failed])
         self.assertIn('t_0006_D1_record_day_a_condition',failed[0]['unique_id'])
         self.assertEqual(failed[0]['status'],'fail')
@@ -257,15 +276,15 @@ class IndicatorModels(unittest.TestCase):
     def test_t09_D2_multiple_ambulatory_visits_keep_one_person(self):
         self.assertEqual(self.person('t09'),('2025-02-01',104,81,1,'조절됨'))
 
-    def test_t10_D1_D2_onset_abatement_code_and_record_visibility(self):
+    def test_t10_D1_D2_onset_abatement_code_and_late_outpatient_visit(self):
         for label in ('t10-july','t10-code','t10-abated'):
             with self.subTest(label=label):
                 self.assert_absent(label)
         for label in ('t10-cutoff','t10-boundary','t10-fallback'):
             with self.subTest(label=label):
                 self.assertEqual(self.person(label),('2025-02-01',104,81,1,'조절됨'))
-        self.assert_absent('t10-recorded',SEPTEMBER)
-        self.assertEqual(self.person('t10-recorded'),('2025-02-01',104,81,1,'조절됨'))
+        self.assert_absent('t10-late-visit',SEPTEMBER)
+        self.assertEqual(self.person('t10-late-visit'),('2025-02-01',104,81,1,'조절됨'))
 
     def test_t11_D2_year_end_age_limits(self):
         for label in ('t11-17','t11-86'):
@@ -281,8 +300,14 @@ class IndicatorModels(unittest.TestCase):
         self.assertEqual(self.person('t12-future'),('2025-02-01',104,81,1,'조절됨'))
 
     def test_t13_D3_reversed_components_remain_paired_with_codes(self):
-        rows = self.query("SELECT source_code,concept,value FROM bp_value WHERE hospital='A' AND observation_id=? ORDER BY source_code",
-                          [identifier('Observation','t13-reversed')])
+        original = identifier('Observation','t13-reversed')
+        rows = self.query("""SELECT m.measurement_source_value,concept.concept_set,m.value_as_number
+            FROM measurement m JOIN indicator_concepts concept
+              ON concept.concept_id=m.measurement_concept_id
+             AND concept.concept_set IN ('systolic','diastolic')
+            JOIN omop_source_link link ON link.omop_table='measurement' AND link.omop_id=m.measurement_id
+            WHERE link.hospital='A' AND link.source_row_key IN (?,?) ORDER BY m.measurement_source_value""",
+            [original+':8462-4',original+':8480-6'])
         self.assertEqual(rows,[('8462-4','diastolic',75),('8480-6','systolic',145)])
         self.assertEqual(self.person('t13'),('2025-09-13',145,75,0,'수축기 140 이상'))
 

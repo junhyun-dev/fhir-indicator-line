@@ -1,3 +1,3 @@
--- D1,D6,M2 / Q3: retain labels even when the hospital has no eligible people.
+-- D1,D6 / decisions 0004,0010: retain labels even with no eligible people.
 select distinct hospital, as_of_label
-from {{ ref('person_period') }}
+from {{ ref('int_person_period') }}

@@ -1,0 +1,9 @@
+concept_set,concept_id
+systolic,3004249
+diastolic,3012888
+bp_unit,8876
+essential_hypertension,320128
+outpatient_visit,9202
+inpatient_or_ed_visit,9201
+inpatient_or_ed_visit,9203
+inpatient_or_ed_visit,262

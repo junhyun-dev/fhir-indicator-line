@@ -1,4 +1,4 @@
-"""D1-D6/M2B: handmade B CSVs through unchanged L4-L6 in one isolated dbt build."""
+"""D1-D6 / decisions 0004,0010: unchanged B clinical expectations through OMOP."""
 from pathlib import Path
 import subprocess
 import tempfile
@@ -81,7 +81,7 @@ class HospitalBModels(unittest.TestCase):
             FHIR_DUCKDB_EXTENSIONS=str(folder/'extensions'),DBT_LOG_PATH=str(folder/'logs'),
             DBT_TARGET_PATH=str(folder/'target'),TMPDIR=str(folder/'tmp'),XDG_CACHE_HOME=str(folder/'xdg'),
             MIMIC_SOURCE_DIR=str(source))
-        log=ROOT/'.local/FHIR-LINE-05/logs/fixture-b-dbt-build.log'
+        log=ROOT/'.local/FHIR-LINE-07/logs/fixture-b-dbt-build.log'
         log.parent.mkdir(parents=True,exist_ok=True)
         with log.open('w') as output:
             result=subprocess.run([str(ROOT/'.venv/bin/dbt'),'--no-use-colors','build','--no-partial-parse'],
@@ -100,17 +100,22 @@ class HospitalBModels(unittest.TestCase):
         self.assertEqual(len(rows),1,person)
         return rows[0]
 
-    def test_M2B_D3_D5_D6_split_pair_and_empty_unit_mapping(self):
+    def test_M2B_D3_D5_D6_split_pair_through_omop(self):
         self.assertEqual(self.person('split'),('2111-12-31','2111-02-01',113,44,1,'조절됨'))
-        self.assertEqual(self.query("""SELECT source_code,source_unit IS NOT NULL,length(source_unit)
-            FROM code_map WHERE hospital='B' AND source_code LIKE 'omr_%' ORDER BY source_code"""),
-            [('omr_diastolic',True,0),('omr_systolic',True,0)])
-        self.assertEqual(self.query("""SELECT concept,value FROM bp_value
-            WHERE hospital='B' AND person_id='split' ORDER BY concept"""),[('diastolic',44),('systolic',113)])
+        self.assertEqual(self.query("""SELECT meaning.concept_set,m.value_as_number FROM measurement m
+            JOIN person p USING(person_id) JOIN person_ext e USING(person_id)
+            JOIN indicator_concepts meaning ON meaning.concept_id=m.measurement_concept_id
+             AND meaning.concept_set IN ('systolic','diastolic')
+            WHERE e.hospital='B' AND p.person_source_value='split' ORDER BY meaning.concept_set"""),
+            [('diastolic',44),('systolic',113)])
 
     def test_M2B_D2_D3_outpatient_days_exclude_admission_and_include_other_results(self):
         self.assertEqual(self.query("SELECT count(*) FROM fct_bp_person WHERE hospital='B' AND person_id='overlap'"),[(0,)])
-        self.assertEqual(self.query("SELECT count(*) FROM visit WHERE hospital='B' AND person_id='overlap' AND visit_type='outpatient'"),[(0,)])
+        self.assertEqual(self.query("""SELECT count(*) FROM visit_occurrence v
+            JOIN person p USING(person_id) JOIN person_ext e USING(person_id)
+            JOIN indicator_concepts meaning ON meaning.concept_id=v.visit_concept_id
+             AND meaning.concept_set='outpatient_visit'
+            WHERE e.hospital='B' AND p.person_source_value='overlap'"""),[(0,)])
         self.assertEqual(self.person('height_only'),('2111-12-31',None,None,None,0,'혈압 없음'))
 
     def test_M2B_D2_onset_cutoff_and_versioned_diagnosis_codes(self):
@@ -128,8 +133,13 @@ class HospitalBModels(unittest.TestCase):
         self.assertEqual(self.query("SELECT DISTINCT hospital FROM fct_bp_person"),[('B',)])
 
     def test_M2B_D1_D3_D5_icu_values_are_inpatient_and_chart_day_is_visible(self):
-        self.assertEqual(self.query("""SELECT count(*),min(cast(record_day as varchar)),min(std_unit)
-            FROM bp_value WHERE hospital='B' AND person_id='icu' AND source_code IN ('220179','220180')"""),
+        self.assertEqual(self.query("""SELECT count(*),min(cast(raw.record_day as varchar)),min(unit.concept_code)
+            FROM stg_b_bp_value raw JOIN omop_source_link link
+              ON link.hospital=raw.hospital AND link.source_row_key=raw.source_row_key
+             AND link.omop_table='measurement'
+            JOIN measurement m ON m.measurement_id=link.omop_id
+            JOIN concept unit ON unit.concept_id=m.unit_concept_id
+            WHERE raw.hospital='B' AND raw.person_id='icu' AND raw.source_code IN ('220179','220180')"""),
             [(2,'2111-08-11','mm[Hg]')])
         self.assertEqual(self.query("""SELECT cast(bp_date as varchar) FROM int_bp_daily
             WHERE hospital='B' AND person_id='icu' AND as_of_label='dec31'"""),[('2111-05-01',)])

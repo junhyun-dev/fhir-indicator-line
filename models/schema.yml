@@ -1,282 +1,310 @@
-# D1-D6 / decisions 0006,0009: preserve common grains and reject late clinical records.
+# D1-D6 / decisions 0004,0006,0010,0011: OMOP calculations and original source contracts.
 version: 2
 seeds:
-  - name: as_of_labels
-    description: D1 named month/day cutoffs, interpreted by each hospital adapter.
-    columns:
-      - name: as_of_label
-        data_tests:
-          - unique: {name: t_D1_seed_label_unique}
-          - not_null: {name: t_D1_seed_label_not_null}
-      - name: month
-        data_tests:
-          - not_null: {name: t_D1_seed_month_not_null}
-      - name: day
-        data_tests:
-          - not_null: {name: t_D1_seed_day_not_null}
-  - name: code_map
-    description: D2/D3 hospital code meanings; source_system is descriptive only.
+- name: as_of_labels
+  description: 'D1; decision 0010: month/day cutoffs interpreted only by int_person_period.'
+  columns:
+  - name: as_of_label
     data_tests:
-      - unique:
-          name: t_D2_M2_diagnosis_mapping_key_unique
-          arguments:
-            column_name: "hospital || ':' || source_code"
-          config:
-            where: "concept = 'essential_hypertension'"
-      - unique:
-          name: t_D3_M2_bp_mapping_key_unique
-          arguments:
-            column_name: "hospital || ':' || source_code || ':' || source_unit"
-          config:
-            where: "concept in ('systolic', 'diastolic')"
-    columns:
-      - name: hospital
-        data_tests:
-          - not_null: {name: t_D2_D3_mapping_hospital_not_null}
-      - name: source_code
-        data_tests:
-          - not_null: {name: t_D2_D3_mapping_code_not_null}
-      - name: concept
-        data_tests:
-          - not_null: {name: t_D2_D3_mapping_concept_not_null}
+    - unique:
+        name: t_D1_seed_label_unique
+    - not_null:
+        name: t_D1_seed_label_not_null
+  - name: month
+    data_tests:
+    - not_null:
+        name: t_D1_seed_month_not_null
+  - name: day
+    data_tests:
+    - not_null:
+        name: t_D1_seed_day_not_null
+- name: indicator_concepts
+  description: 'D2/D3; decisions 0009,0010: shared standard concept sets.'
+  data_tests:
+  - unique:
+      name: t_0010_D2_D3_indicator_set_key_unique
+      arguments:
+        column_name: concept_set || ':' || cast(concept_id as varchar)
+  - unique:
+      name: t_0010_D3_component_meaning_unambiguous
+      arguments:
+        column_name: concept_id
+      config:
+        where: concept_set in ('systolic','diastolic')
+  columns:
+  - name: concept_set
+    data_tests:
+    - not_null:
+        name: t_0010_D2_D3_indicator_set_not_null
+  - name: concept_id
+    data_tests:
+    - not_null:
+        name: t_0010_D2_D3_indicator_concept_not_null
+    - relationships:
+        name: t_0009_D2_D3_indicator_concept_exists
+        arguments:
+          to: ref('concept')
+          field: concept_id
 models:
-  - name: stg_a_person_period
-    description: D1/D2 A calendar and year-end age; no eligibility filter.
+- name: stg_a_person
+  description: 'D1,D2; decisions 0005,0010: one person with original facts, without an indicator calendar.'
+  data_tests:
+  - unique:
+      name: t_0010_D2_a_person_key_unique
+      arguments:
+        column_name: hospital || ':' || person_id
+  columns:
+  - name: person_id
     data_tests:
-      - unique:
-          name: t_D1_D2_M2_a_person_period_key_unique
-          arguments:
-            column_name: "hospital || ':' || as_of_label || ':' || person_id"
-    columns:
-      - name: person_id
-        data_tests:
-          - not_null: {name: t_D1_D2_a_person_not_null}
-      - name: as_of
-        data_tests:
-          - not_null: {name: t_D1_a_as_of_not_null}
-  - name: stg_a_visit
-    description: D1/D2/D3 A visits with interpreted visit types.
+    - not_null:
+        name: t_0010_D2_a_person_person_id_not_null
+  - name: year_of_birth
     data_tests:
-      - same_clinical_day:
-          name: t_0006_D1_record_day_a_visit
-          arguments: {clinical_column: start_day}
-      - unique:
-          name: t_D1_D2_D3_M2_a_visit_key_unique
-          arguments:
-            column_name: "hospital || ':' || visit_id"
-    columns:
-      - name: visit_id
-        data_tests:
-          - not_null: {name: t_D1_D2_D3_a_visit_not_null}
-  - name: stg_a_condition
-    description: D1/D2 A diagnosis and source code, before semantic mapping.
+    - not_null:
+        name: t_0010_D2_a_person_year_of_birth_not_null
+  - name: measurement_year
     data_tests:
-      - same_clinical_day:
-          name: t_0006_D1_record_day_a_condition
-          arguments: {clinical_column: start_day}
-      - unique:
-          name: t_D1_D2_M2_a_condition_key_unique
-          arguments:
-            column_name: "hospital || ':' || condition_id || ':' || source_code"
-  - name: stg_a_bp_value
-    description: D1/D3 A observation value paired with its own source code.
+    - not_null:
+        name: t_0010_D2_a_person_measurement_year_not_null
+- name: stg_a_visit
+  description: 'D1-D3; decisions 0006,0009,0011: original source events, dates and keys.'
+  data_tests:
+  - same_clinical_day:
+      name: t_0006_D1_record_day_a_visit
+      arguments:
+        clinical_column: start_day
+  - unique:
+      name: t_0011_D1_stg_a_visit_source_key_unique
+      arguments:
+        column_name: hospital || ':' || source_row_key
+  columns:
+  - name: source_row_key
     data_tests:
-      - same_clinical_day:
-          name: t_0006_D1_record_day_a_bp
-          arguments: {clinical_column: bp_day}
-      - unique:
-          name: t_D1_D3_M2_a_bp_value_key_unique
-          arguments:
-            column_name: "hospital || ':' || observation_id || ':' || source_code"
-  - name: stg_b_person_period
-    description: D1/D2/M2B person-specific anchor calendar and age.
+    - not_null:
+        name: t_0011_D1_stg_a_visit_source_key_not_null
+- name: stg_a_condition
+  description: 'D1-D3; decisions 0006,0009,0011: original source events, dates and keys.'
+  data_tests:
+  - same_clinical_day:
+      name: t_0006_D1_record_day_a_condition
+      arguments:
+        clinical_column: start_day
+  - unique:
+      name: t_0011_D1_stg_a_condition_source_key_unique
+      arguments:
+        column_name: hospital || ':' || source_row_key || ':' || source_code
+- name: stg_a_bp_value
+  description: 'D1-D3; decisions 0006,0009,0011: original source events, dates and keys.'
+  data_tests:
+  - same_clinical_day:
+      name: t_0006_D1_record_day_a_bp
+      arguments:
+        clinical_column: bp_day
+  - unique:
+      name: t_0011_D1_stg_a_bp_value_source_key_unique
+      arguments:
+        column_name: hospital || ':' || source_row_key
+- name: stg_b_person
+  description: 'D1,D2; decisions 0005,0010: one person with original facts, without an indicator calendar.'
+  data_tests:
+  - unique:
+      name: t_0010_D2_b_person_key_unique
+      arguments:
+        column_name: hospital || ':' || person_id
+  columns:
+  - name: person_id
     data_tests:
-      - unique:
-          name: t_M2B_D1_D2_person_period_key_unique
-          arguments:
-            column_name: "hospital || ':' || as_of_label || ':' || person_id"
-    columns:
-      - name: person_id
-        data_tests:
-          - not_null: {name: t_M2B_D2_person_not_null}
-      - name: as_of
-        data_tests:
-          - not_null: {name: t_M2B_D1_as_of_not_null}
-  - name: stg_b_condition
-    description: D1/D2/M2B earliest admission for each versioned hypertension code.
+    - not_null:
+        name: t_0010_D2_b_person_person_id_not_null
+  - name: year_of_birth
     data_tests:
-      - same_clinical_day:
-          name: t_0006_D1_record_day_b_condition
-          arguments: {clinical_column: start_day}
-      - unique:
-          name: t_M2B_D1_D2_condition_key_unique
-          arguments:
-            column_name: "hospital || ':' || condition_id || ':' || source_code"
-    columns:
-      - name: condition_id
-        data_tests:
-          - not_null: {name: t_M2B_D2_condition_id_not_null}
-      - name: source_code
-        data_tests:
-          - not_null: {name: t_M2B_D2_condition_code_not_null}
-  - name: stg_b_visit
-    description: D1/D2/D3/M2B outpatient days and admission/ED intervals.
+    - not_null:
+        name: t_0010_D2_b_person_year_of_birth_not_null
+  - name: measurement_year
     data_tests:
-      - same_clinical_day:
-          name: t_0006_D1_record_day_b_visit
-          arguments: {clinical_column: start_day}
-      - unique:
-          name: t_M2B_D1_D2_D3_visit_key_unique
-          arguments:
-            column_name: "hospital || ':' || visit_id"
-    columns:
-      - name: visit_id
-        data_tests:
-          - not_null: {name: t_M2B_D2_D3_visit_id_not_null}
-  - name: stg_b_bp_value
-    description: D1/D3/M2B one OMR half or ICU item value with its source code.
+    - not_null:
+        name: t_0010_D2_b_person_measurement_year_not_null
+- name: stg_b_visit
+  description: 'D1-D3; decisions 0006,0009,0011: original source events, dates and keys.'
+  data_tests:
+  - same_clinical_day:
+      name: t_0006_D1_record_day_b_visit
+      arguments:
+        clinical_column: start_day
+  - unique:
+      name: t_0011_D1_stg_b_visit_source_key_unique
+      arguments:
+        column_name: hospital || ':' || source_row_key
+  columns:
+  - name: source_row_key
     data_tests:
-      - same_clinical_day:
-          name: t_0006_D1_record_day_b_bp
-          arguments: {clinical_column: bp_day}
-      - unique:
-          name: t_M2B_D1_D3_bp_value_key_unique
-          arguments:
-            column_name: "hospital || ':' || observation_id || ':' || source_code"
-    columns:
-      - name: observation_id
-        data_tests:
-          - not_null: {name: t_M2B_D3_observation_id_not_null}
-      - name: source_code
-        data_tests:
-          - not_null: {name: t_M2B_D3_source_code_not_null}
-  - name: person_period
-    description: D1/D2 common person calendar; all people reach this boundary.
+    - not_null:
+        name: t_0011_D1_stg_b_visit_source_key_not_null
+- name: stg_b_bp_value
+  description: 'D1-D3; decisions 0006,0009,0011: original source events, dates and keys.'
+  data_tests:
+  - same_clinical_day:
+      name: t_0006_D1_record_day_b_bp
+      arguments:
+        clinical_column: bp_day
+  - unique:
+      name: t_0011_D1_stg_b_bp_value_source_key_unique
+      arguments:
+        column_name: hospital || ':' || source_row_key
+  columns:
+  - name: source_row_key
     data_tests:
-      - unique:
-          name: t_D1_D2_M2_person_period_key_unique
-          arguments:
-            column_name: "hospital || ':' || as_of_label || ':' || person_id"
-    columns:
-      - name: hospital
-        data_tests:
-          - not_null: {name: t_D1_M2_period_hospital_not_null}
-      - name: as_of_label
-        data_tests:
-          - not_null: {name: t_D1_M2_period_label_not_null}
-      - name: person_id
-        data_tests:
-          - not_null: {name: t_D1_D2_period_person_not_null}
-  - name: condition
-    description: D1/D2 common diagnoses mapped by hospital/code without system.
+    - not_null:
+        name: t_0011_D1_stg_b_bp_value_source_key_not_null
+  - name: source_code
     data_tests:
-      - unique:
-          name: t_D1_D2_M2_condition_key_unique
-          arguments:
-            column_name: "hospital || ':' || condition_id || ':' || source_code"
-    columns:
-      - name: condition_id
-        data_tests:
-          - not_null: {name: t_D1_D2_condition_id_not_null}
-      - name: source_code
-        data_tests:
-          - not_null: {name: t_D2_condition_code_not_null}
-  - name: visit
-    description: D1/D2/D3 common visits carrying standardized visit types.
+    - not_null:
+        name: t_M2B_D3_source_code_not_null
+- name: int_bp_daily
+  description: D1/D3/D4 one hospital, label, person and usable blood pressure day.
+  data_tests:
+  - unique:
+      name: t_D1_D3_D4_M2_daily_key_unique
+      arguments:
+        column_name: hospital || ':' || as_of_label || ':' || person_id || ':' || cast(bp_date as varchar)
+  columns:
+  - name: hospital
     data_tests:
-      - unique:
-          name: t_D1_D2_D3_M2_visit_key_unique
-          arguments:
-            column_name: "hospital || ':' || visit_id"
-  - name: bp_value
-    description: D1/D3 mapped source code/value pairs; only mapped units remain.
+    - not_null:
+        name: t_D1_M2_daily_hospital_not_null
+  - name: as_of_label
     data_tests:
-      - unique:
-          name: t_D1_D3_M2_bp_value_key_unique
-          arguments:
-            column_name: "hospital || ':' || observation_id || ':' || source_code"
-    columns:
-      - name: observation_id
-        data_tests:
-          - not_null: {name: t_D1_D3_observation_id_not_null}
-      - name: source_code
-        data_tests:
-          - not_null: {name: t_D3_source_code_not_null}
-  - name: int_bp_daily
-    description: D1/D3/D4 one hospital, label, person and usable blood pressure day.
+    - not_null:
+        name: t_D1_M2_daily_label_not_null
+  - name: person_id
     data_tests:
-      - unique:
-          name: t_D1_D3_D4_M2_daily_key_unique
-          arguments:
-            column_name: "hospital || ':' || as_of_label || ':' || person_id || ':' || cast(bp_date as varchar)"
-    columns:
-      - name: hospital
-        data_tests:
-          - not_null: {name: t_D1_M2_daily_hospital_not_null}
-      - name: as_of_label
-        data_tests:
-          - not_null: {name: t_D1_M2_daily_label_not_null}
-      - name: person_id
-        data_tests:
-          - not_null: {name: t_D3_daily_person_not_null}
-      - name: bp_date
-        data_tests:
-          - not_null: {name: t_D1_daily_day_not_null}
-  - name: fct_bp_person
-    description: D2/D5/D6/D7 one eligible person per hospital/label; no D7 exclusions.
+    - not_null:
+        name: t_D3_daily_person_not_null
+  - name: bp_date
     data_tests:
-      - unique:
-          name: t_D1_D2_M2_person_result_key_unique
-          arguments:
-            column_name: "hospital || ':' || as_of_label || ':' || person_id"
-    columns:
-      - name: hospital
-        data_tests:
-          - not_null: {name: t_D1_M2_result_hospital_not_null}
-      - name: as_of_label
-        data_tests:
-          - not_null: {name: t_D1_M2_result_label_not_null}
-      - name: person_id
-        data_tests:
-          - not_null: {name: t_D2_result_person_not_null}
-      - name: as_of
-        data_tests:
-          - not_null: {name: t_D1_result_as_of_not_null}
-      - name: controlled
-        data_tests:
-          - not_null: {name: t_D6_controlled_not_null}
-          - accepted_values:
-              name: t_D6_controlled_binary
-              arguments: {values: [0, 1], quote: false}
-      - name: reason
-        data_tests:
-          - not_null: {name: t_D6_reason_not_null}
-          - accepted_values:
-              name: t_D6_reason_accepted_values
-              arguments:
-                values: ['조절됨', '수축기 140 이상', '이완기 90 이상', '마지막 날에 한쪽 값만', '혈압 없음']
-  - name: dim_as_of
-    description: D1/D6 all hospital/label pairs reach reports, even without eligible people.
+    - not_null:
+        name: t_D1_daily_day_not_null
+- name: fct_bp_person
+  description: D2/D5/D6/D7 one eligible person per hospital/label; no D7 exclusions.
+  data_tests:
+  - unique:
+      name: t_D1_D2_M2_person_result_key_unique
+      arguments:
+        column_name: hospital || ':' || as_of_label || ':' || person_id
+  columns:
+  - name: hospital
     data_tests:
-      - unique:
-          name: t_D1_M2_report_label_key_unique
-          arguments:
-            column_name: "hospital || ':' || as_of_label"
-    columns:
-      - name: as_of_label
-        data_tests:
-          - not_null: {name: t_D1_report_label_not_null}
-  - name: bp_summary
-    description: D6/D7 learning summary; a zero denominator has NULL rate.
+    - not_null:
+        name: t_D1_M2_result_hospital_not_null
+  - name: as_of_label
     data_tests:
-      - unique:
-          name: t_D1_M2_summary_key_unique
-          arguments:
-            column_name: "hospital || ':' || as_of_label"
-    columns:
-      - name: hospital
-        data_tests:
-          - not_null: {name: t_D1_M2_summary_hospital_not_null}
-      - name: as_of_label
-        data_tests:
-          - not_null: {name: t_D1_summary_label_not_null}
+    - not_null:
+        name: t_D1_M2_result_label_not_null
+  - name: person_id
+    data_tests:
+    - not_null:
+        name: t_D2_result_person_not_null
+  - name: as_of
+    data_tests:
+    - not_null:
+        name: t_D1_result_as_of_not_null
+  - name: controlled
+    data_tests:
+    - not_null:
+        name: t_D6_controlled_not_null
+    - accepted_values:
+        name: t_D6_controlled_binary
+        arguments:
+          values:
+          - 0
+          - 1
+          quote: false
+  - name: reason
+    data_tests:
+    - not_null:
+        name: t_D6_reason_not_null
+    - accepted_values:
+        name: t_D6_reason_accepted_values
+        arguments:
+          values:
+          - 조절됨
+          - 수축기 140 이상
+          - 이완기 90 이상
+          - 마지막 날에 한쪽 값만
+          - 혈압 없음
+- name: dim_as_of
+  description: D1/D6 all hospital/label pairs reach reports, even without eligible people.
+  data_tests:
+  - unique:
+      name: t_D1_M2_report_label_key_unique
+      arguments:
+        column_name: hospital || ':' || as_of_label
+  columns:
+  - name: as_of_label
+    data_tests:
+    - not_null:
+        name: t_D1_report_label_not_null
+- name: bp_summary
+  description: D6/D7 learning summary; a zero denominator has NULL rate.
+  data_tests:
+  - unique:
+      name: t_D1_M2_summary_key_unique
+      arguments:
+        column_name: hospital || ':' || as_of_label
+  columns:
+  - name: hospital
+    data_tests:
+    - not_null:
+        name: t_D1_M2_summary_hospital_not_null
+  - name: as_of_label
+    data_tests:
+    - not_null:
+        name: t_D1_summary_label_not_null
+- name: int_person_period
+  description: 'D1,D2; decisions 0005,0010: the single indicator calendar and age calculation.'
+  data_tests:
+  - unique:
+      name: t_0010_D1_D2_person_period_key_unique
+      arguments:
+        column_name: hospital || ':' || as_of_label || ':' || person_id
+  columns:
+  - name: hospital
+    data_tests:
+    - not_null:
+        name: t_0010_D1_D2_period_hospital_not_null
+  - name: as_of_label
+    data_tests:
+    - not_null:
+        name: t_0010_D1_D2_period_as_of_label_not_null
+  - name: person_id
+    data_tests:
+    - not_null:
+        name: t_0010_D1_D2_period_person_id_not_null
+  - name: omop_person_id
+    data_tests:
+    - not_null:
+        name: t_0010_D1_D2_period_omop_person_id_not_null
+  - name: as_of
+    data_tests:
+    - not_null:
+        name: t_0010_D1_D2_period_as_of_not_null
+  - name: measurement_start_day
+    data_tests:
+    - not_null:
+        name: t_0010_D1_D2_period_measurement_start_day_not_null
+  - name: measurement_end_day
+    data_tests:
+    - not_null:
+        name: t_0010_D1_D2_period_measurement_end_day_not_null
+  - name: period_end_day
+    data_tests:
+    - not_null:
+        name: t_0010_D1_D2_period_period_end_day_not_null
+  - name: hypertension_cutoff_day
+    data_tests:
+    - not_null:
+        name: t_0010_D1_D2_period_hypertension_cutoff_day_not_null
+  - name: age_at_year_end
+    data_tests:
+    - not_null:
+        name: t_0010_D1_D2_period_age_at_year_end_not_null
