@@ -23,9 +23,10 @@ sh scripts/quickstart.sh
 
 받기 → 고정 해시 확인 → FHIR 생성 → 배치 나누기와 적재 → 전체 검사 → 독립 재계산을 차례로 실행합니다. 처음에는 인터넷이 필요합니다. Temurin **17.0.20.1+1**, Synthea **v4.0.0**, MIMIC-IV demo **2.2**를 고정하며, Python 패키지는 requirements.lock의 해시와 대조합니다. 이미 해시가 맞는 원천은 받거나 생성하지 않고 재사용합니다.
 
-- 예상 받는 양: **약 453MB(432MiB)**, Python 의존성 포함.
-- 예상 디스크: 압축본·캐시·생성 자료를 포함해 **약 1.5~1.8GB**, 상한 5GB.
-- 새 복제본에서 다운로드·생성을 포함한 실제 크기와 시간은 **아직 측정 전**입니다. 기존 입력으로 실행한 검사와 새 복제본 검증을 구분합니다.
+- 받는 양: **약 453MB** — Temurin JDK 193MB · Synthea jar 201MB · Python 의존성 약 43MB · MIMIC-IV 데모 zip 16MB.
+- 디스크: 새 복제본에서 두 번 돌린 뒤 **약 1.43GB**(압축본 · JDK · venv · 생성 FHIR · DB · 캐시 포함) · 상한 5GB를 스크립트가 확인합니다.
+- 시간(2026-10-21 · 리눅스 노트북에서 실제로 잰 값): Python 의존성 · JDK · Synthea 받기와 병원 A FHIR 생성 **약 1분 40초**, 그 뒤 적재 · 전체 검사 · 독립 재계산 **약 1분 40초**, 원천이 이미 있는 두 번째 실행 **약 1분 30초**(받기 0).
+- **PhysioNet이 느릴 때:** 2026-10-21에는 PhysioNet 전송이 초당 약 1KB여서 zip을 끝까지 받지 못했습니다(이어받기는 동작). 다른 경로로 받은 같은 zip을 `.local/public-data/mimic-iv-demo-2.2/download/mimic-iv-clinical-database-demo-2.2.zip`에 두면 받기를 건너뛰고, zip 안의 공식 `SHA256SUMS.txt`와 고정 해시로 확인한 뒤 씁니다.
 - JVM은 최대 heap 2GB·CPU 2개, DuckDB는 512MB·thread 2개로 제한하고 생성과 검사를 순서대로 실행합니다.
 
 완료 화면의 결과 형식은 다음과 같습니다. 실행시간은 해당 실행에서 측정한 값으로 표시됩니다.

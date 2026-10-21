@@ -23,4 +23,4 @@
 
 ## 결과
 
-(반복이 끝나면 적어요.)
+◆ 새 복제본(커밋 `cdd2547` · 전체 이력 clone)에서 `sh scripts/quickstart.sh`: Python 의존성 · Temurin JDK · Synthea jar를 실제로 받고 병원 A FHIR 38개를 다시 만들어 고정 해시와 같음(약 1분 40초) → MIMIC-IV 데모 zip은 PhysioNet이 10/21 초당 약 1KB라 두 번(약 40분씩) 이어받다 멈춤(3.4 → 5.5MB · 이어받기 동작 확인) → 같은 공식 zip(작업실에서 10/19에 받은 것)을 받기 자리에 두고 다시 실행 → 받기 건너뜀 · zip 안 공식 SHA256SUMS와 고정 해시 확인 → `check.sh` 종료 0 · `answer_key` 다시 세기 여섯 파일 모두 같음(`cmp`) · 숫자 넷 그대로(99초) → 한 번 더 실행(받기 0 · 91초 · 같은 결과). 새 복제본 크기 1,429,053,390바이트 · 검증 뒤 그 폴더만 지움. 근거: `.local/FHIR-LINE-08/b2-evidence/`. README의 크기 · 시간을 잰 값으로 바꾸고 「PhysioNet이 느릴 때」 한 줄을 더함.
