@@ -1,0 +1,14 @@
+hospital,omop_table,carried,not_carried
+A,person,36,0
+A,person_ext,36,0
+A,observation_period,36,0
+A,visit_occurrence,2144,0
+A,condition_occurrence,10,1445
+A,measurement,1110,0
+B,person,100,0
+B,person_ext,100,0
+B,observation_period,100,0
+B,visit_occurrence,1109,0
+B,condition_occurrence,100,4406
+B,measurement,18428,0
+AB,cdm_source,1,0

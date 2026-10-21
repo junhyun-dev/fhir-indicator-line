@@ -47,6 +47,24 @@ class CommonLayer(unittest.TestCase):
         self.assertEqual(validate(g)['issues'],[])
 
 
+class OmopLayer(unittest.TestCase):
+    def graph(self, omop_deps, int_deps):
+        g = ReportsLayer().graph('reports',['model.fct'])
+        g['nodes']['model.omop'] = node('omop','omop',omop_deps)
+        g['nodes']['model.int']['depends_on']['nodes'] = int_deps
+        return g
+
+    def test_M3_omop_reads_staging_and_intermediate_reads_omop(self):
+        self.assertEqual(validate(self.graph(['model.stg'],['model.omop']))['issues'],[])
+
+    def test_M3_omop_cannot_read_common_or_source(self):
+        self.assertEqual(validate(self.graph(['model.com'],['model.omop']))['status'],'실패')
+        self.assertEqual(validate(self.graph(['source.fhir.latest_resources'],['model.omop']))['status'],'실패')
+
+    def test_M3_intermediate_still_cannot_read_staging(self):
+        self.assertEqual(validate(self.graph(['model.stg'],['model.stg']))['status'],'실패')
+
+
 class StrictOverall(unittest.TestCase):
     rows = [{'status':'통과'},{'status':'기다림'}]
 

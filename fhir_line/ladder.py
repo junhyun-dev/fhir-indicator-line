@@ -10,6 +10,7 @@ from pathlib import Path
 
 from .bundles import entries
 from .layers import check as check_layers
+from . import omop
 from .runtime import ARTIFACTS, DATABASE, ORIGINAL, ROOT, connect
 
 
@@ -195,10 +196,12 @@ def check(expected, strict=False):
             except (ValueError,InvalidOperation,csv.Error,OSError) as error:
                 fourth = {'status':'실패','detail':'expected 읽기/셀 자료형 오류: '+type(error).__name__+'; 기준을 고치지 않음'}
             fifth = source_anchor(connection)
+            sixth = omop.check(connection,folder)  # M3 · 결정 0004 ~ 0010
         else:
             fourth = {'status':'기다림','detail':'expected/ 없음; 사용자 모델/정답 대기'}
             fifth = {'status':'기다림','detail':'요청대로 expected/가 있을 때만 원천 기준 검사 실행'}
-    ladder = [dict(step=str(i),**item) for i,item in enumerate((first,second,third,fourth,fifth),1)]
+            sixth = {'status':'기다림','detail':'expected/ 없음'}
+    ladder = [dict(step=str(i),**item) for i,item in enumerate((first,second,third,fourth,fifth,sixth),1)]
     status = overall(ladder,strict)
     report = {'status':status,'strict':strict,'layers':layer_result,'ladder':ladder,
               'expected_read_only':True,'D1_D7_models_implemented':fourth.get('자료형',{}).get('status') in ('통과','실패')}
