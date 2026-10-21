@@ -16,3 +16,4 @@
 | [0008](0008-bp-two-measurement-rows.md) | 혈압 한 번 = measurement 두 행 | 받아들임(Claude) |
 | [0009](0009-concepts-small-list-no-account.md) | 표준 번호는 쓰는 것만 작은 목록으로 | 받아들임(Claude) |
 | [0010](0010-definition-rules-in-calculation-layer.md) | 정의의 날짜 · 개념 규칙은 계산 층 한 곳에 | 받아들임(Claude) |
+| [0011](0011-observation-period-id-and-source-link.md) | 0007 보충 — `observation_period_id` = `person_id` · 사건 행 원래 id는 `omop_source_link` | 받아들임(Claude · 사전 검토 R2 · R3) |

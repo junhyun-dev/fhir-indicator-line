@@ -8,7 +8,7 @@ from .runtime import ARTIFACTS, ROOT, environment
 
 ALLOWED = {'staging':{'source','seed'},          # L3 병원마다(staging/hospital_a · hospital_b): 그 병원의 모양만 앎
            'common':{'staging','seed'},           # 공통 표(M2 요청 04): 병원 줄을 이어 붙이고 코드 매핑 표로 표준 뜻에 · M3 요청 07에서 지움
-           'omop':{'staging','seed'},             # M3 결정 0004: OMOP CDM 5.4 표 + person_ext · 표준 번호는 seed에서
+           'omop':{'staging','seed','omop'},      # M3 결정 0004 · 0011: OMOP CDM 5.4 표 + 옆 표 · 층 안에서 서로 읽기 허용 · common은 안 됨
            'intermediate':{'common','omop','seed'}, 'marts':{'intermediate','common','omop','seed'},
            'reports':{'marts'}}  # L6 reports: summaries read only finished marts (request 03 review R1)
 

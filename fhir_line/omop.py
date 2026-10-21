@@ -16,6 +16,9 @@ CDM_TABLES = ('person','observation_period','visit_occurrence','condition_occurr
 EVENT_TABLES = ('observation_period','visit_occurrence','condition_occurrence','measurement')
 EXT_CONTRACT = {'person_id':'INTEGER','hospital':'VARCHAR','measurement_year':'INTEGER'}  # 결정 0005 · 공식 표가 아님
 LOAD_COUNTS = 'omop_load_counts'  # 병원 × 표마다 옮긴 행 · 안 옮긴 행(FC-03 · 생략은 알림)
+LINK = 'omop_source_link'          # 결정 0011: 사건 행 하나 = 원래 행 키 한 줄(공식 표가 아님)
+LINK_CONTRACT = {'omop_table':'VARCHAR','omop_id':'INTEGER','hospital':'VARCHAR','source_row_key':'VARCHAR'}
+LINKED = {'visit_occurrence':'visit_occurrence_id','condition_occurrence':'condition_occurrence_id','measurement':'measurement_id'}
 FOLLOW_COLUMNS = ('measurement_source_value','measurement_date','measurement_concept_id','value_as_number','unit_concept_id','value_source_value')
 
 
@@ -125,9 +128,36 @@ def compare_follow(connection, folder):
     return {'status':'통과' if not bad else '실패','detail':'따라갈 행 '+('셀마다 같음' if not bad else '다름: '+'; '.join(bad))}
 
 
+def check_links(connection):
+    """결정 0011: 사건 표의 행마다 원래 행 키가 꼭 한 줄 · 키는 병원 × 표 안에서 겹치지 않음 · 병원이 person_ext와 같음."""
+    if not all(exists(connection,t) for t in (LINK,'person_ext',*LINKED)):
+        return {'status':'기다림','detail':LINK+' 또는 사건 표 없음'}
+    have = dict((r[1],r[2]) for r in connection.execute(f"PRAGMA table_info('{LINK}')").fetchall())
+    if have!=LINK_CONTRACT:
+        return {'status':'실패','detail':f'{LINK} 모양 {have}'}
+    bad = []
+    for table, key in LINKED.items():
+        n, linked_once, wrong_hospital = connection.execute(f"""SELECT count(*),
+              count(*) FILTER (WHERE (SELECT count(*) FROM {LINK} l WHERE l.omop_table='{table}' AND l.omop_id=x.{key})=1),
+              count(*) FILTER (WHERE EXISTS (SELECT 1 FROM {LINK} l JOIN person_ext e ON e.person_id=x.person_id
+                                             WHERE l.omop_table='{table}' AND l.omop_id=x.{key} AND l.hospital<>e.hospital))
+            FROM {table} x""").fetchone()
+        links, keys, dangling = connection.execute(f"""SELECT count(*), count(DISTINCT hospital||'|'||source_row_key),
+              count(*) FILTER (WHERE NOT EXISTS (SELECT 1 FROM {table} x WHERE x.{key}=l.omop_id))
+            FROM {LINK} l WHERE omop_table='{table}'""").fetchone()
+        if not (n==linked_once==links==keys) or wrong_hospital or dangling or connection.execute(
+                f"SELECT count(*) FROM {LINK} WHERE omop_table='{table}' AND (source_row_key IS NULL OR source_row_key='')").fetchone()[0]:
+            bad.append(f'{table}: 행 {n} · 한 줄씩 이어진 행 {linked_once} · 이음 {links} · 다른 키 {keys} · 병원 다름 {wrong_hospital} · 짝 없는 이음 {dangling}')
+    others = connection.execute(f"SELECT count(*) FROM {LINK} WHERE omop_table NOT IN ({','.join(repr(t) for t in LINKED)})").fetchone()[0]
+    if others:
+        bad.append(f'다른 표 이름 {others}')
+    return {'status':'통과' if not bad else '실패','detail':'원래 행 키 '+('사건 행마다 한 줄' if not bad else '다름: '+'; '.join(bad))}
+
+
 def check(connection, folder):
-    """⑥ = 모양 + 건수 + 따라갈 행. 하나라도 실패면 실패, 하나라도 기다림이면 기다림."""
-    parts = {'모양':check_shape(connection),'건수':compare_counts(connection,folder),'따라가기':compare_follow(connection,folder)}
+    """⑥ = 모양 + 건수 + 따라갈 행 + 원래 행 키. 하나라도 실패면 실패, 하나라도 기다림이면 기다림."""
+    parts = {'모양':check_shape(connection),'건수':compare_counts(connection,folder),'따라가기':compare_follow(connection,folder),
+             '원래 행':check_links(connection)}
     states = [p['status'] for p in parts.values()]
     status = '실패' if '실패' in states else '기다림' if '기다림' in states else '통과'
     return {'status':status,'detail':' · '.join(f'{k} {v["status"]}' for k,v in parts.items()),**parts}

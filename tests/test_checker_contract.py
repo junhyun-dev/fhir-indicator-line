@@ -57,6 +57,11 @@ class OmopLayer(unittest.TestCase):
     def test_M3_omop_reads_staging_and_intermediate_reads_omop(self):
         self.assertEqual(validate(self.graph(['model.stg'],['model.omop']))['issues'],[])
 
+    def test_0011_omop_may_read_omop(self):
+        g = self.graph(['model.stg'],['model.omop'])
+        g['nodes']['model.omop2'] = node('omop2','omop',['model.omop'])
+        self.assertEqual(validate(g)['issues'],[])
+
     def test_M3_omop_cannot_read_common_or_source(self):
         self.assertEqual(validate(self.graph(['model.com'],['model.omop']))['status'],'실패')
         self.assertEqual(validate(self.graph(['source.fhir.latest_resources'],['model.omop']))['status'],'실패')

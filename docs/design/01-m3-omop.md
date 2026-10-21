@@ -10,7 +10,7 @@
 1. 두 병원 기록이 **OMOP CDM 5.4 표 다섯**(`person` · `observation_period` · `visit_occurrence` · `condition_occurrence` · `measurement`)과 `cdm_source`에 들어가고, 열 이름 · 형식이 공식 DuckDB DDL(OHDSI CommonDataModel `f6d2738` · `inst/ddl/5.4/duckdb/OMOPCDM_duckdb_5.4_ddl.sql`)과 같다.
 2. 계산 층(L4 ~ L6)은 OMOP 표 · 확장 표 하나(`person_ext`) · 개념 목록만 읽고, **두 병원 숫자가 그대로**다 — A 3/5 → 4/6 · B 4/9 → 3/9(`expected/` 그대로 · 결정 0001 · 0003).
 3. **원천 행이 조용히 사라지지 않는다** — 원천에서 직접 센 건수(Codex 밖 · `expected/omop_counts.csv`)와 OMOP 행 수가 병원 × 표마다 같고, 옮기지 않은 원천 행은 이유별 수로 남는다.
-4. 원래 코드 · id · 값 글자는 `*_source_value`에 남는다(사람 · 방문 · 진단 · 혈압 · 단위).
+4. 원래 코드 · 값 글자는 `*_source_value`에, 사람의 원래 id는 `person_source_value`에, 방문 · 진단 · 혈압 행의 원래 행 키는 옆 표 `omop_source_link`에 남는다(사건 행 하나 = 한 줄 · 결정 0011 · 요청 06 사전 검토 R3에서 고침).
 
 하지 않는 것: 지표에 안 쓰는 진단 · 검사 · 약 행 옮기기 · OHDSI 도구(Achilles · DQD) 돌리기 · 두 병원의 같은 사람 잇기 · Athena 전체 용어 묶음 · `condition_era` 같은 파생 표 · 심평원 지표 10.
 
@@ -29,6 +29,7 @@
 | `visit_occurrence` | 방문 한 번 | A Encounter · B 입원 · `omr` 외래 날 | `visit_source_value`(A `class.code` · B `admission` · `ed_admission` · `omr_day`) |
 | `condition_occurrence` | 진단 하나 | A Condition · B 고혈압 코드가 붙은 입원마다 한 행(「가장 이른 진단」은 계산 층의 D2가 고름 — 지금은 B staging이 먼저 줄임) | `condition_source_value`(`59621000` · `4019` · `I10`) |
 | `measurement` | 혈압 값 하나(수축기 · 이완기는 두 행) | A 성분 · B `omr` 「sys/dia」 · ICU | `measurement_source_value` · `unit_source_value` · `value_source_value`(B `omr` 원래 글자) |
+| `omop_source_link`(옆 표 · 0011) | 사건 행 하나 | 방문 · 진단 · 혈압 행마다 | `source_row_key`(A 자원 id · B 원천 복합 키) |
 
 - **번호 붙이기:** OMOP id는 정수예요. `person_id`는 `병원 + 원래 id`의 md5에서 만들어 사람이 늘어도 기존 번호가 바뀌지 않게 하고(136명 겹침 0 · 10/21), 사건 표 id는 정해진 순서의 `row_number()`예요(0007). MIMIC 공식 OMOP 0.9도 해시 id(64비트)를 써요 ●.
 - **표준 번호:** 표준 코드(LOINC · SNOMED · ICD)는 `seeds/concept.csv`(쓰는 것만 · 공개 변환 둘에서 확인)로, 병원 로컬 코드(B `omr` · ICU itemid · 방문 종류)는 `seeds/source_to_concept_map.csv`(OMOP 표준 표 모양)로 찾아요. `code_map.csv`는 갈아타기(요청 07)에서 지워요.
@@ -58,4 +59,4 @@
 - **id가 밀림** — 위 0007 · 해시 겹침은 테스트로.
 - **단위 · 개념 0:** 단위가 매핑 안 되면 `unit_concept_id = 0`(CDM 관례). 계산 층이 8876(mm[Hg])만 쓰니 값이 빠지는 건 의도된 것 — 그 수를 따로 셈.
 - **B의 나이:** `year_of_birth = anchor_year − anchor_age`로 두면 측정 연도 말 나이가 `anchor_age`와 같아요 — MIMIC 공식 OMOP 0.9도 같은 식이에요(10004422: 2111 − 78 = 2033 ● · 10/21 대조).
-- **모르는 것:** ICD-9 `4019` · ICD-10 `I10`의 표준 번호(320128로 짐작 △ — MIMIC OMOP 0.9로 확인 중) · A의 방문 종류 `HH`(34) · `VR`(5)의 표준 번호(dbt-synthea 매핑 확인 전 ?).
+- **확인한 것(10/21):** ICD-9 `4019` · ICD-10 `I10` → 320128(MIMIC 공식 OMOP 0.9 · 원래 코드 번호 44821949 · 35207668 ●) · 같은 100명 ● · 응급실을 거친 입원 262 ●. A의 방문 종류 `HH`(34) · `VR`(5)은 dbt-synthea도 매핑하지 않아 0(원래 글자는 `visit_source_value`).

@@ -31,6 +31,9 @@ def build(con):
                     [i, concept, day, value, unit, code, text or None])
     con.execute("INSERT INTO cdm_source VALUES ('learning', 'L', 'me', NULL, NULL, NULL, DATE '2025-12-31', DATE '2026-10-21', '5.4', 798878, 'subset')")
     con.execute("INSERT INTO omop_load_counts VALUES ('A','condition_occurrence',1,2)")
+    con.execute('CREATE TABLE omop_source_link (omop_table VARCHAR, omop_id INTEGER, hospital VARCHAR, source_row_key VARCHAR)')
+    con.execute('''INSERT INTO omop_source_link VALUES ('visit_occurrence',1,'A','enc-1'), ('condition_occurrence',1,'A','cond-1'),
+                   ('measurement',1,'A','obs-1:8480-6'), ('measurement',2,'A','obs-1:8462-4')''')
     return con
 
 
@@ -101,6 +104,22 @@ class OmopChecks(unittest.TestCase):
                 self.con = build(duckdb.connect())
                 self.con.execute(sql)
                 self.assertEqual(omop.compare_follow(self.con, self.folder)['status'], '실패', name)
+
+    def test_0011_link_breaks_fail(self):
+        cases = {
+            'missing link': "DELETE FROM omop_source_link WHERE omop_table='measurement' AND omop_id=2",
+            'linked twice': "INSERT INTO omop_source_link VALUES ('measurement',2,'A','obs-1:8462-4b')",
+            'same key twice': "UPDATE omop_source_link SET source_row_key='obs-1:8480-6' WHERE omop_id=2 AND omop_table='measurement'",
+            'dangling link': "INSERT INTO omop_source_link VALUES ('visit_occurrence',7,'A','enc-7')",
+            'wrong hospital': "UPDATE omop_source_link SET hospital='B' WHERE omop_table='condition_occurrence'",
+            'empty key': "UPDATE omop_source_link SET source_row_key='' WHERE omop_table='visit_occurrence'",
+            'shape': 'ALTER TABLE omop_source_link DROP COLUMN hospital',
+        }
+        for name, sql in cases.items():
+            with self.subTest(case=name):
+                self.con = build(duckdb.connect())
+                self.con.execute(sql)
+                self.assertEqual(omop.check_links(self.con)['status'], '실패', name)
 
 
 if __name__ == '__main__':
