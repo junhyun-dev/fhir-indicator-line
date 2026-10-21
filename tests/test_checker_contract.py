@@ -19,7 +19,7 @@ class ReportsLayer(unittest.TestCase):
     def graph(self, summary_layer, summary_deps):
         return {'sources':{'source.fhir.latest_resources':{'name':'latest_resources','resource_type':'source'}},
                 'nodes':{'model.stg':node('stg','staging',['source.fhir.latest_resources']),
-                         'model.com':node('com','common',['model.stg']),
+                         'model.com':node('com','omop',['model.stg']),
                          'model.int':node('int','intermediate',['model.com']),
                          'model.fct':node('fct','marts',['model.int']),
                          'model.sum':node('sum',summary_layer,summary_deps)}}
@@ -35,7 +35,7 @@ class ReportsLayer(unittest.TestCase):
 
 
 class CommonLayer(unittest.TestCase):
-    def test_M2_intermediate_reads_common_not_hospital_staging(self):
+    def test_M3_intermediate_reads_omop_not_hospital_staging(self):
         ok = ReportsLayer().graph('reports',['model.fct'])
         self.assertEqual(validate(ok)['issues'],[])
         ok['nodes']['model.int']['depends_on']['nodes'] = ['model.stg']
@@ -45,6 +45,11 @@ class CommonLayer(unittest.TestCase):
         g = ReportsLayer().graph('reports',['model.fct'])
         g['nodes']['model.stg']['original_file_path'] = 'models/staging/hospital_b/stg.sql'
         self.assertEqual(validate(g)['issues'],[])
+
+    def test_0004_common_layer_is_gone(self):
+        g = ReportsLayer().graph('reports',['model.fct'])
+        g['nodes']['model.old'] = node('old','common',['model.stg'])
+        self.assertEqual(validate(g)['status'],'실패')
 
 
 class OmopLayer(unittest.TestCase):
@@ -62,8 +67,8 @@ class OmopLayer(unittest.TestCase):
         g['nodes']['model.omop2'] = node('omop2','omop',['model.omop'])
         self.assertEqual(validate(g)['issues'],[])
 
-    def test_M3_omop_cannot_read_common_or_source(self):
-        self.assertEqual(validate(self.graph(['model.com'],['model.omop']))['status'],'실패')
+    def test_M3_omop_cannot_read_marts_or_source(self):
+        self.assertEqual(validate(self.graph(['model.fct'],['model.omop']))['status'],'실패')
         self.assertEqual(validate(self.graph(['source.fhir.latest_resources'],['model.omop']))['status'],'실패')
 
     def test_M3_intermediate_still_cannot_read_staging(self):
