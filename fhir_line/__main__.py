@@ -54,7 +54,12 @@ def main():
         os.environ.setdefault('A_PRIME_SOURCE_DIR',str(ROOT/'data/a_prime'))
         from .ladder import check
         result = check(args.expected,args.strict)
-    print(json.dumps(result,indent=2,ensure_ascii=False))
+    if args.command=='check':
+        from .ladder import public_report
+        display = public_report(result)
+    else:
+        display = result
+    print(json.dumps(display,indent=2,ensure_ascii=False))
     return 1 if result.get('status')=='실패' or result.get('ok') is False else 0
 
 

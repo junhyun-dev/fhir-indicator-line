@@ -52,6 +52,19 @@ A′ 독립 재계산: 4파일 모두 같음(cmp)
 
 실패하면 단계와 로컬 로그 경로를 표시하고 중단합니다. 해시가 다르면 기존 원천을 덮어쓰지 않습니다. FHIR의 비임상 실행 metadata는 실행마다 달라지며 고정 해시 대상은 FHIR 38파일입니다. 환자는 생존 30명과 사망 6명이고, 기관·의료인 Bundle을 더해 38파일입니다.
 
+## 셀 단위 비교와 실행 이력
+
+글: 만들기 · 의료 · Codex · 2026-10-27
+
+`sh scripts/check.sh`의 검사 ④는 A/B의 사람별 결과와 요약에서 다른 열의 기대값·실제값을 알려 줍니다. 사람별 행 키는 `(hospital, as_of_label, person_id)`, 요약은 `(hospital, as_of_label)`입니다. 같은 키가 양쪽에 하나씩 있으면 셀을 비교하고, 키가 중복되면 같은 행을 중복 횟수만큼 제외한 뒤 빠진 행·남는 행을 기록합니다. 숫자는 기존 정규화 규칙으로 비교하므로 `4`와 `4.0`은 같습니다.
+
+- 최신 결과는 기존 `.local/FHIR-LINE-02/summaries/verification-ladder.md`와 `.json`에 계속 씁니다.
+- 매 검사 보고마다 `.local/FHIR-LINE-02/runs/<UTC 시각>/cell-diff.csv`를 새로 만들고 `runs/index.csv`에 실행 시각·현재 Git 커밋·통과/실패·셀 차이/빠진 행/남는 행 수를 덧붙입니다. 통과 시 CSV에는 헤더만 남습니다. 이전 실행 CSV는 덮어쓰지 않습니다.
+- 전체 행 키·사람 ID는 Git 밖의 로컬 CSV/JSON에만 보존합니다. Markdown과 `python -m fhir_line check`의 화면 출력은 사람 ID를 표시하지 않습니다. JSON의 `run.product_dirty`는 기록한 커밋에 미커밋 변경이 있었는지 알려 줍니다.
+- 이 CSV의 셀 상세 범위는 검사 ④의 A/B 두 결과 테이블입니다. 자료형·OMOP·A′ 등 기존 검사도 전체 통과/실패에는 포함되므로 셀 차이 0개만으로 전체 통과를 판단하지 않습니다.
+
+리드가 제품 밖에서 고정한 다섯 경우의 시험은 `FHIR_CELL_DIFF_CASES`로 지정한 `cases.json`과 같은 폴더의 `SHA256SUMS`를 읽습니다. 기본 위치는 `~/personal/builds/medical-data-hands-on/answer-key/cell_diff/cases.json`입니다. 다른 복제본에서 이 파일이 없으면 해당 다섯 시험은 건너뛰었다고 표시하며, 저장소 안의 중복·숫자 비교·이력·비표시 시험은 그대로 실행합니다. 고정 기대값과 실제 사람 ID를 제품 코드에 복사하지 않습니다.
+
 ## A′ 임상 보존 검사
 
 A′ 원래 임상 의미 보존 범위는 2026-10-22 방법 감독의 최종 검수로 완료했습니다(수용 대상 `52726ab`). 초기 실패 처리 R02·코드 이해 C01·실제 저장값 독립 대조 A01/A02를 포함하며, 수용 범위와 근거는 [결정 0013](docs/decisions/0013-a-prime-derived-source-and-precision.md#최종-수용2026-10-22)에 기록했습니다. KCD 연결은 계속 보류합니다.

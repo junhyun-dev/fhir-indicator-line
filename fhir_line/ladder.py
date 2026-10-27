@@ -3,9 +3,11 @@ import collections
 import csv
 import datetime as dt
 from decimal import Decimal, InvalidOperation
+import fcntl
 import hashlib
 import json
 import re
+import subprocess
 from pathlib import Path
 
 from .bundles import entries
@@ -27,8 +29,43 @@ def normalized_cell(value, sql_type=''):
     return value.lower() if sql_type=='BOOLEAN' and value.lower() in ('true','false') else value
 
 
+ROW_KEYS = {'fct_bp_person':('hospital','as_of_label','person_id'),
+            'bp_summary':('hospital','as_of_label')}
+DIFFERENCE_KINDS = ('cell_diffs','missing_rows','unexpected_rows')
+
+
+def table_differences(table, headers, wanted, actual):
+    """D1,D5-D7 / ADR0010, REQ-cell-diff: pair unique keys; compare duplicate keys as multisets."""
+    # Older partial-column fixtures remain valid; the full result contracts supply every key.
+    keys = [key for key in ROW_KEYS[table] if key in headers]
+    key_indexes = [headers.index(key) for key in keys]
+    groups = []
+    for rows in (wanted,actual):
+        grouped = collections.defaultdict(collections.Counter)
+        for row, count in rows.items():
+            grouped[tuple(row[i] for i in key_indexes)][row] += count
+        groups.append(grouped)
+    differences = {kind:[] for kind in DIFFERENCE_KINDS}
+    for key in sorted(set(groups[0]) | set(groups[1])):
+        expected_rows, actual_rows = (group.get(key,collections.Counter()) for group in groups)
+        row_key = dict(zip(keys,key))
+        if sum(expected_rows.values())==sum(actual_rows.values())==1:
+            expected_row,actual_row = next(iter(expected_rows)),next(iter(actual_rows))
+            for column,expected_value,actual_value in zip(headers,expected_row,actual_row):
+                if expected_value!=actual_value:
+                    differences['cell_diffs'].append({'table':table,'row':row_key.copy(),'column':column,
+                                                       'expected':expected_value,'actual':actual_value})
+        else:
+            for kind,remaining in (('missing_rows',expected_rows-actual_rows),
+                                   ('unexpected_rows',actual_rows-expected_rows)):
+                for row in sorted(remaining):
+                    differences[kind].extend({'table':table,'row':row_key.copy()}
+                                              for _ in range(remaining[row]))
+    return differences
+
+
 def compare_table(connection, folder, kind, table, columns=None):
-    """④ 한 결과 표를 병원마다 비교: expected/<kind>_<병원>.csv의 줄과 <table>에서 그 병원의 줄(M2 · 두 병원 공통 모양)."""
+    """④ D1,D5-D7 / ADR0010: compare expected cells and row multiplicity by hospital."""
     files = sorted(f for f in folder.glob(kind+'_*.csv') if re.fullmatch(kind+r'_[A-Z]+\.csv',f.name))
     relation = connection.execute("SELECT count(*) FROM information_schema.tables WHERE table_schema='main' AND table_name=?",[table]).fetchone()[0]
     if not files or not relation:
@@ -37,6 +74,7 @@ def compare_table(connection, folder, kind, table, columns=None):
     if 'hospital' not in have:
         return {'status':'실패','detail':f'{table}에 hospital 열 없음; 기준을 고치지 않음'}
     comparisons = []
+    differences = {name:[] for name in DIFFERENCE_KINDS}
     for file in files:
         hospital = file.stem.split('_',1)[1]
         with file.open(newline='') as f:
@@ -53,12 +91,17 @@ def compare_table(connection, folder, kind, table, columns=None):
         actual_rows = connection.execute('SELECT '+projection+f' FROM {table} WHERE hospital=?',[hospital]).fetchall()
         actual = collections.Counter(tuple(normalized_cell(v,have[h]) for h,v in zip(headers,row)) for row in actual_rows)
         wanted = collections.Counter(tuple(normalized_cell(row[h],have[h]) for h in headers) for row in expected)
+        changed = table_differences(table,headers,wanted,actual)
+        for name in DIFFERENCE_KINDS:
+            differences[name].extend(changed[name])
         comparisons.append({'hospital':hospital,'expected_rows':len(expected),'actual_rows':len(actual_rows),
-                            'cells_per_row':len(headers),'missing_rows':sum((wanted-actual).values()),
-                            'unexpected_rows':sum((actual-wanted).values()),'all_cells_equal':actual==wanted})
+                            'cells_per_row':len(headers),
+                            **{name:len(changed[name]) for name in DIFFERENCE_KINDS},
+                            'all_cells_equal':actual==wanted})
     passed = all(c['all_cells_equal'] for c in comparisons)
     return {'status':'통과' if passed else '실패','detail':'병원마다 기대 CSV 열 전체를 행 순서와 무관하게 비교; 중복 행도 셈',
-            'comparisons':comparisons,'on_mismatch':'기준이 틀린 것 같다/구현 불일치 가능성을 반환; expected는 읽기만 함'}
+            'comparisons':comparisons,**differences,
+            'on_mismatch':'기준이 틀린 것 같다/구현 불일치 가능성을 반환; expected는 읽기만 함'}
 
 
 def compare_expected(connection, folder):
@@ -216,7 +259,63 @@ def check(expected, strict=False):
     return report
 
 
+def archive_differences(report):
+    """D1,D5-D7 / ADR0010, REQ-cell-diff: retain each check and append one index record."""
+    runs = ARTIFACTS/'runs'
+    runs.mkdir(parents=True,exist_ok=True)
+    timestamp = dt.datetime.now(dt.timezone.utc)
+    while True:
+        run_folder = runs/timestamp.strftime('%Y%m%dT%H%M%S.%fZ')
+        try:
+            run_folder.mkdir()
+            break
+        except FileExistsError:
+            timestamp += dt.timedelta(microseconds=1)
+    run_at = timestamp.isoformat(timespec='microseconds').replace('+00:00','Z')
+    commit = subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
+    dirty = bool(subprocess.check_output(['git','status','--porcelain=v1'],cwd=ROOT,text=True))
+    counts = {name:len(report[name]) for name in DIFFERENCE_KINDS}
+    fields = ('run_at','table','hospital','as_of_label','row_key','column','expected','actual','kind')
+    with (run_folder/'cell-diff.csv').open('x',newline='') as stream:
+        writer = csv.DictWriter(stream,fieldnames=fields)
+        writer.writeheader()
+        for name,label in zip(DIFFERENCE_KINDS,('다른 칸','빠진 행','남는 행')):
+            for item in report[name]:
+                writer.writerow({'run_at':run_at,'table':item['table'],
+                                 'hospital':item['row'].get('hospital',''),
+                                 'as_of_label':item['row'].get('as_of_label',''),
+                                 'row_key':json.dumps(item['row'],ensure_ascii=False,sort_keys=True),
+                                 'column':item.get('column',''),'expected':item.get('expected',''),
+                                 'actual':item.get('actual',''),'kind':label})
+    with (runs/'index.csv').open('a+',newline='') as stream:
+        fcntl.flock(stream,fcntl.LOCK_EX)
+        stream.seek(0,2)
+        writer = csv.DictWriter(stream,fieldnames=('run_at','product_commit','status',*DIFFERENCE_KINDS))
+        if stream.tell()==0:
+            writer.writeheader()
+        writer.writerow({'run_at':run_at,'product_commit':commit,'status':report['status'],**counts})
+        stream.flush()
+    return {'run_at':run_at,'product_commit':commit,'product_dirty':dirty,
+            'cell_diff_csv':str(run_folder/'cell-diff.csv'),'index_csv':str(runs/'index.csv')}
+
+
+def public_report(value):
+    """D1,D5-D7 / REQ-cell-diff: full keys stay local; hide person identifiers on stdout."""
+    if isinstance(value,dict):
+        return {key:('[비공개]' if key in ('person_id','source_person_id','omop_person_id','patient_id8')
+                     else public_report(item)) for key,item in value.items()}
+    if isinstance(value,list):
+        return [public_report(item) for item in value]
+    return value
+
+
 def write_report(report):
+    # D1,D5-D7 / ADR0010, REQ-cell-diff: preserve the existing latest JSON/Markdown locations.
+    for name in DIFFERENCE_KINDS:
+        report[name] = [item for step in report['ladder'] for part in ('사람별','요약')
+                        for item in step.get(part,{}).get(name,[])]
+    report['difference_counts'] = {name:len(report[name]) for name in DIFFERENCE_KINDS}
+    report['run'] = archive_differences(report)
     (ARTIFACTS/'summaries').mkdir(parents=True,exist_ok=True)
     (ARTIFACTS/'summaries/verification-ladder.json').write_text(json.dumps(report,indent=2,ensure_ascii=False)+'\n')
     rows = ['| 칸 | 상태 | 실제 결과 |','|---|---|---|']
@@ -226,4 +325,13 @@ def write_report(report):
         rows.append('| '+row['step']+' | '+row['status']+' | '+row['detail']+' |')
     if report['ladder']:
         rows.extend(['',f'두 배치에 공통인 (resource_type, id): {report["ladder"][0]["shared_resource_keys"]:,}개.'])
+    counts = report['difference_counts']
+    rows.extend(['',f'셀 차이 {counts["cell_diffs"]}개 · 빠진 행 {counts["missing_rows"]}개 · 남는 행 {counts["unexpected_rows"]}개.',
+                 f'실행별 상세: {report["run"]["cell_diff_csv"]} (사람 ID는 로컬 CSV/JSON에만 저장).'])
+    if report['cell_diffs']:
+        rows.extend(['','| 표 | 병원 | 기준 시점 | 열 | 기대 | 실제 |','|---|---|---|---|---|---|'])
+        for item in report['cell_diffs']:
+            cells = [item['table'],item['row'].get('hospital',''),item['row'].get('as_of_label',''),
+                     item['column'],item['expected'],item['actual']]
+            rows.append('| '+' | '.join(str(cell).replace('|','\\|').replace('\n','<br>').replace('\r','') for cell in cells)+' |')
     (ARTIFACTS/'summaries/verification-ladder.md').write_text('\n'.join(rows)+'\n')
