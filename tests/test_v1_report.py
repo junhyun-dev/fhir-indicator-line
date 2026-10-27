@@ -231,4 +231,27 @@ class V1Contract(unittest.TestCase):
         state,_,_=self.payload();expected=self.screen['S04']['preflight']
         self.assertEqual({k:state['preflight'][k] for k in expected},expected)
 
+    def test_D5_S05_all_categories_link_only_one_actual_person_row(self):
+        kinds=self.screen['S05']['categories']
+        mutations=[("UPDATE fct_bp_person SET systolic=systolic+1 WHERE hospital='A' AND as_of_label='dec31' AND person_id=(SELECT min(person_id) FROM fct_bp_person WHERE hospital='A')",kinds[0],True),
+          ("DELETE FROM fct_bp_person WHERE hospital='A' AND as_of_label='dec31' AND person_id=(SELECT min(person_id) FROM fct_bp_person WHERE hospital='A')",kinds[1],False),
+          ("INSERT INTO fct_bp_person SELECT * FROM fct_bp_person WHERE hospital='A' AND as_of_label='dec31' ORDER BY person_id LIMIT 1",kinds[2],False)]
+        for i,(sql,kind,linked) in enumerate(mutations):
+            with self.subTest(kind=kind):
+                db=self.base/f'case{i}.duckdb';con=duckdb.connect(str(db),config={'memory_limit':'2GB','threads':2});fixture(con,self.screen);con.execute(sql);con.close()
+                state,folder=ui.render(db,output_root=self.base/f'case{i}')
+                self.assertEqual(state['status'],'실패');p=json.loads((folder/'data.json').read_text());self.assertEqual(len(p['errors']),1);self.assertEqual(p['errors'][0]['kind'],kind);self.assertEqual(p['errors'][0]['patient_detail_link'],linked)
+                if not linked:self.assertIsNone(p['errors'][0]['patient_number'])
+
+    def test_R1_D1_numeric_columns_cannot_export_free_form_strings(self):
+        row=dict(self.screen['S03']['representative']);row['systolic']='a private free-form string'
+        with self.assertRaises(ui.ReportError):ui.safe_person(row,2,'기대 결과와 다름')
+        with self.assertRaises(ui.ReportError):ui.numeric_value('a private free-form string')
+        con=duckdb.connect(str(self.db));con.execute('ALTER TABLE fct_bp_person ALTER COLUMN systolic TYPE VARCHAR');con.execute("UPDATE fct_bp_person SET systolic='a private free-form string'");con.close()
+        state,folder=self.render();self.assertEqual(state['status'],'실패');self.assertFalse((folder/'S01.html').exists());self.assertNotIn('a private free-form string',(folder/'run-manifest.json').read_text())
+
+    def test_D1_D6_dates_come_from_DB_and_unknown_rate_is_not_zero_denominator(self):
+        con=duckdb.connect(str(self.db));con.execute("UPDATE fct_bp_person SET as_of='2026-12-31' WHERE hospital='A' AND as_of_label='dec31'");con.execute("UPDATE bp_summary SET rate=NULL WHERE hospital='A' AND as_of_label='dec31'");con.close()
+        state,folder=self.render();p=json.loads((folder/'data.json').read_text());row=next(r for r in p['summaries'] if r['hospital']=='A' and r['as_of_label']=='dec31');self.assertEqual(row['as_of_display'],'2026-12-31');self.assertEqual(row['denominator'],6);self.assertEqual(row['percent_display'],'미확인');self.assertEqual(state['status'],'실패')
+
 if __name__=='__main__':unittest.main()

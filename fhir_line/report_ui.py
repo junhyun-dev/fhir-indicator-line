@@ -2,6 +2,7 @@
 from __future__ import annotations
 import argparse,collections,csv,datetime as dt,fcntl,hashlib,io,json,math,os,re,secrets,subprocess
 from pathlib import Path
+from decimal import Decimal
 import duckdb,jinja2,yaml
 from . import definition,ladder
 from .runtime import ROOT,DATABASE,ARTIFACTS,ensure_space
@@ -66,6 +67,10 @@ def value(v):
     if not math.isfinite(n):raise ReportError('NONFINITE_NUMBER')
     return int(n) if n.is_integer() else n
 
+def numeric_value(v):
+    if v is not None and (isinstance(v,bool) or not isinstance(v,(int,float,Decimal))):raise ReportError('NUMBER_CONTRACT')
+    return value(v)
+
 def stage_list():return [{'stage_id':i,'label':n,'status':'미실행'} for i,n in STAGES]
 
 def verify_stage(stage,work):
@@ -106,7 +111,7 @@ def quality(con):
                     sql=str(getattr(module,'test_'+generic)(model=model['name'],**args))
                     found=rows(con,sql);warn=spec.get('config',{}).get('severity')=='warn'
                     allowed=('hospital','measurement_concept_id','violation_count','denominator','violation_percent','not_carried')
-                    safe=[{k:value(r[k]) for k in allowed if k in r and (k!='hospital' or r[k] in ('A','B','A_PRIME'))} for r in found]
+                    safe=[{k:(r[k] if k=='hospital' else numeric_value(r[k])) for k in allowed if k in r and (k!='hospital' or r[k] in ('A','B','A_PRIME'))} for r in found]
                     output.append({'check':spec['name'],'status':('warn' if warn else 'error') if found else 'pass','result_rows':len(found),'details':safe,'kind':'미매핑 경고' if warn else 'DQD 참고 검사'})
     return output
 
@@ -155,6 +160,7 @@ def previous_success(base):
 
 def safe_person(row,number,comparison):
     if row['hospital'] not in ('A','B') or row['as_of_label'] not in ('sep30','dec31') or row['reason'] not in REASONS:raise ReportError('PERSON_CONTRACT')
+    for field in ('systolic','diastolic','controlled'):numeric_value(row[field])
     out={k:value(row[k]) for k in ('hospital','as_of_label','as_of','last_bp_date','systolic','diastolic','controlled','reason')}
     if out['controlled'] not in (0,1):raise ReportError('PERSON_CONTRACT')
     for date in ('as_of','last_bp_date'):
@@ -174,7 +180,7 @@ def trace_rows(con,row):
     result=[]
     for x in selected:
         if x['measurement_source_value'] not in CODE_LABELS:raise ReportError('SOURCE_CODE_CONTRACT')
-        result.append({k:value(x[k]) for k in ('measurement_source_value','measurement_date','measurement_concept_id','value_as_number','unit_concept_id')}|{'hospital':row['hospital'],'unit_display':'mm[Hg]','source_link_status':'미확인','source_type':CODE_LABELS[x['measurement_source_value']],'original_unit_written':x['unit_source_value'] if x['unit_source_value'] in (None,'mm[Hg]','mmHg') else None})
+        result.append({k:(numeric_value(x[k]) if k in ('measurement_concept_id','value_as_number','unit_concept_id') else value(x[k])) for k in ('measurement_source_value','measurement_date','measurement_concept_id','value_as_number','unit_concept_id')}|{'hospital':row['hospital'],'unit_display':'mm[Hg]','source_link_status':'미확인','source_type':CODE_LABELS[x['measurement_source_value']],'original_unit_written':x['unit_source_value'] if x['unit_source_value'] in (None,'mm[Hg]','mmHg') else None})
     return result
 
 def write_differences(path,report,run_id):
@@ -197,7 +203,7 @@ def read_differences(path,run_id,aliases,public=False):
             for key in ('expected','actual'):
                 x=ladder.public_cell(r['column'],r[key]) if r['column'] else None
                 clean[key]=value(float(x)) if numeric and x not in (None,'','비공개') else x
-            key=json.loads(r['row_key']);number=None if public else aliases.get((r['hospital'],key.get('person_id')))
+            key=json.loads(r['row_key']);number=None if public or r['kind']!='다른 칸' or r['table']!='fct_bp_person' else aliases.get((r['hospital'],key.get('person_id')))
             result.append({k:r[k] for k in ('kind','hospital','as_of_label','table','column')}|clean|{'column_display':{'numerator':'분자','denominator':'분모','rate':'조절률'}.get(r['column'],r['column']),'patient_number':number,'patient_detail_link':number is not None})
     return result
 
@@ -215,9 +221,10 @@ def snapshot(con,run_id,private,meta,public=False):
     payload={'summaries':[],'checks':{},'errors':read_differences(private/'cell-diff.csv',run_id,aliases,public)}
     for r in rows(con,"SELECT hospital,as_of_label,denominator,numerator,rate FROM bp_summary WHERE hospital IN ('A','B') ORDER BY hospital,as_of_label DESC"):
         if r['as_of_label'] not in ('sep30','dec31'):raise ReportError('SUMMARY_CONTRACT')
-        rate=value(r['rate']);out={k:value(r[k]) for k in ('hospital','as_of_label','denominator','numerator','rate')}
-        display='2025-'+('09-30' if r['as_of_label']=='sep30' else '12-31') if r['hospital']=='A' else '환자별 기준 연도의 '+('9월 말' if r['as_of_label']=='sep30' else '연말')
-        payload['summaries'].append(out|meta|{'as_of_display':display,'percent_display':'대상 없음' if rate is None else f'{rate*100:.2f}%','uncontrolled_count':out['denominator']-out['numerator'],'comparison_label':'기대 결과와 다름' if (r['hospital'],r['as_of_label']) in changed_summary else '기대 결과와 같음'})
+        rate=numeric_value(r['rate']);out={k:(numeric_value(r[k]) if k in ('denominator','numerator','rate') else r[k]) for k in ('hospital','as_of_label','denominator','numerator','rate')}
+        dates={value(f['as_of']) for f in facts if f['hospital']==r['hospital'] and f['as_of_label']==r['as_of_label']}
+        display=(next(iter(dates)) if len(dates)==1 else '미확인') if r['hospital']=='A' else '환자별 기준 연도의 '+('9월 말' if r['as_of_label']=='sep30' else '연말')
+        payload['summaries'].append(out|meta|{'as_of_display':display,'percent_display':('대상 없음' if out['denominator']==0 else '미확인') if rate is None else f'{rate*100:.2f}%','uncontrolled_count':out['denominator']-out['numerator'],'comparison_label':'기대 결과와 다름' if (r['hospital'],r['as_of_label']) in changed_summary else '기대 결과와 같음'})
     if not public:
         payload['people']=[];payload['traces']=[]
         for row in facts:
