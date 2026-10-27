@@ -13,6 +13,14 @@ seeds:
 - name: source_to_concept_map
   description: 'D2/D3; decision 0009: approved subset and source-specific mappings.'
   data_tests:
+  - dqd_standard_valid:
+      name: t_0009_D2_dqd_mapping_standard_valid
+      arguments:
+        column_name: target_concept_id
+        to: ref('concept')
+        threshold: 0
+      config:
+        tags: [dqd_quality]
   - unique:
       name: t_0009_D2_source_mapping_key_unique
       arguments:
@@ -44,6 +52,15 @@ seeds:
 models:
 - name: person
   description: 'D1-D3; decisions 0004-0011: official CDM 5.4 shape.'
+  data_tests:
+  - dqd_value_low:
+      name: t_0004_D2_dqd_birth_year_low
+      arguments:
+        column_name: year_of_birth
+        minimum: 1850
+        threshold: 1  # DQD CDM5.4 Field_Level: 1% may fall below 1850.
+      config:
+        tags: [dqd_quality]
   columns:
   - name: person_id
     data_tests:
@@ -76,6 +93,15 @@ models:
         name: t_0004_D1_person_ethnicity_concept_id_not_null
 - name: observation_period
   description: 'D1-D3; decisions 0004-0011: official CDM 5.4 shape.'
+  data_tests:
+  - dqd_date_order:
+      name: t_0011_D1_dqd_period_date_order
+      arguments:
+        start_column: observation_period_start_date
+        end_column: observation_period_end_date
+        threshold: 0
+      config:
+        tags: [dqd_quality]
   columns:
   - name: observation_period_id
     data_tests:
@@ -108,6 +134,15 @@ models:
         name: t_0004_D1_observation_period_period_type_concept_id_not_null
 - name: visit_occurrence
   description: 'D1-D3; decisions 0004-0011: official CDM 5.4 shape.'
+  data_tests:
+  - dqd_date_order:
+      name: t_0011_D1_dqd_visit_date_order
+      arguments:
+        start_column: visit_start_date
+        end_column: visit_end_date
+        threshold: 0
+      config:
+        tags: [dqd_quality]
   columns:
   - name: visit_occurrence_id
     data_tests:
@@ -144,6 +179,14 @@ models:
         name: t_0004_D1_visit_occurrence_visit_type_concept_id_not_null
 - name: condition_occurrence
   description: 'D1-D3; decisions 0004-0011: official CDM 5.4 shape.'
+  data_tests:
+  - dqd_concept_completeness:
+      name: t_0009_D2_dqd_condition_completeness
+      arguments:
+        column_name: condition_concept_id
+        threshold: 5  # DQD Field_Level default; omitted source diagnoses are a separate warning.
+      config:
+        tags: [dqd_quality]
   columns:
   - name: condition_occurrence_id
     data_tests:
@@ -176,6 +219,32 @@ models:
         name: t_0004_D1_condition_occurrence_condition_type_concept_id_not_null
 - name: measurement
   description: 'D1-D3; decisions 0004-0011: official CDM 5.4 shape.'
+  data_tests:
+  - dqd_concept_completeness:
+      name: t_0008_D3_dqd_unit_completeness
+      arguments:
+        column_name: unit_concept_id
+        source_column: unit_source_value
+        threshold: 0  # Project ADR0008/0009: carried BP units must map (DQD default 5%).
+      config:
+        tags: [dqd_quality]
+  - dqd_fk_domain:
+      name: t_0009_D3_dqd_unit_domain
+      arguments:
+        column_name: unit_concept_id
+        to: ref('concept')
+        domain: Unit
+        threshold: 0
+      config:
+        tags: [dqd_quality]
+  - dqd_unit_plausibility:
+      name: t_0008_D3_dqd_bp_unit_plausibility
+      arguments:
+        concept_ids: [3004249, 3012888]
+        allowed_units: [8876]
+        threshold: 5  # DQD Concept_Level: mm[Hg] for systolic and diastolic BP.
+      config:
+        tags: [dqd_quality]
   columns:
   - name: measurement_id
     data_tests:
@@ -208,6 +277,14 @@ models:
         name: t_0004_D1_measurement_measurement_type_concept_id_not_null
 - name: cdm_source
   description: 'D1-D3; decisions 0004-0011: official CDM 5.4 shape.'
+  data_tests:
+  - dqd_value_completeness:
+      name: t_0004_D1_dqd_cdm_name_complete
+      arguments:
+        column_name: cdm_source_name
+        threshold: 0
+      config:
+        tags: [dqd_quality]
   columns:
   - name: cdm_source_name
     data_tests:
@@ -290,6 +367,14 @@ models:
 - name: omop_load_counts
   description: 'D1-D3; decision 0009: omissions remain visible even for zero carried rows.'
   data_tests:
+  - dqd_unmapped_diagnoses:
+      name: t_0009_D1_dqd_unmapped_diagnoses_warning
+      arguments:
+        threshold: 0  # Count per hospital, not a percentage.
+      config:
+        tags: [dqd_quality]
+        severity: warn
+        warn_if: '> 0'
   - unique:
       name: t_0009_D1_load_counts_key_unique
       arguments:
