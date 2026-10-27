@@ -96,7 +96,7 @@ systemd-run --user --scope -p MemoryMax=4G -p MemorySwapMax=0 --quiet nice -n 10
 
 명령이 알려 준 `S01.html`을 브라우저에서 열어요. 결과는 `.local/FHIR-LINE-V1-1027/ui-runs/local/<run_id>/`에 있어요. `latest.json`은 이번 시도, `latest-success.json`은 마지막으로 생성·검증한 묶음이에요. 실패한 시도와 과거 성공을 구분하고, 기존 결과는 덮어쓰지 않아요.
 
-DB는 읽기 전용 트랜잭션으로 읽어요. 같은 스냅샷에서 A/B 사람별·요약·자료형과 품질 SELECT를 확인하고, 저장된 수치로 화면을 만들어요. expected의 값을 실제값으로 채우거나 rate를 다시 계산하지 않아요. **이 조회 검증의 통과는 `check.sh` 전체 실행 통과와 달라요.** 이번 명령에서 실행하지 않은 Python 시험·dbt 빌드는 미실행이며, 과거 dbt 결과와 `runs/index.csv`는 현재 DB와 연결 미확인인 과거 기록으로 구분해요. 기존 전체 검사 이력에 부분 검증의 성공을 추가하지 않아요.
+DB는 읽기 전용 트랜잭션으로 읽어요. `--db <사본 폴더>/fhir.duckdb`로 사본을 읽을 때도 파일명은 유지해야 해요. 기존 뷰가 `fhir` catalog를 참조하므로 사본을 다른 이름으로 바꾸면 조회가 실패해요. 같은 스냅샷에서 A/B 사람별·요약·자료형과 품질 SELECT를 확인하고, 저장된 수치로 화면을 만들어요. expected의 값을 실제값으로 채우거나 rate를 다시 계산하지 않아요. **이 조회 검증의 통과는 `check.sh` 전체 실행 통과와 달라요.** 이번 명령에서 실행하지 않은 Python 시험·dbt 빌드는 미실행이며, 과거 dbt 결과와 `runs/index.csv`는 현재 DB와 연결 미확인인 과거 기록으로 구분해요. 기존 전체 검사 이력에 부분 검증의 성공을 추가하지 않아요.
 
 정의·코드 목록 v1은 `config/indicator_definitions/v1/manifest.json`으로 등록했어요. 목록은 기존 seed에서 생성한 사본이며 A/B의 진단 코드 다섯 개와 A′의 같은 SNOMED 의미를 유지해요. 등록된 해시와 실제 정의 파일이 다르면 같은 v1로 완료 처리하지 않아요. 메타데이터만 화면 출력에 붙이며 기존 DB 모델·키·수치는 그대로예요.
 
