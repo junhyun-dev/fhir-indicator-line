@@ -110,7 +110,7 @@ v1 완료 검증에는 리드가 별도로 검수한 `~/personal/builds/medical-
 
 A′ 원래 임상 의미 보존 범위는 2026-10-22 방법 감독의 최종 검수로 완료했습니다(수용 대상 `52726ab`). 초기 실패 처리 R02·코드 이해 C01·실제 저장값 독립 대조 A01/A02를 포함하며, 수용 범위와 근거는 [결정 0013](docs/decisions/0013-a-prime-derived-source-and-precision.md#최종-수용2026-10-22)에 기록했습니다. KCD 연결은 계속 보류합니다.
 
-`data/a_prime/`의 CSV 넷과 manifest는 A 원본에서 생성하며 Git에 넣지 않습니다. 사람36명·진단1,455행·방문2,144행·BP555묶음/1,110성분을 보존하고 소수10성분을 반올림하지 않습니다. `109.51/76.761`은 프로젝트 소수 확장이며 보험청구 형식 전체 준수를 뜻하지 않습니다.
+`data/a_prime/`의 CSV 넷과 manifest는 A 원본에서 생성하는 실행 입력이며 Git에서 제외합니다. 비교 기준인 `expected_a_prime/`의 사람별·임상 행과 manifest, 별도 계산기인 `answer_key_a_prime/`는 Git에서 추적합니다. 따라서 합성 개인별 기록이 모두 저장소 밖에 있는 것은 아닙니다. 사람36명·진단1,455행·방문2,144행·BP555묶음/1,110성분을 보존하고 소수10성분을 반올림하지 않습니다. `109.51/76.761`은 프로젝트 소수 확장이며 보험청구 형식 전체 준수를 뜻하지 않습니다.
 
 ```sh
 .venv/bin/python -m fhir_line aprime-generate
@@ -163,12 +163,24 @@ A에서 파생한 CSV·혈압 문자열 → A′ staging ─┘
 
 ## 데이터와 라이선스
 
+글: 만들기 · 의료 · Codex · 2026-10-27
+
 - **Synthea:** [공식 프로젝트](https://github.com/synthetichealth/synthea)에서 생성한 합성 기록이며 실제 환자 자료가 아닙니다.
 - **MIMIC-IV Clinical Database Demo 2.2:** [PhysioNet 공식 배포](https://physionet.org/content/mimic-iv-demo/2.2/), [DOI 10.13026/dp1f-ex47](https://doi.org/10.13026/dp1f-ex47). ODbL 1.0이며 원본 배포의 LICENSE.txt와 인용 안내를 따릅니다. 공개된 비식별 데모 100명 자료입니다.
 - **OMOP DDL:** OHDSI CommonDataModel의 공식 DuckDB DDL, Apache-2.0. [vendor/omop](vendor/omop/README.md)에 버전과 출처가 있습니다.
-- **이 저장소 코드:** [Apache-2.0](LICENSE). 원천 데이터는 저장소에 넣지 않으며 위 각 원천의 라이선스를 따릅니다.
+- **이 저장소 코드:** [Apache-2.0](LICENSE). MIMIC 데모 유래 데이터와 수치의 ODbL 1.0은 코드 라이선스와 구분합니다. 인용 안내와 해당 파일 목록은 [NOTICE](NOTICE)에 있습니다.
 
-원문 파일과 실행 중 생성한 입력·DB·캐시는 Git에서 제외해요. 검증용 `expected/`·`expected_a_prime/`에는 합성 개인별·임상 행과 공개 MIMIC 데모 유래 기대 결과가 들어 있어요. 이 파일의 데이터 이용조건은 코드의 Apache-2.0과 구분해 확인해야 해요.
+원문 파일과 실행 중 생성한 입력·DB·캐시는 Git에서 제외합니다. `.local/`의 받은 원문과 화면 생성물, `data/batches/`·`data/a_prime/`의 생성 입력, `data/fhir.duckdb`가 여기에 해당합니다. Git에서 추적하는 검증 자료는 다음과 같습니다.
+
+| 추적 경로 | 들어 있는 내용 |
+|---|---|
+| `expected/person_A.csv`·`summary_A.csv` | Synthea 합성 기록에서 따로 계산한 사람별·요약 기대 결과입니다. |
+| `expected/person_B.csv`·`summary_B.csv` | 공개 MIMIC 데모의 사람별 식별값·임상 값과 요약 기대 결과입니다. |
+| `expected/omop_counts.csv`·`omop_follow.csv` | A/B의 건수와 원래 행을 따라가는 예시입니다. MIMIC 데모의 사람 식별값과 혈압 값도 들어 있습니다. |
+| `expected_a_prime/` | A에서 파생한 합성 사람별·임상 행, 요약과 원천 사실 해시를 담은 manifest입니다. |
+| `answer_key/`·`answer_key_a_prime/` | 원천에서 기대 결과를 별도로 계산하는 코드와 설명입니다. `answer_key/make_expected_omop.py`에는 대조할 MIMIC 데모 사람 식별값도 있습니다. |
+
+이 자료의 데이터 이용조건은 각 원천을 따릅니다. MIMIC 데모 유래 값이 들어 있는 문서와 시험 예시도 NOTICE의 목록에 포함했습니다. 원문 파일을 제외한다는 말은 검증용 개인별 행까지 제외한다는 뜻이 아닙니다.
 
 ## 범위와 한계
 

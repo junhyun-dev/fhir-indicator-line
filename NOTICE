@@ -1,0 +1,52 @@
+# 데이터 출처와 이용조건
+
+글: 만들기 · 의료 · Codex · 2026-10-27
+
+## MIMIC-IV Clinical Database Demo 2.2
+
+이 프로젝트의 병원 B 검증 자료는 PhysioNet이 공개한 비식별 데모에서 나왔어요. 원문 배포 전체는 Git에 넣지 않으며, 아래 파일에는 따로 계산한 결과·사람별 값·요약 수치·인용 예시가 들어 있어요.
+
+- 배포: https://physionet.org/content/mimic-iv-demo/2.2/
+- 자료 DOI: https://doi.org/10.13026/dp1f-ex47
+- 라이선스: Open Data Commons Open Database License 1.0(ODbL 1.0), https://opendatacommons.org/licenses/odbl/1-0/
+
+다음 파일의 MIMIC 데모 유래 데이터는 ODbL 1.0을 따르며, 소프트웨어 코드의 Apache-2.0과 별도로 적용해요. 문서의 인용 수치에도 원래 자료의 출처를 표시해요. Python 파일은 해당 데이터·예시와 소프트웨어 코드를 구분해서 이용해야 해요. 수제 시험 입력 두 파일도 데모와 같은 혈압·나이·날짜 예시를 포함해 보수적으로 목록에 넣었어요.
+
+```text
+README.md
+answer_key/make_expected_omop.py
+docs/data-dictionary.md
+docs/decisions/0002-new-hospital-own-staging-and-map-rows.md
+docs/decisions/0003-hospital-b-three-definitions.md
+docs/decisions/0004-omop-replaces-common-tables.md
+docs/decisions/0008-bp-two-measurement-rows.md
+docs/design/01-m3-omop.md
+docs/design/03-a-prime-preserve-all.md
+docs/design/05-code-set-version.md
+docs/design/06-v1-screens-from-db.md
+docs/pipeline.md
+expected/omop_counts.csv
+expected/omop_follow.csv
+expected/person_B.csv
+expected/summary_B.csv
+tests/test_m2b_models.py
+tests/test_omop_models.py
+```
+
+PhysioNet의 자료 인용 안내에 따라 다음 출처를 표시해요(2026-10-27 확인).
+
+Johnson, A., et al. (2023). MIMIC-IV Clinical Database Demo (version 2.2). PhysioNet. RRID:SCR_007345. https://doi.org/10.13026/dp1f-ex47
+
+PhysioNet 플랫폼의 인용 안내도 함께 따라요.
+
+Pollard, T., et al. (2026). PhysioNet as a global platform for biomedical research. Nature Health. https://doi.org/10.1038/s44360-026-00096-z
+
+받아 둔 원본 ZIP의 LICENSE.txt와 추출된 LICENSE.txt가 같은지 확인하고 ODbL 1.0의 2.3(a), 4.2, 4.3, 4.4, 4.6절을 읽었어요. 고정된 기대 결과에는 머리말을 추가하지 않고 이 목록과 라이선스 링크로 출처를 표시해요. 부분 추출과 변환 방법은 `answer_key/`의 공개 계산 코드에 있어요.
+
+## Synthea 합성 기록
+
+병원 A와 그 파생 출처 A′는 Synthea v4.0.0으로 생성한 합성 기록을 사용해요. 프로젝트 출처는 https://github.com/synthetichealth/synthea/tree/v4.0.0 이며 Synthea 코드는 Apache-2.0이에요. 생성된 기록의 의료 용어 등에는 각 원천의 이용조건이 별도로 적용돼요. 합성 개인별 기대 결과가 Git에서 추적된다는 점은 README의 데이터 절에 적었어요.
+
+## OMOP DDL
+
+`vendor/omop/OMOPCDM_duckdb_5.4_ddl.sql`은 OHDSI CommonDataModel의 공식 DuckDB DDL을 수정 없이 복사했어요. 출처는 https://github.com/OHDSI/CommonDataModel/blob/f6d2738a40af64a8c0dddf23d56680ac29edb52f/inst/ddl/5.4/duckdb/OMOPCDM_duckdb_5.4_ddl.sql 이며 라이선스는 Apache-2.0이에요. 고정 버전과 사용 방법은 `vendor/omop/README.md`에 있어요.
