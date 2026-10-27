@@ -226,7 +226,9 @@ class ActualSqlContract(unittest.TestCase):
         log=ROOT/'.local/FHIR-LINE-A-PRIME/fixture-build.log'
         log.parent.mkdir(parents=True,exist_ok=True)
         with log.open('w') as output:
-            result=subprocess.run([str(ROOT/'.venv/bin/dbt'),'--no-use-colors','build','--no-partial-parse'],
+            # D3/ADR0013: unknown source units deliberately remain concept 0 in this fixture.
+            result=subprocess.run([str(ROOT/'.venv/bin/dbt'),'--no-use-colors','build','--no-partial-parse',
+                '--exclude','t_0008_D3_dqd_unit_completeness'],
                 cwd=ROOT,env=env,stdout=output,stderr=subprocess.STDOUT,timeout=180)
         if result.returncode:raise RuntimeError('A-prime fixture build failed; see local fixture-build.log')
 

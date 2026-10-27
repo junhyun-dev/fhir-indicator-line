@@ -76,6 +76,14 @@ A′ 독립 재계산: 4파일 모두 같음(cmp)
 FHIR_SKIP_EXTERNAL_CELL_CASES=1 .venv/bin/python -m unittest discover -s tests
 ```
 
+## DQD를 참고한 품질 검사
+
+글: 만들기 · 의료 · Codex · 2026-10-27
+
+`sh scripts/check.sh`는 OMOP 8개 테이블에 닿는 품질 검사 9개도 실행해요. 개념의 도메인과 유효성, NULL과 미매핑, 날짜 순서, 출생 연도 하한, 혈압 단위를 확인해요. 기준값은 `models/omop/schema.yml`에 있고, 별도 패키지 없이 직접 쓴 generic test를 사용해요. [검사 목록과 분모·한계](docs/design/05-dbt-quality.md)를 함께 봐요.
+
+원천에서 옮기지 못한 진단 수는 병원별로 따로 경고해요. 이미 옮겨진 진단에서 개념 0이 없다는 것만으로 전체 매핑이 완전하다고 보지 않아요. 이 경고는 기본 실행을 실패로 바꾸지 않으며, 지표 모델과 출력 테이블은 그대로예요.
+
 ## A′ 임상 보존 검사
 
 A′ 원래 임상 의미 보존 범위는 2026-10-22 방법 감독의 최종 검수로 완료했습니다(수용 대상 `52726ab`). 초기 실패 처리 R02·코드 이해 C01·실제 저장값 독립 대조 A01/A02를 포함하며, 수용 범위와 근거는 [결정 0013](docs/decisions/0013-a-prime-derived-source-and-precision.md#최종-수용2026-10-22)에 기록했습니다. KCD 연결은 계속 보류합니다.
