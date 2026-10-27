@@ -1,6 +1,6 @@
 """D1,D5-D7 / ADR0010, REQ-medical-cell-diff-1027: lead-owned cases and history.
 
-Read the external frozen cases; never copy their person IDs into this repository.
+Read the lead-owned frozen cases; do not derive expectations from product output.
 글: 만들기 · 의료 · Codex · 2026-10-27
 """
 import collections
@@ -24,7 +24,7 @@ from test_expected_mutation import PERSON_TYPES, SUMMARY_TYPES, rows_of
 
 
 EXTERNAL_CASES = Path(os.environ.get('FHIR_CELL_DIFF_CASES',
-    str(Path.home()/'personal/builds/medical-data-hands-on/answer-key/cell_diff/cases.json')))
+    str(ROOT/'answer_key_lead/cell_diff/cases.json')))
 
 
 class LeadFrozenCellCases(unittest.TestCase):

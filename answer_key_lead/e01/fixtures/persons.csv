@@ -1,0 +1,9 @@
+hospital,person_id,omop_person_id,measurement_year,year_of_birth
+A,p1,101,2025,1975
+A_PRIME,p1,201,2025,1975
+A,p2,102,2025,1975
+A_PRIME,p2,202,2025,1975
+A,p3,103,2025,1975
+A_PRIME,p3,203,2025,1975
+B,p1,301,2031,1981
+B,p2,302,2032,1982

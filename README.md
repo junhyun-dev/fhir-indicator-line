@@ -24,7 +24,7 @@ Linux x64, **Python 3.12**와 venv, Git, curl, coreutils(cmp·sha256sum·du 등)
 sh scripts/quickstart.sh
 ```
 
-완료 검증에는 리드가 별도로 고정한 셀 비교 사례 `cases.json`과 `SHA256SUMS`도 필요해요. 기본 경로와 다른 곳에 받았다면 `FHIR_CELL_DIFF_CASES=/고정한/경로/cases.json sh scripts/quickstart.sh`로 지정해요. 파일을 못 찾으면 실패하며, 승인 없이 기대 입력을 새로 만들거나 저장소에 복사하지 않아요. 아래의 ‘셀 단위 비교와 실행 이력’에서 부분 시험과 완료 검증을 구분해요.
+완료 검증은 저장소에 함께 둔 `answer_key_lead/`를 기본으로 읽어요. 리드가 제품 밖에서 정하고 검수한 기대 결과의 같은 바이트 사본이며, 원본은 리드가 따로 보관해요. quickstart는 해시를 확인한 뒤 이 사본을 읽기 전용으로 잠가요. 아래의 ‘셀 단위 비교와 실행 이력’에서 부분 시험과 완료 검증을 구분해요.
 
 받기 → 고정 해시 확인 → FHIR 생성 → 배치 나누기와 적재 → A′ 입력 생성 → 전체 검사 → 독립 재계산을 차례로 실행합니다. 처음에는 인터넷이 필요합니다. Temurin **17.0.20.1+1**, Synthea **v4.0.0**, MIMIC-IV demo **2.2**를 고정하며, Python 패키지는 requirements.lock의 해시와 대조합니다. 이미 해시가 맞는 원천은 받거나 생성하지 않고 재사용합니다.
 
@@ -68,7 +68,7 @@ A′ 독립 재계산: 4파일 모두 같음(cmp)
 - `index.csv`는 파일 잠금 안에서 기존 머리줄의 순서·열 수와 각 행의 열 수를 확인해요. 계약이 다르면 기존 파일을 덧쓰지 않고 오류를 반환하며, 이번 실행의 CSV는 남겨요. 최신 JSON/Markdown도 실패로 바꿔 이전 성공을 이번 결과로 오인하지 않도록 해요. 강제 종료 중 여러 파일의 갱신을 하나의 트랜잭션으로 보장하는 기능은 아니에요.
 - 이 CSV의 셀 상세 범위는 검사 ④의 A/B 두 결과 테이블입니다. 자료형·OMOP·A′ 등 기존 검사도 전체 통과/실패에는 포함되므로 셀 차이 0개만으로 전체 통과를 판단하지 않습니다.
 
-리드가 제품 밖에서 고정한 다섯 경우의 시험은 `FHIR_CELL_DIFF_CASES`로 지정한 `cases.json`과 같은 폴더의 `SHA256SUMS`를 읽어요. 기본 위치는 `~/personal/builds/medical-data-hands-on/answer-key/cell_diff/cases.json`이에요. 파일이 없으면 기본 시험도 실패하고, `sh scripts/check.sh`와 quickstart의 완료 검증에서도 필수예요. 고정 기대값과 실제 사람 ID를 제품 코드에 복사하지 않아요.
+리드가 제품 밖에서 고정한 다섯 경우의 시험은 `answer_key_lead/cell_diff/cases.json`과 같은 폴더의 `SHA256SUMS`를 읽어요. `FHIR_CELL_DIFF_CASES`로 다른 고정 파일을 지정할 수도 있어요. 파일이 없거나 해시가 다르면 기본 시험과 완료 검증이 실패해요. 기대 결과를 제품 실행값에서 만들지 않아요. 사본에는 비교에 필요한 사람 식별값도 있으므로 데이터 출처와 공개 범위는 [NOTICE](NOTICE)에 명시해요.
 
 다른 복제본에서 외부 다섯 사례를 의도적으로 빼고 **부분 시험만** 하려면 아래처럼 명시해요. 출력에는 `건너뜀 · 완료 검증 아님`이 나와요. 이 환경변수로 `check.sh`를 실행하면 바로 실패하며 완료 검증을 우회하지 못해요.
 
@@ -104,7 +104,9 @@ DB는 읽기 전용 트랜잭션으로 읽어요. `--db <사본 폴더>/fhir.duc
 
 `--public`은 별도 `ui-runs/public/`에 집계·검증 화면만 생성하고 사람별 객체와 S02/S03 파일을 만들지 않아요. 이 옵션은 게시 승인이 아니며 push나 배포를 하지 않아요. 원래 행 키가 필요한 차이 CSV는 브라우저 폴더 밖 `private-runs/`에만 남겨요.
 
-v1 완료 검증에는 리드가 별도로 검수한 `~/personal/builds/medical-data-hands-on/answer-key/v1/`의 두 JSON·README와 SHA256SUMS가 필요해요. 없거나 해시/검수 문구가 다르면 실패해요. 이 자료를 새 실행값으로 만들거나 자동으로 보충하지 않아요. 새 시험은 `tests/test_v1_report.py`이며 기존 셀 비교 다섯 경우와 E01 시험도 유지해요. S00 로그인·S06/S07 제품 변경 이력·AI·공개 게시·임상 정의 v2는 이번 구현에 없어요.
+v1 완료 검증에는 `answer_key_lead/v1/`의 두 JSON·README와 SHA256SUMS가 필요해요. E01의 수기 입력·기대 결과는 `answer_key_lead/e01/`에 있어요. 별도 위치는 `FHIR_V1_EXPECTED_ROOT`·`FHIR_E01_EXPECTED_ROOT` 또는 E01의 `--expected-root`로 지정해요. 없거나 해시/검수 문구가 다르면 실패해요. 이 자료를 새 실행값으로 만들거나 자동으로 보충하지 않아요. 새 시험은 `tests/test_v1_report.py`이며 기존 셀 비교 다섯 경우와 E01 시험도 유지해요. S00 로그인·S06/S07 제품 변경 이력·AI·공개 게시·임상 정의 v2는 이번 구현에 없어요.
+
+`sh scripts/check.sh`는 제품 사본의 전체 해시와 읽기 전용 상태를 먼저 확인해요. 리드 원본이 있는 컴퓨터에서는 파일 집합과 모든 바이트도 대조해요. 원본이 없는 컴퓨터에서는 사본 해시로 검사하고 ‘원본 대조 건너뜀(이 컴퓨터에 원본 없음)’을 표시해요. 원본 위치를 바꾸려면 `FHIR_LEAD_ANSWER_SOURCE_ROOT`를 지정해요. 원본이 없다는 이유로 사본의 해시 검사를 건너뛰지는 않아요.
 
 ## A′ 임상 보존 검사
 
@@ -179,6 +181,7 @@ A에서 파생한 CSV·혈압 문자열 → A′ staging ─┘
 | `expected/omop_counts.csv`·`omop_follow.csv` | A/B의 건수와 원래 행을 따라가는 예시입니다. MIMIC 데모의 사람 식별값과 혈압 값도 들어 있습니다. |
 | `expected_a_prime/` | A에서 파생한 합성 사람별·임상 행, 요약과 원천 사실 해시를 담은 manifest입니다. |
 | `answer_key/`·`answer_key_a_prime/` | 원천에서 기대 결과를 별도로 계산하는 코드와 설명입니다. `answer_key/make_expected_omop.py`에는 대조할 MIMIC 데모 사람 식별값도 있습니다. |
+| `answer_key_lead/` | 리드가 따로 검수한 셀 비교·E01·v1 기대 결과의 같은 바이트 사본입니다. 합성 식별값과 MIMIC 데모 식별값·임상 예시·요약도 포함합니다. |
 
 이 자료의 데이터 이용조건은 각 원천을 따릅니다. MIMIC 데모 유래 값이 들어 있는 문서와 시험 예시도 NOTICE의 목록에 포함했습니다. 원문 파일을 제외한다는 말은 검증용 개인별 행까지 제외한다는 뜻이 아닙니다.
 

@@ -8,7 +8,7 @@ from . import definition,ladder
 from .runtime import ROOT,DATABASE,ARTIFACTS,ensure_space
 
 BASE=ROOT/'.local/FHIR-LINE-V1-1027'
-EXPECTED_V1=Path.home()/'personal/builds/medical-data-hands-on/answer-key/v1'
+EXPECTED_V1=Path(os.environ.get('FHIR_V1_EXPECTED_ROOT', str(ROOT/'answer_key_lead/v1')))
 STAGES=(('expected_lock','기대 결과의 해시와 읽기 전용 상태'),('a_prime_lock','A′ 고정 기대 결과'),
         ('frozen_layers','바뀌면 안 되는 층'),('tests','테스트'),('dbt_quality','dbt 빌드와 데이터 품질 검사'),('ladder','확인 사다리'))
 REASONS=set(ladder.PUBLIC_REASONS)
@@ -34,7 +34,7 @@ def reviewed_expected(folder=EXPECTED_V1):
 
 def cell_preflight():
     if os.environ.get('FHIR_SKIP_EXTERNAL_CELL_CASES')=='1':raise ReportError('EXTERNAL_CASES_REQUIRED')
-    file=Path(os.environ.get('FHIR_CELL_DIFF_CASES',str(Path.home()/'personal/builds/medical-data-hands-on/answer-key/cell_diff/cases.json')))
+    file=Path(os.environ.get('FHIR_CELL_DIFF_CASES',str(ROOT/'answer_key_lead/cell_diff/cases.json')))
     body=file.read_bytes();hashes={}
     for line in file.with_name('SHA256SUMS').read_text().splitlines():
         checksum,name=line.split(maxsplit=1);hashes[name.lstrip('*')]=checksum

@@ -5,12 +5,15 @@ set -e
 cd "$(dirname "$0")/.."
 export PYTHONDONTWRITEBYTECODE=1
 
+echo "== 리드 기대 결과의 제품 사본과 원본 대조"
+.venv/bin/python scripts/verify_lead_answers.py
+
 echo "== 필수 외부 기대 입력(셀 차이 다섯 사례)"
 if [ "${FHIR_SKIP_EXTERNAL_CELL_CASES:-0}" = 1 ]; then
   echo "실패: 건너뜀 · 완료 검증 아님. check.sh에서는 외부 사례가 필수예요."
   exit 1
 fi
-external_cases="${FHIR_CELL_DIFF_CASES:-$HOME/personal/builds/medical-data-hands-on/answer-key/cell_diff/cases.json}"
+external_cases="${FHIR_CELL_DIFF_CASES:-answer_key_lead/cell_diff/cases.json}"
 if [ ! -f "$external_cases" ]; then
   echo "실패: 필수 외부 기대 입력 cases.json이 없어요. FHIR_CELL_DIFF_CASES로 고정 파일을 지정하세요."
   exit 1

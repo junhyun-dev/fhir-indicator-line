@@ -1,0 +1,1088 @@
+{
+  "format": "medical-v1-expected-draft/1",
+  "status": "리드 검수 전 초안이에요.",
+  "made_by": "만들기 · 의료 · 기대 결과 · Codex · 2026-10-27",
+  "product_root": "/home/junhyun/dev/projects/fhir-indicator-line",
+  "product_branch": "work/fhir-line-05-dbt-quality",
+  "product_commit": "12ac450364e0f5207f7474d8440bcd8b787a331f",
+  "personal_root": "/home/junhyun/personal",
+  "source_notation": {
+    "personal": "Personal 저장소 기준 경로:줄이에요.",
+    "product": "product_commit의 Git blob 경로:줄이에요. 작업 트리의 현재 가지와 다를 수 있어요.",
+    "runtime": "로컬 실행 기록의 관찰 사본이에요. 새 실행의 통과 증거가 아니에요."
+  },
+  "source_inventory": {
+    "personal:builds/medical-data-hands-on/answer-key/README.md": {
+      "sha256": "09a9b2f7fa584b5875e81060678876c20e47b317d60978a6745f671c1660fb11",
+      "line_count": 47
+    },
+    "personal:builds/medical-data-hands-on/answer-key/cell_diff/SHA256SUMS": {
+      "sha256": "0f4f61b774e592381a7d5be7d305a7baa85d43b14a56af5b789639ac58244e2d",
+      "line_count": 1
+    },
+    "personal:builds/medical-data-hands-on/answer-key/cell_diff/cases.json": {
+      "sha256": "c603d2a2e3e343f21a8efa99a1835647e0a6594af5ff6e4100013cf25c4bd0cd",
+      "line_count": 131
+    },
+    "personal:builds/medical-data-hands-on/answer-key/expected/SHA256SUMS": {
+      "sha256": "072d9f297cb0ad9890af65108bcf19b8f2b533fbe27e4293566e7ae9e70aca4e",
+      "line_count": 6
+    },
+    "personal:builds/medical-data-hands-on/answer-key/expected/person_2025-09-30.csv": {
+      "sha256": "6dbcfbac1baf5c044de246df7c1bdbb073a8a89c5b534397e673134525455c7a",
+      "line_count": 6
+    },
+    "personal:builds/medical-data-hands-on/answer-key/expected/person_2025-12-31.csv": {
+      "sha256": "c7f7d8f131426f19e1b72d55e6abbfee8fdf5c067be647839df942bd502911e8",
+      "line_count": 7
+    },
+    "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv": {
+      "sha256": "21df4724d255810f290f3a9290898f3be24f18be1f0af1641b20a3370cf67aa8",
+      "line_count": 12
+    },
+    "personal:builds/medical-data-hands-on/answer-key/expected/summary_2025-09-30.csv": {
+      "sha256": "0cf9dd23efae7601ba09b7a19878de309234e2978bcd98248f712f6587b817d6",
+      "line_count": 2
+    },
+    "personal:builds/medical-data-hands-on/answer-key/expected/summary_2025-12-31.csv": {
+      "sha256": "89a3e48cbcd3709b81bc040959c7abea552d7928217bd916d05f10a199337b30",
+      "line_count": 2
+    },
+    "personal:builds/medical-data-hands-on/answer-key/expected/summary_A.csv": {
+      "sha256": "875c5769adf382ab6c4cbf0a3223aefb027194206bcb9460c582522232e52cf1",
+      "line_count": 3
+    },
+    "personal:builds/medical-data-hands-on/answer-key/expected_b/SHA256SUMS_B": {
+      "sha256": "35c6a44630f1dc439d47e0a65895afebe147bd3c035274457f8cb9307ce0d227",
+      "line_count": 2
+    },
+    "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv": {
+      "sha256": "68d49e236cc05a15fe460a603f320c83cb4f0867519b33fba569c7b89254d737",
+      "line_count": 19
+    },
+    "personal:builds/medical-data-hands-on/answer-key/expected_b/summary_B.csv": {
+      "sha256": "e8518f784013df6e17e3d7f3aadf7cbd3086650bbb161e73cc2cc9e23a661457",
+      "line_count": 3
+    },
+    "personal:builds/medical-data-hands-on/answer-key/expected_omop/omop_follow.csv": {
+      "sha256": "b83f6cf6150cb8acb6c905d08fe48b4a0ce831440c9cccdd938defab4f15706d",
+      "line_count": 5
+    },
+    "personal:builds/medical-data-hands-on/answer-key/make_expected_omop.py": {
+      "sha256": "ac42a3b0091bebeb1ad0f1cbc3062981478c3793032fdbc25aeb73f26183c987",
+      "line_count": 152
+    },
+    "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md": {
+      "sha256": "3671190f25b9b25d66d452aac96326e1ca06b2fa0f26f086b8a710694a13ef62",
+      "line_count": 100
+    },
+    "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md": {
+      "sha256": "6a2782f1f214b89c1ffd8b3bb0c58944262d6763f0c6f8cf71bf12b7013d824f",
+      "line_count": 36
+    },
+    "product:docs/decisions/0001-indicator-definition-d1-d7.md": {
+      "sha256": "7ef4b7326388d5aa61400b24115606fc096de399880c88efb674607be37fd254",
+      "line_count": 25
+    },
+    "product:docs/decisions/0003-hospital-b-three-definitions.md": {
+      "sha256": "65143434b1d5caca3cac95756694dc3993ff49bdcafb93c066c3265689adfa26",
+      "line_count": 26
+    },
+    "product:docs/decisions/0010-definition-rules-in-calculation-layer.md": {
+      "sha256": "30643fb14f90f3af23eadf5fde5a70ef54fb61191d71d18d2975a1b5d750006b",
+      "line_count": 21
+    },
+    "product:docs/design/05-code-set-version.md": {
+      "sha256": "20e01e9e6c4117cbdd4170b3b90cd6fcde1a2130cceea1d91de8dc96092f34ec",
+      "line_count": 86
+    },
+    "product:docs/design/06-v1-screens-from-db.md": {
+      "sha256": "bdf9bea074d988f121ba109f1adee397eabf88b313c24128156ba5021f6c17ae",
+      "line_count": 112
+    },
+    "product:fhir_line/ladder.py": {
+      "sha256": "b910df256c23b3155f0968f23bf67f0d0eac0ba038d8e3107095fa5f858179e6",
+      "line_count": 456
+    },
+    "product:models/intermediate/int_bp_daily.sql": {
+      "sha256": "3eef286bcc483d08f91cb82b38773bcbdfb27fb820e7c0f501540b719c9f1914",
+      "line_count": 24
+    },
+    "product:models/intermediate/int_person_period.sql": {
+      "sha256": "875863b0b51a0877e96dcc4d32da60f2c14fe87f27e5b4ce6b4e82b3e0b4e442",
+      "line_count": 18
+    },
+    "product:models/marts/dim_as_of.sql": {
+      "sha256": "828500943255897a3e99ed497a2956e0501633be09e936cafaa30bb0deec1caf",
+      "line_count": 3
+    },
+    "product:models/marts/fct_bp_person.sql": {
+      "sha256": "533b7f20b31426ef3fe8228279eaae3d23d943e1b1aa545a832b82a90f978dfc",
+      "line_count": 47
+    },
+    "product:models/reports/bp_summary.sql": {
+      "sha256": "3647a568da7a054c0190aa443a26e57059cf6e3079cd62f7a8de95c0ecfcc15e",
+      "line_count": 9
+    },
+    "product:scripts/check.sh": {
+      "sha256": "e3ef5edcae8603b7b81f2afaa699e7e06900a923c428a50a25fc8577d0338eb3",
+      "line_count": 41
+    },
+    "product:seeds/as_of_labels.csv": {
+      "sha256": "aa3f3724e0cdfe17a8e940fd1744969523f6667296102595277a4a20c6bc142f",
+      "line_count": 3
+    },
+    "product:seeds/concept.csv": {
+      "sha256": "d50c8267629f0c61c27a022499dd9363188a7a6258032cd0f45477820d136ebd",
+      "line_count": 13
+    },
+    "product:seeds/indicator_concepts.csv": {
+      "sha256": "fd645aa40bdeefe699b19cf2c02608941a281a8bb4e66ca6f71868a06fab70b0",
+      "line_count": 9
+    },
+    "product:seeds/source_to_concept_map.csv": {
+      "sha256": "c5982c725acdb320ab5f0c4f27f786b5ed6b290a0e927e445347e399da266de6",
+      "line_count": 40
+    },
+    "runtime:.local/FHIR-LINE-02/runs/index.csv": {
+      "sha256": "91b676a53ad6335f14bb4794b6e3dfd4be457da37e1bd1fc6641ed67aa20e1ef",
+      "line_count": 8
+    }
+  },
+  "expected": {
+    "candidate_manifest": {
+      "definition_id": "bp-control-learning",
+      "definition_version": "v1",
+      "code_set_id": "essential-hypertension-learning",
+      "code_set_version": "v1",
+      "source_codes": [
+        {
+          "hospital": "A",
+          "source_system": "SNOMED",
+          "source_vocabulary_id": "hospital_a_dx",
+          "source_code": "59621000",
+          "target_concept_id": 320128,
+          "target_vocabulary_id": "SNOMED"
+        },
+        {
+          "hospital": "B",
+          "source_system": "ICD-10",
+          "source_vocabulary_id": "hospital_b_icd10",
+          "source_code": "I10",
+          "target_concept_id": 320128,
+          "target_vocabulary_id": "SNOMED"
+        },
+        {
+          "hospital": "B",
+          "source_system": "ICD-9",
+          "source_vocabulary_id": "hospital_b_icd9",
+          "source_code": "4010",
+          "target_concept_id": 320128,
+          "target_vocabulary_id": "SNOMED"
+        },
+        {
+          "hospital": "B",
+          "source_system": "ICD-9",
+          "source_vocabulary_id": "hospital_b_icd9",
+          "source_code": "4011",
+          "target_concept_id": 320128,
+          "target_vocabulary_id": "SNOMED"
+        },
+        {
+          "hospital": "B",
+          "source_system": "ICD-9",
+          "source_vocabulary_id": "hospital_b_icd9",
+          "source_code": "4019",
+          "target_concept_id": 320128,
+          "target_vocabulary_id": "SNOMED"
+        }
+      ],
+      "files": [
+        {
+          "path": "docs/decisions/0001-indicator-definition-d1-d7.md",
+          "sha256": "7ef4b7326388d5aa61400b24115606fc096de399880c88efb674607be37fd254"
+        },
+        {
+          "path": "docs/decisions/0003-hospital-b-three-definitions.md",
+          "sha256": "65143434b1d5caca3cac95756694dc3993ff49bdcafb93c066c3265689adfa26"
+        },
+        {
+          "path": "docs/decisions/0010-definition-rules-in-calculation-layer.md",
+          "sha256": "30643fb14f90f3af23eadf5fde5a70ef54fb61191d71d18d2975a1b5d750006b"
+        },
+        {
+          "path": "models/intermediate/int_bp_daily.sql",
+          "sha256": "3eef286bcc483d08f91cb82b38773bcbdfb27fb820e7c0f501540b719c9f1914"
+        },
+        {
+          "path": "models/intermediate/int_person_period.sql",
+          "sha256": "875863b0b51a0877e96dcc4d32da60f2c14fe87f27e5b4ce6b4e82b3e0b4e442"
+        },
+        {
+          "path": "models/marts/dim_as_of.sql",
+          "sha256": "828500943255897a3e99ed497a2956e0501633be09e936cafaa30bb0deec1caf"
+        },
+        {
+          "path": "models/marts/fct_bp_person.sql",
+          "sha256": "533b7f20b31426ef3fe8228279eaae3d23d943e1b1aa545a832b82a90f978dfc"
+        },
+        {
+          "path": "models/reports/bp_summary.sql",
+          "sha256": "3647a568da7a054c0190aa443a26e57059cf6e3079cd62f7a8de95c0ecfcc15e"
+        },
+        {
+          "path": "seeds/as_of_labels.csv",
+          "sha256": "aa3f3724e0cdfe17a8e940fd1744969523f6667296102595277a4a20c6bc142f"
+        },
+        {
+          "path": "seeds/concept.csv",
+          "sha256": "d50c8267629f0c61c27a022499dd9363188a7a6258032cd0f45477820d136ebd"
+        },
+        {
+          "path": "seeds/indicator_concepts.csv",
+          "sha256": "fd645aa40bdeefe699b19cf2c02608941a281a8bb4e66ca6f71868a06fab70b0"
+        },
+        {
+          "path": "seeds/source_to_concept_map.csv",
+          "sha256": "c5982c725acdb320ab5f0c4f27f786b5ed6b290a0e927e445347e399da266de6"
+        }
+      ]
+    },
+    "identity_rules": {
+      "id_pattern": "^[a-z][a-z0-9-]*$",
+      "version_pattern": "^v[1-9][0-9]*$",
+      "list_version_id": "essential-hypertension-learning/v1",
+      "definition_version_id": "bp-control-learning/v1",
+      "changes_require_review_and_new_registration": true,
+      "official_cms_version_claim": false
+    },
+    "membership": {
+      "source_code_count": 5,
+      "standard_hypertension_concept_id": 320128,
+      "standard_vocabulary": "SNOMED",
+      "a_prime_reuses_A_membership": true,
+      "a_prime_namespace": "hospital_a_prime_dx_snomed",
+      "a_prime_adds_independent_hospital": false,
+      "registry_source": "seeds/source_to_concept_map.csv + seeds/indicator_concepts.csv",
+      "generated_copy_only": true
+    },
+    "hash_contract": {
+      "algorithm": "SHA256",
+      "file_content": "Git에서 읽은 원래 바이트 전체예요. CSV 행 정렬, 공백 정리, 줄 끝 변환을 하지 않아요.",
+      "file_order": "files 배열은 제품 저장소 기준 POSIX 상대 경로의 오름차순이에요.",
+      "code_order": "source_codes 배열은 hospital, source_system, source_code, source_vocabulary_id 순으로 오름차순이에요.",
+      "manifest_bytes": "candidate_manifest만 ensure_ascii=False, sort_keys=True, indent=2, allow_nan=False로 JSON 직렬화하고 LF 한 개를 붙인 UTF-8 바이트예요. BOM은 없어요.",
+      "manifest_self_hash_included": false,
+      "definition_manifest_sha256": "dc187bf7fa0fbdcfc8c6a244abbed6a7cdf0872a9e748fcf8ee137a159129577",
+      "runtime_context_outside_definition_hash": "run_id, 입력 해시, 실행 커밋, dirty, 시각은 실행 manifest에서 따로 기록해요.",
+      "hash_guarantees_clinical_correctness": false
+    },
+    "public_summary_metadata": {
+      "fixed": {
+        "definition_id": "bp-control-learning",
+        "definition_version": "v1",
+        "code_set_version": "v1",
+        "definition_manifest_sha256": "dc187bf7fa0fbdcfc8c6a244abbed6a7cdf0872a9e748fcf8ee137a159129577"
+      },
+      "run_id_binding": {
+        "match": "이번 실행 manifest.run_id와 같아야 해요.",
+        "non_empty": true,
+        "fixed_value": null
+      },
+      "added_fields": [
+        "definition_id",
+        "definition_version",
+        "code_set_version",
+        "definition_manifest_sha256",
+        "run_id"
+      ],
+      "db_schema_change": false,
+      "unregistered_or_hash_mismatch_display": "정의 버전 미고정",
+      "v1_label_allowed_when_hash_mismatches": false
+    },
+    "unchanged_summaries": [
+      {
+        "hospital": "A",
+        "as_of_label": "sep30",
+        "denominator": 5,
+        "numerator": 3,
+        "rate": 0.6
+      },
+      {
+        "hospital": "A",
+        "as_of_label": "dec31",
+        "denominator": 6,
+        "numerator": 4,
+        "rate": 0.6667
+      },
+      {
+        "hospital": "B",
+        "as_of_label": "sep30",
+        "denominator": 9,
+        "numerator": 4,
+        "rate": 0.4444
+      },
+      {
+        "hospital": "B",
+        "as_of_label": "dec31",
+        "denominator": 9,
+        "numerator": 3,
+        "rate": 0.3333
+      }
+    ],
+    "rejection_examples": {
+      "same_code_in_other_system_is_member": false,
+      "same_version_with_different_file_hash_is_valid": false,
+      "v1_numbers_with_v2_label_are_valid": false,
+      "mixed_version_summary_is_valid": false,
+      "unreviewed_v2_is_complete": false
+    }
+  },
+  "evidence": {
+    "/expected/candidate_manifest/definition_id": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16",
+        "product:docs/design/05-code-set-version.md:40",
+        "product:docs/design/05-code-set-version.md:44",
+        "product:docs/design/05-code-set-version.md:45"
+      ],
+      "derivation": "이 요청에서 제안한 이름이에요. 리드 검수 전이에요."
+    },
+    "/expected/candidate_manifest/definition_version": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16",
+        "product:docs/design/05-code-set-version.md:40",
+        "product:docs/design/05-code-set-version.md:44",
+        "product:docs/design/05-code-set-version.md:45"
+      ],
+      "derivation": "이 요청에서 제안한 이름이에요. 리드 검수 전이에요."
+    },
+    "/expected/candidate_manifest/code_set_id": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16",
+        "product:docs/design/05-code-set-version.md:40",
+        "product:docs/design/05-code-set-version.md:44",
+        "product:docs/design/05-code-set-version.md:45"
+      ],
+      "derivation": "이 요청에서 제안한 이름이에요. 리드 검수 전이에요."
+    },
+    "/expected/candidate_manifest/code_set_version": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16",
+        "product:docs/design/05-code-set-version.md:40",
+        "product:docs/design/05-code-set-version.md:44",
+        "product:docs/design/05-code-set-version.md:45"
+      ],
+      "derivation": "이 요청에서 제안한 이름이에요. 리드 검수 전이에요."
+    },
+    "/expected/candidate_manifest/source_codes/0/hospital": {
+      "sources": [
+        "product:seeds/source_to_concept_map.csv:4",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16"
+      ]
+    },
+    "/expected/candidate_manifest/source_codes/0/source_system": {
+      "sources": [
+        "product:seeds/source_to_concept_map.csv:4",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16"
+      ]
+    },
+    "/expected/candidate_manifest/source_codes/0/source_vocabulary_id": {
+      "sources": [
+        "product:seeds/source_to_concept_map.csv:4",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16"
+      ]
+    },
+    "/expected/candidate_manifest/source_codes/0/source_code": {
+      "sources": [
+        "product:seeds/source_to_concept_map.csv:4",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16"
+      ]
+    },
+    "/expected/candidate_manifest/source_codes/0/target_concept_id": {
+      "sources": [
+        "product:seeds/source_to_concept_map.csv:4",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16"
+      ]
+    },
+    "/expected/candidate_manifest/source_codes/0/target_vocabulary_id": {
+      "sources": [
+        "product:seeds/source_to_concept_map.csv:4",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16"
+      ]
+    },
+    "/expected/candidate_manifest/source_codes/1/hospital": {
+      "sources": [
+        "product:seeds/source_to_concept_map.csv:10",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16"
+      ]
+    },
+    "/expected/candidate_manifest/source_codes/1/source_system": {
+      "sources": [
+        "product:seeds/source_to_concept_map.csv:10",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16"
+      ]
+    },
+    "/expected/candidate_manifest/source_codes/1/source_vocabulary_id": {
+      "sources": [
+        "product:seeds/source_to_concept_map.csv:10",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16"
+      ]
+    },
+    "/expected/candidate_manifest/source_codes/1/source_code": {
+      "sources": [
+        "product:seeds/source_to_concept_map.csv:10",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16"
+      ]
+    },
+    "/expected/candidate_manifest/source_codes/1/target_concept_id": {
+      "sources": [
+        "product:seeds/source_to_concept_map.csv:10",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16"
+      ]
+    },
+    "/expected/candidate_manifest/source_codes/1/target_vocabulary_id": {
+      "sources": [
+        "product:seeds/source_to_concept_map.csv:10",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16"
+      ]
+    },
+    "/expected/candidate_manifest/source_codes/2/hospital": {
+      "sources": [
+        "product:seeds/source_to_concept_map.csv:11",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16"
+      ]
+    },
+    "/expected/candidate_manifest/source_codes/2/source_system": {
+      "sources": [
+        "product:seeds/source_to_concept_map.csv:11",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16"
+      ]
+    },
+    "/expected/candidate_manifest/source_codes/2/source_vocabulary_id": {
+      "sources": [
+        "product:seeds/source_to_concept_map.csv:11",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16"
+      ]
+    },
+    "/expected/candidate_manifest/source_codes/2/source_code": {
+      "sources": [
+        "product:seeds/source_to_concept_map.csv:11",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16"
+      ]
+    },
+    "/expected/candidate_manifest/source_codes/2/target_concept_id": {
+      "sources": [
+        "product:seeds/source_to_concept_map.csv:11",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16"
+      ]
+    },
+    "/expected/candidate_manifest/source_codes/2/target_vocabulary_id": {
+      "sources": [
+        "product:seeds/source_to_concept_map.csv:11",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16"
+      ]
+    },
+    "/expected/candidate_manifest/source_codes/3/hospital": {
+      "sources": [
+        "product:seeds/source_to_concept_map.csv:12",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16"
+      ]
+    },
+    "/expected/candidate_manifest/source_codes/3/source_system": {
+      "sources": [
+        "product:seeds/source_to_concept_map.csv:12",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16"
+      ]
+    },
+    "/expected/candidate_manifest/source_codes/3/source_vocabulary_id": {
+      "sources": [
+        "product:seeds/source_to_concept_map.csv:12",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16"
+      ]
+    },
+    "/expected/candidate_manifest/source_codes/3/source_code": {
+      "sources": [
+        "product:seeds/source_to_concept_map.csv:12",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16"
+      ]
+    },
+    "/expected/candidate_manifest/source_codes/3/target_concept_id": {
+      "sources": [
+        "product:seeds/source_to_concept_map.csv:12",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16"
+      ]
+    },
+    "/expected/candidate_manifest/source_codes/3/target_vocabulary_id": {
+      "sources": [
+        "product:seeds/source_to_concept_map.csv:12",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16"
+      ]
+    },
+    "/expected/candidate_manifest/source_codes/4/hospital": {
+      "sources": [
+        "product:seeds/source_to_concept_map.csv:13",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16"
+      ]
+    },
+    "/expected/candidate_manifest/source_codes/4/source_system": {
+      "sources": [
+        "product:seeds/source_to_concept_map.csv:13",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16"
+      ]
+    },
+    "/expected/candidate_manifest/source_codes/4/source_vocabulary_id": {
+      "sources": [
+        "product:seeds/source_to_concept_map.csv:13",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16"
+      ]
+    },
+    "/expected/candidate_manifest/source_codes/4/source_code": {
+      "sources": [
+        "product:seeds/source_to_concept_map.csv:13",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16"
+      ]
+    },
+    "/expected/candidate_manifest/source_codes/4/target_concept_id": {
+      "sources": [
+        "product:seeds/source_to_concept_map.csv:13",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16"
+      ]
+    },
+    "/expected/candidate_manifest/source_codes/4/target_vocabulary_id": {
+      "sources": [
+        "product:seeds/source_to_concept_map.csv:13",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16"
+      ]
+    },
+    "/expected/candidate_manifest/files/0/path": {
+      "sources": [
+        "product:docs/decisions/0001-indicator-definition-d1-d7.md:1",
+        "product:docs/design/05-code-set-version.md:46"
+      ]
+    },
+    "/expected/candidate_manifest/files/0/sha256": {
+      "sources": [
+        "product:docs/decisions/0001-indicator-definition-d1-d7.md:1",
+        "product:docs/design/05-code-set-version.md:46"
+      ],
+      "derivation": "이 파일 전체의 원래 바이트로 계산한 SHA256이에요."
+    },
+    "/expected/candidate_manifest/files/1/path": {
+      "sources": [
+        "product:docs/decisions/0003-hospital-b-three-definitions.md:1",
+        "product:docs/design/05-code-set-version.md:46"
+      ]
+    },
+    "/expected/candidate_manifest/files/1/sha256": {
+      "sources": [
+        "product:docs/decisions/0003-hospital-b-three-definitions.md:1",
+        "product:docs/design/05-code-set-version.md:46"
+      ],
+      "derivation": "이 파일 전체의 원래 바이트로 계산한 SHA256이에요."
+    },
+    "/expected/candidate_manifest/files/2/path": {
+      "sources": [
+        "product:docs/decisions/0010-definition-rules-in-calculation-layer.md:1",
+        "product:docs/design/05-code-set-version.md:46"
+      ]
+    },
+    "/expected/candidate_manifest/files/2/sha256": {
+      "sources": [
+        "product:docs/decisions/0010-definition-rules-in-calculation-layer.md:1",
+        "product:docs/design/05-code-set-version.md:46"
+      ],
+      "derivation": "이 파일 전체의 원래 바이트로 계산한 SHA256이에요."
+    },
+    "/expected/candidate_manifest/files/3/path": {
+      "sources": [
+        "product:models/intermediate/int_bp_daily.sql:1",
+        "product:docs/design/05-code-set-version.md:46"
+      ]
+    },
+    "/expected/candidate_manifest/files/3/sha256": {
+      "sources": [
+        "product:models/intermediate/int_bp_daily.sql:1",
+        "product:docs/design/05-code-set-version.md:46"
+      ],
+      "derivation": "이 파일 전체의 원래 바이트로 계산한 SHA256이에요."
+    },
+    "/expected/candidate_manifest/files/4/path": {
+      "sources": [
+        "product:models/intermediate/int_person_period.sql:1",
+        "product:docs/design/05-code-set-version.md:46"
+      ]
+    },
+    "/expected/candidate_manifest/files/4/sha256": {
+      "sources": [
+        "product:models/intermediate/int_person_period.sql:1",
+        "product:docs/design/05-code-set-version.md:46"
+      ],
+      "derivation": "이 파일 전체의 원래 바이트로 계산한 SHA256이에요."
+    },
+    "/expected/candidate_manifest/files/5/path": {
+      "sources": [
+        "product:models/marts/dim_as_of.sql:1",
+        "product:docs/design/05-code-set-version.md:46"
+      ]
+    },
+    "/expected/candidate_manifest/files/5/sha256": {
+      "sources": [
+        "product:models/marts/dim_as_of.sql:1",
+        "product:docs/design/05-code-set-version.md:46"
+      ],
+      "derivation": "이 파일 전체의 원래 바이트로 계산한 SHA256이에요."
+    },
+    "/expected/candidate_manifest/files/6/path": {
+      "sources": [
+        "product:models/marts/fct_bp_person.sql:1",
+        "product:docs/design/05-code-set-version.md:46"
+      ]
+    },
+    "/expected/candidate_manifest/files/6/sha256": {
+      "sources": [
+        "product:models/marts/fct_bp_person.sql:1",
+        "product:docs/design/05-code-set-version.md:46"
+      ],
+      "derivation": "이 파일 전체의 원래 바이트로 계산한 SHA256이에요."
+    },
+    "/expected/candidate_manifest/files/7/path": {
+      "sources": [
+        "product:models/reports/bp_summary.sql:1",
+        "product:docs/design/05-code-set-version.md:46"
+      ]
+    },
+    "/expected/candidate_manifest/files/7/sha256": {
+      "sources": [
+        "product:models/reports/bp_summary.sql:1",
+        "product:docs/design/05-code-set-version.md:46"
+      ],
+      "derivation": "이 파일 전체의 원래 바이트로 계산한 SHA256이에요."
+    },
+    "/expected/candidate_manifest/files/8/path": {
+      "sources": [
+        "product:seeds/as_of_labels.csv:1",
+        "product:docs/design/05-code-set-version.md:46"
+      ]
+    },
+    "/expected/candidate_manifest/files/8/sha256": {
+      "sources": [
+        "product:seeds/as_of_labels.csv:1",
+        "product:docs/design/05-code-set-version.md:46"
+      ],
+      "derivation": "이 파일 전체의 원래 바이트로 계산한 SHA256이에요."
+    },
+    "/expected/candidate_manifest/files/9/path": {
+      "sources": [
+        "product:seeds/concept.csv:1",
+        "product:docs/design/05-code-set-version.md:46"
+      ]
+    },
+    "/expected/candidate_manifest/files/9/sha256": {
+      "sources": [
+        "product:seeds/concept.csv:1",
+        "product:docs/design/05-code-set-version.md:46"
+      ],
+      "derivation": "이 파일 전체의 원래 바이트로 계산한 SHA256이에요."
+    },
+    "/expected/candidate_manifest/files/10/path": {
+      "sources": [
+        "product:seeds/indicator_concepts.csv:1",
+        "product:docs/design/05-code-set-version.md:46"
+      ]
+    },
+    "/expected/candidate_manifest/files/10/sha256": {
+      "sources": [
+        "product:seeds/indicator_concepts.csv:1",
+        "product:docs/design/05-code-set-version.md:46"
+      ],
+      "derivation": "이 파일 전체의 원래 바이트로 계산한 SHA256이에요."
+    },
+    "/expected/candidate_manifest/files/11/path": {
+      "sources": [
+        "product:seeds/source_to_concept_map.csv:1",
+        "product:docs/design/05-code-set-version.md:46"
+      ]
+    },
+    "/expected/candidate_manifest/files/11/sha256": {
+      "sources": [
+        "product:seeds/source_to_concept_map.csv:1",
+        "product:docs/design/05-code-set-version.md:46"
+      ],
+      "derivation": "이 파일 전체의 원래 바이트로 계산한 SHA256이에요."
+    },
+    "/expected/identity_rules/id_pattern": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16",
+        "product:docs/design/05-code-set-version.md:40",
+        "product:docs/design/05-code-set-version.md:44",
+        "product:docs/design/05-code-set-version.md:45"
+      ],
+      "derivation": "새로 제안한 이름 규칙이에요."
+    },
+    "/expected/identity_rules/version_pattern": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16",
+        "product:docs/design/05-code-set-version.md:40",
+        "product:docs/design/05-code-set-version.md:44",
+        "product:docs/design/05-code-set-version.md:45"
+      ],
+      "derivation": "새로 제안한 버전 이름 규칙이에요."
+    },
+    "/expected/identity_rules/list_version_id": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16",
+        "product:docs/design/05-code-set-version.md:40",
+        "product:docs/design/05-code-set-version.md:44",
+        "product:docs/design/05-code-set-version.md:45"
+      ],
+      "derivation": "목록 ID와 버전 ID를 /로 이은 제안이에요."
+    },
+    "/expected/identity_rules/definition_version_id": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16",
+        "product:docs/design/05-code-set-version.md:40",
+        "product:docs/design/05-code-set-version.md:44",
+        "product:docs/design/05-code-set-version.md:45"
+      ],
+      "derivation": "정의 ID와 버전 ID를 /로 이은 제안이에요."
+    },
+    "/expected/identity_rules/changes_require_review_and_new_registration": {
+      "sources": [
+        "product:docs/design/05-code-set-version.md:49"
+      ]
+    },
+    "/expected/identity_rules/official_cms_version_claim": {
+      "sources": [
+        "product:docs/design/05-code-set-version.md:15",
+        "product:docs/design/05-code-set-version.md:44"
+      ]
+    },
+    "/expected/membership/source_code_count": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16",
+        "product:seeds/source_to_concept_map.csv:4",
+        "product:seeds/source_to_concept_map.csv:10"
+      ],
+      "derivation": "A 한 코드와 B 네 코드를 합친 수예요."
+    },
+    "/expected/membership/standard_hypertension_concept_id": {
+      "sources": [
+        "product:seeds/indicator_concepts.csv:5"
+      ]
+    },
+    "/expected/membership/standard_vocabulary": {
+      "sources": [
+        "product:seeds/concept.csv:2"
+      ]
+    },
+    "/expected/membership/a_prime_reuses_A_membership": {
+      "sources": [
+        "product:seeds/source_to_concept_map.csv:30",
+        "product:docs/design/06-v1-screens-from-db.md:19"
+      ]
+    },
+    "/expected/membership/a_prime_namespace": {
+      "sources": [
+        "product:seeds/source_to_concept_map.csv:30"
+      ]
+    },
+    "/expected/membership/a_prime_adds_independent_hospital": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:19"
+      ]
+    },
+    "/expected/membership/registry_source": {
+      "sources": [
+        "product:docs/design/05-code-set-version.md:38"
+      ]
+    },
+    "/expected/membership/generated_copy_only": {
+      "sources": [
+        "product:docs/design/05-code-set-version.md:38"
+      ]
+    },
+    "/expected/hash_contract/algorithm": {
+      "sources": [
+        "product:docs/design/05-code-set-version.md:46"
+      ]
+    },
+    "/expected/hash_contract/file_content": {
+      "sources": [
+        "product:docs/design/05-code-set-version.md:46",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16"
+      ],
+      "derivation": "정확한 바이트 규칙을 이번 초안에서 제안해요."
+    },
+    "/expected/hash_contract/file_order": {
+      "sources": [
+        "product:docs/design/05-code-set-version.md:46",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16"
+      ],
+      "derivation": "정렬 규칙을 이번 초안에서 제안해요."
+    },
+    "/expected/hash_contract/code_order": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16",
+        "product:docs/design/05-code-set-version.md:45"
+      ],
+      "derivation": "코드 목록은 위 seed에서 생성해요."
+    },
+    "/expected/hash_contract/manifest_bytes": {
+      "sources": [
+        "product:docs/design/05-code-set-version.md:46",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16"
+      ],
+      "derivation": "직렬화 규칙을 이번 초안에서 제안해요."
+    },
+    "/expected/hash_contract/manifest_self_hash_included": {
+      "sources": [
+        "product:docs/design/05-code-set-version.md:46"
+      ],
+      "derivation": "자기 해시는 payload 밖에서 보관해요."
+    },
+    "/expected/hash_contract/definition_manifest_sha256": {
+      "sources": [
+        "product:docs/design/05-code-set-version.md:46",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16"
+      ],
+      "derivation": "이 JSON의 candidate_manifest를 위 규칙으로 직렬화한 SHA256이에요."
+    },
+    "/expected/hash_contract/runtime_context_outside_definition_hash": {
+      "sources": [
+        "product:docs/design/05-code-set-version.md:47"
+      ]
+    },
+    "/expected/hash_contract/hash_guarantees_clinical_correctness": {
+      "sources": [
+        "product:docs/design/05-code-set-version.md:46"
+      ]
+    },
+    "/expected/public_summary_metadata/fixed/definition_id": {
+      "sources": [
+        "product:docs/design/05-code-set-version.md:55",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16",
+        "product:docs/design/05-code-set-version.md:40",
+        "product:docs/design/05-code-set-version.md:44",
+        "product:docs/design/05-code-set-version.md:45"
+      ]
+    },
+    "/expected/public_summary_metadata/fixed/definition_version": {
+      "sources": [
+        "product:docs/design/05-code-set-version.md:55",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16",
+        "product:docs/design/05-code-set-version.md:40",
+        "product:docs/design/05-code-set-version.md:44",
+        "product:docs/design/05-code-set-version.md:45"
+      ]
+    },
+    "/expected/public_summary_metadata/fixed/code_set_version": {
+      "sources": [
+        "product:docs/design/05-code-set-version.md:55",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16",
+        "product:docs/design/05-code-set-version.md:40",
+        "product:docs/design/05-code-set-version.md:44",
+        "product:docs/design/05-code-set-version.md:45"
+      ]
+    },
+    "/expected/public_summary_metadata/fixed/definition_manifest_sha256": {
+      "sources": [
+        "product:docs/design/05-code-set-version.md:55",
+        "product:docs/design/05-code-set-version.md:46"
+      ],
+      "derivation": "candidate_manifest의 정해진 직렬화에서 계산해요."
+    },
+    "/expected/public_summary_metadata/run_id_binding/match": {
+      "sources": [
+        "product:docs/design/05-code-set-version.md:47",
+        "product:docs/design/05-code-set-version.md:55",
+        "product:docs/design/06-v1-screens-from-db.md:55"
+      ]
+    },
+    "/expected/public_summary_metadata/run_id_binding/non_empty": {
+      "sources": [
+        "product:docs/design/05-code-set-version.md:55",
+        "product:docs/design/06-v1-screens-from-db.md:61"
+      ]
+    },
+    "/expected/public_summary_metadata/run_id_binding/fixed_value": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:50"
+      ],
+      "derivation": "아직 생성하지 않은 실행 ID를 지어내지 않아요. 실제 출력의 NULL을 허용한다는 뜻은 아니에요."
+    },
+    "/expected/public_summary_metadata/added_fields/0": {
+      "sources": [
+        "product:docs/design/05-code-set-version.md:55"
+      ]
+    },
+    "/expected/public_summary_metadata/added_fields/1": {
+      "sources": [
+        "product:docs/design/05-code-set-version.md:55"
+      ]
+    },
+    "/expected/public_summary_metadata/added_fields/2": {
+      "sources": [
+        "product:docs/design/05-code-set-version.md:55"
+      ]
+    },
+    "/expected/public_summary_metadata/added_fields/3": {
+      "sources": [
+        "product:docs/design/05-code-set-version.md:55"
+      ]
+    },
+    "/expected/public_summary_metadata/added_fields/4": {
+      "sources": [
+        "product:docs/design/05-code-set-version.md:55"
+      ]
+    },
+    "/expected/public_summary_metadata/db_schema_change": {
+      "sources": [
+        "product:docs/design/05-code-set-version.md:55",
+        "product:docs/design/05-code-set-version.md:57"
+      ]
+    },
+    "/expected/public_summary_metadata/unregistered_or_hash_mismatch_display": {
+      "sources": [
+        "product:docs/design/05-code-set-version.md:49",
+        "product:docs/design/06-v1-screens-from-db.md:64"
+      ]
+    },
+    "/expected/public_summary_metadata/v1_label_allowed_when_hash_mismatches": {
+      "sources": [
+        "product:docs/design/05-code-set-version.md:49",
+        "product:docs/design/05-code-set-version.md:67"
+      ]
+    },
+    "/expected/unchanged_summaries/0/hospital": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/summary_A.csv:2"
+      ]
+    },
+    "/expected/unchanged_summaries/0/as_of_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/summary_A.csv:2"
+      ]
+    },
+    "/expected/unchanged_summaries/0/denominator": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/summary_A.csv:2"
+      ]
+    },
+    "/expected/unchanged_summaries/0/numerator": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/summary_A.csv:2"
+      ]
+    },
+    "/expected/unchanged_summaries/0/rate": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/summary_A.csv:2"
+      ]
+    },
+    "/expected/unchanged_summaries/1/hospital": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/summary_A.csv:3"
+      ]
+    },
+    "/expected/unchanged_summaries/1/as_of_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/summary_A.csv:3"
+      ]
+    },
+    "/expected/unchanged_summaries/1/denominator": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/summary_A.csv:3"
+      ]
+    },
+    "/expected/unchanged_summaries/1/numerator": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/summary_A.csv:3"
+      ]
+    },
+    "/expected/unchanged_summaries/1/rate": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/summary_A.csv:3"
+      ]
+    },
+    "/expected/unchanged_summaries/2/hospital": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/summary_B.csv:2"
+      ]
+    },
+    "/expected/unchanged_summaries/2/as_of_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/summary_B.csv:2"
+      ]
+    },
+    "/expected/unchanged_summaries/2/denominator": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/summary_B.csv:2"
+      ]
+    },
+    "/expected/unchanged_summaries/2/numerator": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/summary_B.csv:2"
+      ]
+    },
+    "/expected/unchanged_summaries/2/rate": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/summary_B.csv:2"
+      ]
+    },
+    "/expected/unchanged_summaries/3/hospital": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/summary_B.csv:3"
+      ]
+    },
+    "/expected/unchanged_summaries/3/as_of_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/summary_B.csv:3"
+      ]
+    },
+    "/expected/unchanged_summaries/3/denominator": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/summary_B.csv:3"
+      ]
+    },
+    "/expected/unchanged_summaries/3/numerator": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/summary_B.csv:3"
+      ]
+    },
+    "/expected/unchanged_summaries/3/rate": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/summary_B.csv:3"
+      ]
+    },
+    "/expected/rejection_examples/same_code_in_other_system_is_member": {
+      "sources": [
+        "product:docs/design/05-code-set-version.md:67"
+      ],
+      "derivation": "원천 체계와 코드가 모두 일치해야 해요."
+    },
+    "/expected/rejection_examples/same_version_with_different_file_hash_is_valid": {
+      "sources": [
+        "product:docs/design/05-code-set-version.md:67"
+      ],
+      "derivation": "이름이 같아도 해시가 다르면 검증한 v1으로 표시하지 않아요."
+    },
+    "/expected/rejection_examples/v1_numbers_with_v2_label_are_valid": {
+      "sources": [
+        "product:docs/design/05-code-set-version.md:67"
+      ],
+      "derivation": "현재 기대 행에 다른 버전 이름을 붙이지 않아요."
+    },
+    "/expected/rejection_examples/mixed_version_summary_is_valid": {
+      "sources": [
+        "product:docs/design/05-code-set-version.md:67"
+      ],
+      "derivation": "여러 버전의 요약을 한 묶음으로 섞지 않아요."
+    },
+    "/expected/rejection_examples/unreviewed_v2_is_complete": {
+      "sources": [
+        "product:docs/design/05-code-set-version.md:67"
+      ],
+      "derivation": "검토 전 v2를 완료로 표시하지 않아요."
+    }
+  }
+}

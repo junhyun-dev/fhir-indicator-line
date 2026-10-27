@@ -1,0 +1,3593 @@
+{
+  "format": "medical-v1-expected-draft/1",
+  "status": "리드 검수 전 초안이에요.",
+  "made_by": "만들기 · 의료 · 기대 결과 · Codex · 2026-10-27",
+  "product_root": "/home/junhyun/dev/projects/fhir-indicator-line",
+  "product_branch": "work/fhir-line-05-dbt-quality",
+  "product_commit": "12ac450364e0f5207f7474d8440bcd8b787a331f",
+  "personal_root": "/home/junhyun/personal",
+  "source_notation": {
+    "personal": "Personal 저장소 기준 경로:줄이에요.",
+    "product": "product_commit의 Git blob 경로:줄이에요. 작업 트리의 현재 가지와 다를 수 있어요.",
+    "runtime": "로컬 실행 기록의 관찰 사본이에요. 새 실행의 통과 증거가 아니에요."
+  },
+  "source_inventory": {
+    "personal:builds/medical-data-hands-on/answer-key/README.md": {
+      "sha256": "09a9b2f7fa584b5875e81060678876c20e47b317d60978a6745f671c1660fb11",
+      "line_count": 47
+    },
+    "personal:builds/medical-data-hands-on/answer-key/cell_diff/SHA256SUMS": {
+      "sha256": "0f4f61b774e592381a7d5be7d305a7baa85d43b14a56af5b789639ac58244e2d",
+      "line_count": 1
+    },
+    "personal:builds/medical-data-hands-on/answer-key/cell_diff/cases.json": {
+      "sha256": "c603d2a2e3e343f21a8efa99a1835647e0a6594af5ff6e4100013cf25c4bd0cd",
+      "line_count": 131
+    },
+    "personal:builds/medical-data-hands-on/answer-key/expected/SHA256SUMS": {
+      "sha256": "072d9f297cb0ad9890af65108bcf19b8f2b533fbe27e4293566e7ae9e70aca4e",
+      "line_count": 6
+    },
+    "personal:builds/medical-data-hands-on/answer-key/expected/person_2025-09-30.csv": {
+      "sha256": "6dbcfbac1baf5c044de246df7c1bdbb073a8a89c5b534397e673134525455c7a",
+      "line_count": 6
+    },
+    "personal:builds/medical-data-hands-on/answer-key/expected/person_2025-12-31.csv": {
+      "sha256": "c7f7d8f131426f19e1b72d55e6abbfee8fdf5c067be647839df942bd502911e8",
+      "line_count": 7
+    },
+    "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv": {
+      "sha256": "21df4724d255810f290f3a9290898f3be24f18be1f0af1641b20a3370cf67aa8",
+      "line_count": 12
+    },
+    "personal:builds/medical-data-hands-on/answer-key/expected/summary_2025-09-30.csv": {
+      "sha256": "0cf9dd23efae7601ba09b7a19878de309234e2978bcd98248f712f6587b817d6",
+      "line_count": 2
+    },
+    "personal:builds/medical-data-hands-on/answer-key/expected/summary_2025-12-31.csv": {
+      "sha256": "89a3e48cbcd3709b81bc040959c7abea552d7928217bd916d05f10a199337b30",
+      "line_count": 2
+    },
+    "personal:builds/medical-data-hands-on/answer-key/expected/summary_A.csv": {
+      "sha256": "875c5769adf382ab6c4cbf0a3223aefb027194206bcb9460c582522232e52cf1",
+      "line_count": 3
+    },
+    "personal:builds/medical-data-hands-on/answer-key/expected_b/SHA256SUMS_B": {
+      "sha256": "35c6a44630f1dc439d47e0a65895afebe147bd3c035274457f8cb9307ce0d227",
+      "line_count": 2
+    },
+    "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv": {
+      "sha256": "68d49e236cc05a15fe460a603f320c83cb4f0867519b33fba569c7b89254d737",
+      "line_count": 19
+    },
+    "personal:builds/medical-data-hands-on/answer-key/expected_b/summary_B.csv": {
+      "sha256": "e8518f784013df6e17e3d7f3aadf7cbd3086650bbb161e73cc2cc9e23a661457",
+      "line_count": 3
+    },
+    "personal:builds/medical-data-hands-on/answer-key/expected_omop/omop_follow.csv": {
+      "sha256": "b83f6cf6150cb8acb6c905d08fe48b4a0ce831440c9cccdd938defab4f15706d",
+      "line_count": 5
+    },
+    "personal:builds/medical-data-hands-on/answer-key/make_expected_omop.py": {
+      "sha256": "ac42a3b0091bebeb1ad0f1cbc3062981478c3793032fdbc25aeb73f26183c987",
+      "line_count": 152
+    },
+    "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md": {
+      "sha256": "3671190f25b9b25d66d452aac96326e1ca06b2fa0f26f086b8a710694a13ef62",
+      "line_count": 100
+    },
+    "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md": {
+      "sha256": "6a2782f1f214b89c1ffd8b3bb0c58944262d6763f0c6f8cf71bf12b7013d824f",
+      "line_count": 36
+    },
+    "product:docs/decisions/0001-indicator-definition-d1-d7.md": {
+      "sha256": "7ef4b7326388d5aa61400b24115606fc096de399880c88efb674607be37fd254",
+      "line_count": 25
+    },
+    "product:docs/decisions/0003-hospital-b-three-definitions.md": {
+      "sha256": "65143434b1d5caca3cac95756694dc3993ff49bdcafb93c066c3265689adfa26",
+      "line_count": 26
+    },
+    "product:docs/decisions/0010-definition-rules-in-calculation-layer.md": {
+      "sha256": "30643fb14f90f3af23eadf5fde5a70ef54fb61191d71d18d2975a1b5d750006b",
+      "line_count": 21
+    },
+    "product:docs/design/05-code-set-version.md": {
+      "sha256": "20e01e9e6c4117cbdd4170b3b90cd6fcde1a2130cceea1d91de8dc96092f34ec",
+      "line_count": 86
+    },
+    "product:docs/design/06-v1-screens-from-db.md": {
+      "sha256": "bdf9bea074d988f121ba109f1adee397eabf88b313c24128156ba5021f6c17ae",
+      "line_count": 112
+    },
+    "product:fhir_line/ladder.py": {
+      "sha256": "b910df256c23b3155f0968f23bf67f0d0eac0ba038d8e3107095fa5f858179e6",
+      "line_count": 456
+    },
+    "product:models/intermediate/int_bp_daily.sql": {
+      "sha256": "3eef286bcc483d08f91cb82b38773bcbdfb27fb820e7c0f501540b719c9f1914",
+      "line_count": 24
+    },
+    "product:models/intermediate/int_person_period.sql": {
+      "sha256": "875863b0b51a0877e96dcc4d32da60f2c14fe87f27e5b4ce6b4e82b3e0b4e442",
+      "line_count": 18
+    },
+    "product:models/marts/dim_as_of.sql": {
+      "sha256": "828500943255897a3e99ed497a2956e0501633be09e936cafaa30bb0deec1caf",
+      "line_count": 3
+    },
+    "product:models/marts/fct_bp_person.sql": {
+      "sha256": "533b7f20b31426ef3fe8228279eaae3d23d943e1b1aa545a832b82a90f978dfc",
+      "line_count": 47
+    },
+    "product:models/reports/bp_summary.sql": {
+      "sha256": "3647a568da7a054c0190aa443a26e57059cf6e3079cd62f7a8de95c0ecfcc15e",
+      "line_count": 9
+    },
+    "product:scripts/check.sh": {
+      "sha256": "e3ef5edcae8603b7b81f2afaa699e7e06900a923c428a50a25fc8577d0338eb3",
+      "line_count": 41
+    },
+    "product:seeds/as_of_labels.csv": {
+      "sha256": "aa3f3724e0cdfe17a8e940fd1744969523f6667296102595277a4a20c6bc142f",
+      "line_count": 3
+    },
+    "product:seeds/concept.csv": {
+      "sha256": "d50c8267629f0c61c27a022499dd9363188a7a6258032cd0f45477820d136ebd",
+      "line_count": 13
+    },
+    "product:seeds/indicator_concepts.csv": {
+      "sha256": "fd645aa40bdeefe699b19cf2c02608941a281a8bb4e66ca6f71868a06fab70b0",
+      "line_count": 9
+    },
+    "product:seeds/source_to_concept_map.csv": {
+      "sha256": "c5982c725acdb320ab5f0c4f27f786b5ed6b290a0e927e445347e399da266de6",
+      "line_count": 40
+    },
+    "runtime:.local/FHIR-LINE-02/runs/index.csv": {
+      "sha256": "91b676a53ad6335f14bb4794b6e3dfd4be457da37e1bd1fc6641ed67aa20e1ef",
+      "line_count": 8
+    }
+  },
+  "expected": {
+    "delivery": {
+      "type": "정적 HTML",
+      "server_required": false,
+      "local_screens": [
+        "S01",
+        "S02",
+        "S03",
+        "S04",
+        "S05"
+      ],
+      "entry_screen": "S01",
+      "public_patient_objects_allowed": false,
+      "ui_data_source": "실제 지표 값은 DB에서 읽고, 고정 기대 결과는 비교에만 써요.",
+      "comparison_snapshot": "화면 조회와 기대값 비교를 같은 읽기 전용 트랜잭션에서 수행해요."
+    },
+    "patient_number_rule": {
+      "scope": "병원과 실행 안에서만 쓰는 번호예요. 두 기준 시점과 필터에서 같은 내부 환자는 같은 번호를 써요.",
+      "assignment": "병원별로 두 시점의 내부 환자 키를 합쳐 중복을 없애고 정렬한 뒤 1부터 번호를 매겨요. 내부 키는 내보내지 않아요.",
+      "cross_run_identity_guaranteed": false,
+      "source_id_fallback_allowed": false
+    },
+    "privacy": {
+      "forbidden_fields": [
+        "person_id",
+        "person_source_value",
+        "subject_id",
+        "source_row_key",
+        "reference",
+        "name",
+        "age",
+        "source_filename",
+        "source_path",
+        "raw_json",
+        "filename",
+        "omop_person_id"
+      ],
+      "scan_surfaces": [
+        "HTML 본문",
+        "안전한 JSON",
+        "DOM 속성",
+        "URL과 링크",
+        "로그",
+        "다운로드"
+      ],
+      "hash_or_prefix_of_original_id_allowed": false,
+      "free_form_error_export_allowed": false,
+      "source_files_in_this_expected_bundle_are_browser_payload": false,
+      "public_mode_s02_s03_objects": false,
+      "allowed_current_reasons": [
+        "수축기 140 이상",
+        "이완기 90 이상",
+        "조절됨"
+      ]
+    },
+    "S01": {
+      "title": "지표 현황",
+      "row_count": 4,
+      "rows": [
+        {
+          "hospital": "A",
+          "as_of_label": "sep30",
+          "as_of_display": "2025-09-30",
+          "denominator": 5,
+          "numerator": 3,
+          "rate": 0.6,
+          "percent_display": "60.00%",
+          "uncontrolled_count": 2,
+          "comparison_label": "기대 결과와 같음",
+          "definition_id": "bp-control-learning",
+          "definition_version": "v1",
+          "code_set_version": "v1",
+          "definition_manifest_sha256": "dc187bf7fa0fbdcfc8c6a244abbed6a7cdf0872a9e748fcf8ee137a159129577"
+        },
+        {
+          "hospital": "A",
+          "as_of_label": "dec31",
+          "as_of_display": "2025-12-31",
+          "denominator": 6,
+          "numerator": 4,
+          "rate": 0.6667,
+          "percent_display": "66.67%",
+          "uncontrolled_count": 2,
+          "comparison_label": "기대 결과와 같음",
+          "definition_id": "bp-control-learning",
+          "definition_version": "v1",
+          "code_set_version": "v1",
+          "definition_manifest_sha256": "dc187bf7fa0fbdcfc8c6a244abbed6a7cdf0872a9e748fcf8ee137a159129577"
+        },
+        {
+          "hospital": "B",
+          "as_of_label": "sep30",
+          "as_of_display": "환자별 기준 연도의 9월 말",
+          "denominator": 9,
+          "numerator": 4,
+          "rate": 0.4444,
+          "percent_display": "44.44%",
+          "uncontrolled_count": 5,
+          "comparison_label": "기대 결과와 같음",
+          "definition_id": "bp-control-learning",
+          "definition_version": "v1",
+          "code_set_version": "v1",
+          "definition_manifest_sha256": "dc187bf7fa0fbdcfc8c6a244abbed6a7cdf0872a9e748fcf8ee137a159129577"
+        },
+        {
+          "hospital": "B",
+          "as_of_label": "dec31",
+          "as_of_display": "환자별 기준 연도의 연말",
+          "denominator": 9,
+          "numerator": 3,
+          "rate": 0.3333,
+          "percent_display": "33.33%",
+          "uncontrolled_count": 6,
+          "comparison_label": "기대 결과와 같음",
+          "definition_id": "bp-control-learning",
+          "definition_version": "v1",
+          "code_set_version": "v1",
+          "definition_manifest_sha256": "dc187bf7fa0fbdcfc8c6a244abbed6a7cdf0872a9e748fcf8ee137a159129577"
+        }
+      ],
+      "run_id_binding": "각 행의 run_id는 이 실행 manifest.run_id와 같아야 해요.",
+      "last_verified_at_binding": "이 DB와 연결이 확인된 같은 실행의 검증 시각을 보여 줘요. 이전 실행 시각으로 이번 성공을 표시하지 않아요.",
+      "calculation_note": "학습용 계산(제외 대상 안 뺌 · D7)",
+      "sum_A_and_A_prime": false,
+      "combined_AB_rate": false,
+      "zero_denominator": {
+        "denominator": 0,
+        "numerator": 0,
+        "rate": null,
+        "display": "대상 없음",
+        "present_in_fixed_summary": false
+      }
+    },
+    "S02": {
+      "title": "대상 환자 조회",
+      "default_as_of_label": "dec31",
+      "hospitals": {
+        "A": {
+          "row_count": 6,
+          "rows": [
+            {
+              "hospital": "A",
+              "as_of_label": "dec31",
+              "as_of": "2025-12-31",
+              "last_bp_date": "2025-12-01",
+              "reason": "이완기 90 이상",
+              "systolic": 124,
+              "diastolic": 92,
+              "controlled": 0,
+              "patient_number": 1,
+              "patient_label": "환자 1",
+              "control_label": "조절 안 됨",
+              "comparison_label": "기대 결과와 같음"
+            },
+            {
+              "hospital": "A",
+              "as_of_label": "dec31",
+              "as_of": "2025-12-31",
+              "last_bp_date": "2025-09-13",
+              "reason": "수축기 140 이상",
+              "systolic": 145,
+              "diastolic": 75,
+              "controlled": 0,
+              "patient_number": 2,
+              "patient_label": "환자 2",
+              "control_label": "조절 안 됨",
+              "comparison_label": "기대 결과와 같음"
+            },
+            {
+              "hospital": "A",
+              "as_of_label": "dec31",
+              "as_of": "2025-12-31",
+              "last_bp_date": "2025-04-21",
+              "reason": "조절됨",
+              "systolic": 97,
+              "diastolic": 83,
+              "controlled": 1,
+              "patient_number": 3,
+              "patient_label": "환자 3",
+              "control_label": "조절됨",
+              "comparison_label": "기대 결과와 같음"
+            },
+            {
+              "hospital": "A",
+              "as_of_label": "dec31",
+              "as_of": "2025-12-31",
+              "last_bp_date": "2025-09-15",
+              "reason": "조절됨",
+              "systolic": 94,
+              "diastolic": 50,
+              "controlled": 1,
+              "patient_number": 4,
+              "patient_label": "환자 4",
+              "control_label": "조절됨",
+              "comparison_label": "기대 결과와 같음"
+            },
+            {
+              "hospital": "A",
+              "as_of_label": "dec31",
+              "as_of": "2025-12-31",
+              "last_bp_date": "2025-10-31",
+              "reason": "조절됨",
+              "systolic": 113,
+              "diastolic": 83,
+              "controlled": 1,
+              "patient_number": 5,
+              "patient_label": "환자 5",
+              "control_label": "조절됨",
+              "comparison_label": "기대 결과와 같음"
+            },
+            {
+              "hospital": "A",
+              "as_of_label": "dec31",
+              "as_of": "2025-12-31",
+              "last_bp_date": "2025-07-17",
+              "reason": "조절됨",
+              "systolic": 137,
+              "diastolic": 79,
+              "controlled": 1,
+              "patient_number": 6,
+              "patient_label": "환자 6",
+              "control_label": "조절됨",
+              "comparison_label": "기대 결과와 같음"
+            }
+          ]
+        },
+        "B": {
+          "row_count": 9,
+          "rows": [
+            {
+              "hospital": "B",
+              "as_of_label": "dec31",
+              "as_of": "2196-12-31",
+              "last_bp_date": "2196-08-03",
+              "reason": "수축기 140 이상",
+              "systolic": 144,
+              "diastolic": 95,
+              "controlled": 0,
+              "patient_number": 1,
+              "patient_label": "환자 1",
+              "control_label": "조절 안 됨",
+              "comparison_label": "기대 결과와 같음"
+            },
+            {
+              "hospital": "B",
+              "as_of_label": "dec31",
+              "as_of": "2111-12-31",
+              "last_bp_date": "2111-11-23",
+              "reason": "수축기 140 이상",
+              "systolic": 140,
+              "diastolic": 60,
+              "controlled": 0,
+              "patient_number": 2,
+              "patient_label": "환자 2",
+              "control_label": "조절 안 됨",
+              "comparison_label": "기대 결과와 같음"
+            },
+            {
+              "hospital": "B",
+              "as_of_label": "dec31",
+              "as_of": "2136-12-31",
+              "last_bp_date": "2136-10-23",
+              "reason": "조절됨",
+              "systolic": 128,
+              "diastolic": 80,
+              "controlled": 1,
+              "patient_number": 3,
+              "patient_label": "환자 3",
+              "control_label": "조절됨",
+              "comparison_label": "기대 결과와 같음"
+            },
+            {
+              "hospital": "B",
+              "as_of_label": "dec31",
+              "as_of": "2140-12-31",
+              "last_bp_date": "2140-04-26",
+              "reason": "수축기 140 이상",
+              "systolic": 184,
+              "diastolic": 93,
+              "controlled": 0,
+              "patient_number": 4,
+              "patient_label": "환자 4",
+              "control_label": "조절 안 됨",
+              "comparison_label": "기대 결과와 같음"
+            },
+            {
+              "hospital": "B",
+              "as_of_label": "dec31",
+              "as_of": "2185-12-31",
+              "last_bp_date": "2185-07-08",
+              "reason": "수축기 140 이상",
+              "systolic": 142,
+              "diastolic": 67,
+              "controlled": 0,
+              "patient_number": 5,
+              "patient_label": "환자 5",
+              "control_label": "조절 안 됨",
+              "comparison_label": "기대 결과와 같음"
+            },
+            {
+              "hospital": "B",
+              "as_of_label": "dec31",
+              "as_of": "2114-12-31",
+              "last_bp_date": "2114-06-29",
+              "reason": "수축기 140 이상",
+              "systolic": 145,
+              "diastolic": 83,
+              "controlled": 0,
+              "patient_number": 6,
+              "patient_label": "환자 6",
+              "control_label": "조절 안 됨",
+              "comparison_label": "기대 결과와 같음"
+            },
+            {
+              "hospital": "B",
+              "as_of_label": "dec31",
+              "as_of": "2154-12-31",
+              "last_bp_date": "2154-05-17",
+              "reason": "조절됨",
+              "systolic": 120,
+              "diastolic": 74,
+              "controlled": 1,
+              "patient_number": 7,
+              "patient_label": "환자 7",
+              "control_label": "조절됨",
+              "comparison_label": "기대 결과와 같음"
+            },
+            {
+              "hospital": "B",
+              "as_of_label": "dec31",
+              "as_of": "2169-12-31",
+              "last_bp_date": "2169-02-20",
+              "reason": "조절됨",
+              "systolic": 118,
+              "diastolic": 88,
+              "controlled": 1,
+              "patient_number": 8,
+              "patient_label": "환자 8",
+              "control_label": "조절됨",
+              "comparison_label": "기대 결과와 같음"
+            },
+            {
+              "hospital": "B",
+              "as_of_label": "dec31",
+              "as_of": "2117-12-31",
+              "last_bp_date": "2117-06-23",
+              "reason": "수축기 140 이상",
+              "systolic": 162,
+              "diastolic": 80,
+              "controlled": 0,
+              "patient_number": 9,
+              "patient_label": "환자 9",
+              "control_label": "조절 안 됨",
+              "comparison_label": "기대 결과와 같음"
+            }
+          ]
+        }
+      },
+      "row_filter_values": [
+        "전체",
+        "조절 안 됨",
+        "조절됨"
+      ],
+      "navigation": "행을 누르면 같은 병원과 실행의 환자 상세를 열어요."
+    },
+    "S03": {
+      "title": "환자 상세",
+      "representative": {
+        "hospital": "B",
+        "as_of_label": "dec31",
+        "as_of": "2111-12-31",
+        "last_bp_date": "2111-11-23",
+        "reason": "수축기 140 이상",
+        "systolic": 140,
+        "diastolic": 60,
+        "controlled": 0,
+        "patient_number": 2,
+        "patient_label": "환자 2",
+        "control_label": "조절 안 됨",
+        "comparison_label": "기대 결과와 같음"
+      },
+      "last_measurement_date": "2111-11-23",
+      "selected_source_type": "OMR 혈압",
+      "original_unit_written": null,
+      "standard_row_count": 2,
+      "standard_rows": [
+        {
+          "hospital": "B",
+          "measurement_source_value": "omr_diastolic",
+          "measurement_date": "2111-11-23",
+          "measurement_concept_id": 3012888,
+          "value_as_number": 60,
+          "unit_concept_id": 8876,
+          "unit_display": "mm[Hg]",
+          "source_link_status": "미확인"
+        },
+        {
+          "hospital": "B",
+          "measurement_source_value": "omr_systolic",
+          "measurement_date": "2111-11-23",
+          "measurement_concept_id": 3004249,
+          "value_as_number": 140,
+          "unit_concept_id": 8876,
+          "unit_display": "mm[Hg]",
+          "source_link_status": "미확인"
+        }
+      ],
+      "decision": {
+        "systolic_threshold": 140,
+        "diastolic_threshold": 90,
+        "comparison_operator": "<",
+        "systolic_matches": false,
+        "diastolic_matches": true,
+        "controlled": 0,
+        "reason": "수축기 140 이상",
+        "recalculate_in_browser": false
+      },
+      "original_record_key": {
+        "internal_expected_value": null,
+        "verification_status": "미확인",
+        "browser_export_allowed": false,
+        "display_without_verified_link": "원천 연결 미확인"
+      },
+      "component_lineage": {
+        "separate_component_provenance": true,
+        "ties_show_all_candidates": true,
+        "assert_unique_origin_from_date_and_value": false,
+        "missing_partial_decimal_values_preserved": true
+      },
+      "additional_A_dec31_anchor": {
+        "hospital": "A",
+        "as_of_label": "dec31",
+        "as_of": "2025-12-31",
+        "last_bp_date": "2025-12-01",
+        "reason": "이완기 90 이상",
+        "systolic": 124,
+        "diastolic": 92,
+        "controlled": 0,
+        "patient_number": 1,
+        "patient_label": "환자 1",
+        "control_label": "조절 안 됨",
+        "comparison_label": "기대 결과와 같음"
+      },
+      "A_124_92_standard_row_assertions_available": false
+    },
+    "S04": {
+      "title": "데이터 품질 검사",
+      "preflight": {
+        "external_cell_cases_required": true,
+        "skip_means_success": false
+      },
+      "stages": [
+        {
+          "stage_id": "expected_lock",
+          "label": "기대 결과의 해시와 읽기 전용 상태",
+          "status_binding": "이번 실행에서 이 단계가 실제로 남긴 상태를 읽어요.",
+          "completed_success": "통과",
+          "not_run": "미실행",
+          "error": "실패"
+        },
+        {
+          "stage_id": "a_prime_lock",
+          "label": "A′ 고정 기대 결과",
+          "status_binding": "이번 실행에서 이 단계가 실제로 남긴 상태를 읽어요.",
+          "completed_success": "통과",
+          "not_run": "미실행",
+          "error": "실패"
+        },
+        {
+          "stage_id": "frozen_layers",
+          "label": "바뀌면 안 되는 층",
+          "status_binding": "이번 실행에서 이 단계가 실제로 남긴 상태를 읽어요.",
+          "completed_success": "통과",
+          "not_run": "미실행",
+          "error": "실패"
+        },
+        {
+          "stage_id": "tests",
+          "label": "테스트",
+          "status_binding": "이번 실행에서 이 단계가 실제로 남긴 상태를 읽어요.",
+          "completed_success": "통과",
+          "not_run": "미실행",
+          "error": "실패"
+        },
+        {
+          "stage_id": "dbt_quality",
+          "label": "dbt 빌드와 데이터 품질 검사",
+          "status_binding": "이번 실행에서 이 단계가 실제로 남긴 상태를 읽어요.",
+          "completed_success": "통과",
+          "not_run": "미실행",
+          "error": "실패"
+        },
+        {
+          "stage_id": "ladder",
+          "label": "확인 사다리",
+          "status_binding": "이번 실행에서 이 단계가 실제로 남긴 상태를 읽어요.",
+          "completed_success": "통과",
+          "not_run": "미실행",
+          "error": "실패"
+        }
+      ],
+      "failed_stages_first": true,
+      "dbt_quality": {
+        "DQD_check_count": 9,
+        "unmapped_warning_separate": true,
+        "statuses": [
+          "pass",
+          "warn",
+          "error",
+          "skipped"
+        ],
+        "warning_is_expected_match": false,
+        "exact_current_test_results": null
+      },
+      "last_attempt_binding": "이번 실행 manifest의 시작 시각과 종료 시각을 읽어요.",
+      "last_success_binding": "보존된 마지막 성공의 시각과 이번 시도 시각을 구분해요.",
+      "index_columns": [
+        "run_at",
+        "product_commit",
+        "status",
+        "cell_diffs",
+        "missing_rows",
+        "unexpected_rows"
+      ],
+      "index_display": "runs/index.csv",
+      "historical_last_index_row": {
+        "run_at": "2026-10-27T09:11:55.090858Z",
+        "product_commit": "8017716e4860ba36f2047fed87f239d6de67320f",
+        "status": "통과",
+        "cell_diffs": 0,
+        "missing_rows": 0,
+        "unexpected_rows": 0
+      },
+      "historical_row_confirms_current_run": false,
+      "index_has_full_historical_details": false,
+      "current_index_missing": "이번 실행 이력 없음",
+      "old_success_reused_for_current_status": false,
+      "unbound_db_manifest_payload_status": "미확인"
+    },
+    "S05": {
+      "title": "오류내역",
+      "categories": [
+        "다른 칸",
+        "빠진 행",
+        "남는 행"
+      ],
+      "baseline": {
+        "status": "통과",
+        "cell_diffs": 0,
+        "missing_rows": 0,
+        "unexpected_rows": 0,
+        "message": "모두 통과",
+        "rows": []
+      },
+      "detail_scope": "같은 실행의 A/B 검사 ④ 셀 차이에 한정해요.",
+      "dqd_aggregate_detail": "위반 수와 분모를 보여 줘요. 환자 행 목록은 없어요.",
+      "raw_row_key_export_allowed": false,
+      "data_source_binding": "이번 실행의 cell-diff.csv를 읽고, 허용한 표·열·값만 새 객체로 만들어요."
+    },
+    "case_2_summary_numerator_mismatch": {
+      "case_id": 2,
+      "change": {
+        "table": "bp_summary",
+        "column": "numerator",
+        "from": "3",
+        "to": "4"
+      },
+      "change_row": {
+        "hospital": "B",
+        "as_of_label": "dec31"
+      },
+      "S04": {
+        "status": "실패",
+        "ladder_step": "4",
+        "summary_comparison": "실패",
+        "person_comparison": "통과",
+        "cell_diffs": 1,
+        "missing_rows": 0,
+        "unexpected_rows": 0,
+        "failed_stage_first": true,
+        "unrelated_stage_states": "해당 실행에서 실제로 남긴 상태를 유지해요. 이 사례만으로 다른 단계를 통과 처리하지 않아요.",
+        "new_index_row": {
+          "status": "실패",
+          "cell_diffs": 1,
+          "missing_rows": 0,
+          "unexpected_rows": 0,
+          "run_at_binding": "이 사례를 검사한 같은 실행의 실제 UTC 시각이에요.",
+          "product_commit_binding": "이 사례를 검사한 실제 제품 HEAD예요.",
+          "when_written": "사다리가 이 비교까지 실행되고 이력 저장도 성공했을 때예요."
+        }
+      },
+      "S05": {
+        "message": "다른 칸 1개 · 빠진 행 0개 · 남는 행 0개",
+        "all_pass_message_allowed": false,
+        "row_count": 1,
+        "row": {
+          "kind": "다른 칸",
+          "hospital": "B",
+          "as_of_label": "dec31",
+          "table": "bp_summary",
+          "column": "numerator",
+          "column_display": "분자",
+          "expected": 3,
+          "actual": 4,
+          "patient_number": null,
+          "patient_detail_link": false
+        },
+        "missing_rows": [],
+        "unexpected_rows": []
+      },
+      "S01_actual_summary": {
+        "numerator": 4,
+        "denominator": 9,
+        "rate": 0.3333,
+        "comparison_label": "기대 결과와 다름",
+        "recompute_rate_in_ui": false
+      }
+    }
+  },
+  "evidence": {
+    "/expected/delivery/type": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:18",
+        "product:docs/design/06-v1-screens-from-db.md:25"
+      ]
+    },
+    "/expected/delivery/server_required": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:18",
+        "product:docs/design/06-v1-screens-from-db.md:25"
+      ]
+    },
+    "/expected/delivery/local_screens/0": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:18",
+        "product:docs/design/06-v1-screens-from-db.md:33"
+      ]
+    },
+    "/expected/delivery/local_screens/1": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:18",
+        "product:docs/design/06-v1-screens-from-db.md:33"
+      ]
+    },
+    "/expected/delivery/local_screens/2": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:18",
+        "product:docs/design/06-v1-screens-from-db.md:33"
+      ]
+    },
+    "/expected/delivery/local_screens/3": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:18",
+        "product:docs/design/06-v1-screens-from-db.md:33"
+      ]
+    },
+    "/expected/delivery/local_screens/4": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:18",
+        "product:docs/design/06-v1-screens-from-db.md:33"
+      ]
+    },
+    "/expected/delivery/entry_screen": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:37"
+      ]
+    },
+    "/expected/delivery/public_patient_objects_allowed": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:103"
+      ]
+    },
+    "/expected/delivery/ui_data_source": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:17"
+      ]
+    },
+    "/expected/delivery/comparison_snapshot": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:63"
+      ]
+    },
+    "/expected/patient_number_rule/scope": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:76",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:62"
+      ],
+      "derivation": "두 시점에 같은 번호를 쓰는 것은 이 초안의 선택이에요."
+    },
+    "/expected/patient_number_rule/assignment": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:19",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:62",
+        "product:docs/design/06-v1-screens-from-db.md:76"
+      ],
+      "derivation": "정확한 번호 배정 규칙은 이 초안에서 제안해요."
+    },
+    "/expected/patient_number_rule/cross_run_identity_guaranteed": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:76"
+      ]
+    },
+    "/expected/patient_number_rule/source_id_fallback_allowed": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:76"
+      ]
+    },
+    "/expected/privacy/forbidden_fields/0": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:75",
+        "product:docs/design/06-v1-screens-from-db.md:39"
+      ]
+    },
+    "/expected/privacy/forbidden_fields/1": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:75",
+        "product:docs/design/06-v1-screens-from-db.md:39"
+      ]
+    },
+    "/expected/privacy/forbidden_fields/2": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:75",
+        "product:docs/design/06-v1-screens-from-db.md:39"
+      ]
+    },
+    "/expected/privacy/forbidden_fields/3": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:75",
+        "product:docs/design/06-v1-screens-from-db.md:39"
+      ]
+    },
+    "/expected/privacy/forbidden_fields/4": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:75",
+        "product:docs/design/06-v1-screens-from-db.md:39"
+      ]
+    },
+    "/expected/privacy/forbidden_fields/5": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:75",
+        "product:docs/design/06-v1-screens-from-db.md:39"
+      ]
+    },
+    "/expected/privacy/forbidden_fields/6": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:75",
+        "product:docs/design/06-v1-screens-from-db.md:39"
+      ]
+    },
+    "/expected/privacy/forbidden_fields/7": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:75",
+        "product:docs/design/06-v1-screens-from-db.md:39"
+      ]
+    },
+    "/expected/privacy/forbidden_fields/8": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:75",
+        "product:docs/design/06-v1-screens-from-db.md:39"
+      ]
+    },
+    "/expected/privacy/forbidden_fields/9": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:75",
+        "product:docs/design/06-v1-screens-from-db.md:39"
+      ]
+    },
+    "/expected/privacy/scan_surfaces/0": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:75",
+        "product:docs/design/06-v1-screens-from-db.md:89"
+      ]
+    },
+    "/expected/privacy/scan_surfaces/1": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:75",
+        "product:docs/design/06-v1-screens-from-db.md:89"
+      ]
+    },
+    "/expected/privacy/scan_surfaces/2": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:75",
+        "product:docs/design/06-v1-screens-from-db.md:89"
+      ]
+    },
+    "/expected/privacy/scan_surfaces/3": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:75",
+        "product:docs/design/06-v1-screens-from-db.md:89"
+      ]
+    },
+    "/expected/privacy/scan_surfaces/4": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:75",
+        "product:docs/design/06-v1-screens-from-db.md:89"
+      ]
+    },
+    "/expected/privacy/scan_surfaces/5": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:75",
+        "product:docs/design/06-v1-screens-from-db.md:89"
+      ]
+    },
+    "/expected/privacy/hash_or_prefix_of_original_id_allowed": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:75"
+      ]
+    },
+    "/expected/privacy/free_form_error_export_allowed": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:75"
+      ]
+    },
+    "/expected/privacy/source_files_in_this_expected_bundle_are_browser_payload": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:56",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:25"
+      ],
+      "derivation": "근거 경로는 검수 자료예요. 화면에 복사하는 값이 아니에요."
+    },
+    "/expected/privacy/public_mode_s02_s03_objects": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:103"
+      ]
+    },
+    "/expected/S01/title": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:76"
+      ]
+    },
+    "/expected/S01/row_count": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:38"
+      ]
+    },
+    "/expected/S01/rows/0/hospital": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/summary_A.csv:2"
+      ]
+    },
+    "/expected/S01/rows/0/as_of_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/summary_A.csv:2"
+      ]
+    },
+    "/expected/S01/rows/0/as_of_display": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:2",
+        "product:docs/design/06-v1-screens-from-db.md:38"
+      ]
+    },
+    "/expected/S01/rows/0/denominator": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/summary_A.csv:2"
+      ]
+    },
+    "/expected/S01/rows/0/numerator": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/summary_A.csv:2"
+      ]
+    },
+    "/expected/S01/rows/0/rate": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/summary_A.csv:2"
+      ]
+    },
+    "/expected/S01/rows/0/percent_display": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/summary_A.csv:2",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:61",
+        "product:docs/design/06-v1-screens-from-db.md:85"
+      ],
+      "derivation": "저장된 rate에 100을 곱하고 소수 둘째 자리까지 표시해요."
+    },
+    "/expected/S01/rows/0/uncontrolled_count": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/summary_A.csv:2",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:47"
+      ],
+      "derivation": "분모에서 분자를 뺀 수예요."
+    },
+    "/expected/S01/rows/0/comparison_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/summary_A.csv:2",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:19"
+      ]
+    },
+    "/expected/S01/rows/0/definition_id": {
+      "sources": [
+        "product:docs/design/05-code-set-version.md:55",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16"
+      ],
+      "derivation": "이 초안의 candidate_manifest와 연결한 고정 메타데이터예요."
+    },
+    "/expected/S01/rows/0/definition_version": {
+      "sources": [
+        "product:docs/design/05-code-set-version.md:55",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16"
+      ],
+      "derivation": "이 초안의 candidate_manifest와 연결한 고정 메타데이터예요."
+    },
+    "/expected/S01/rows/0/code_set_version": {
+      "sources": [
+        "product:docs/design/05-code-set-version.md:55",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16"
+      ],
+      "derivation": "이 초안의 candidate_manifest와 연결한 고정 메타데이터예요."
+    },
+    "/expected/S01/rows/0/definition_manifest_sha256": {
+      "sources": [
+        "product:docs/design/05-code-set-version.md:55",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16"
+      ],
+      "derivation": "이 초안의 candidate_manifest와 연결한 고정 메타데이터예요."
+    },
+    "/expected/S01/rows/1/hospital": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/summary_A.csv:3"
+      ]
+    },
+    "/expected/S01/rows/1/as_of_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/summary_A.csv:3"
+      ]
+    },
+    "/expected/S01/rows/1/as_of_display": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:7",
+        "product:docs/design/06-v1-screens-from-db.md:38"
+      ]
+    },
+    "/expected/S01/rows/1/denominator": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/summary_A.csv:3"
+      ]
+    },
+    "/expected/S01/rows/1/numerator": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/summary_A.csv:3"
+      ]
+    },
+    "/expected/S01/rows/1/rate": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/summary_A.csv:3"
+      ]
+    },
+    "/expected/S01/rows/1/percent_display": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/summary_A.csv:3",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:61",
+        "product:docs/design/06-v1-screens-from-db.md:85"
+      ],
+      "derivation": "저장된 rate에 100을 곱하고 소수 둘째 자리까지 표시해요."
+    },
+    "/expected/S01/rows/1/uncontrolled_count": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/summary_A.csv:3",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:47"
+      ],
+      "derivation": "분모에서 분자를 뺀 수예요."
+    },
+    "/expected/S01/rows/1/comparison_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/summary_A.csv:3",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:19"
+      ]
+    },
+    "/expected/S01/rows/1/definition_id": {
+      "sources": [
+        "product:docs/design/05-code-set-version.md:55",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16"
+      ],
+      "derivation": "이 초안의 candidate_manifest와 연결한 고정 메타데이터예요."
+    },
+    "/expected/S01/rows/1/definition_version": {
+      "sources": [
+        "product:docs/design/05-code-set-version.md:55",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16"
+      ],
+      "derivation": "이 초안의 candidate_manifest와 연결한 고정 메타데이터예요."
+    },
+    "/expected/S01/rows/1/code_set_version": {
+      "sources": [
+        "product:docs/design/05-code-set-version.md:55",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16"
+      ],
+      "derivation": "이 초안의 candidate_manifest와 연결한 고정 메타데이터예요."
+    },
+    "/expected/S01/rows/1/definition_manifest_sha256": {
+      "sources": [
+        "product:docs/design/05-code-set-version.md:55",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16"
+      ],
+      "derivation": "이 초안의 candidate_manifest와 연결한 고정 메타데이터예요."
+    },
+    "/expected/S01/rows/2/hospital": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/summary_B.csv:2"
+      ]
+    },
+    "/expected/S01/rows/2/as_of_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/summary_B.csv:2"
+      ]
+    },
+    "/expected/S01/rows/2/as_of_display": {
+      "sources": [
+        "product:docs/decisions/0003-hospital-b-three-definitions.md:12",
+        "product:docs/design/06-v1-screens-from-db.md:38"
+      ]
+    },
+    "/expected/S01/rows/2/denominator": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/summary_B.csv:2"
+      ]
+    },
+    "/expected/S01/rows/2/numerator": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/summary_B.csv:2"
+      ]
+    },
+    "/expected/S01/rows/2/rate": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/summary_B.csv:2"
+      ]
+    },
+    "/expected/S01/rows/2/percent_display": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/summary_B.csv:2",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:61",
+        "product:docs/design/06-v1-screens-from-db.md:85"
+      ],
+      "derivation": "저장된 rate에 100을 곱하고 소수 둘째 자리까지 표시해요."
+    },
+    "/expected/S01/rows/2/uncontrolled_count": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/summary_B.csv:2",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:47"
+      ],
+      "derivation": "분모에서 분자를 뺀 수예요."
+    },
+    "/expected/S01/rows/2/comparison_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/summary_B.csv:2",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:19"
+      ]
+    },
+    "/expected/S01/rows/2/definition_id": {
+      "sources": [
+        "product:docs/design/05-code-set-version.md:55",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16"
+      ],
+      "derivation": "이 초안의 candidate_manifest와 연결한 고정 메타데이터예요."
+    },
+    "/expected/S01/rows/2/definition_version": {
+      "sources": [
+        "product:docs/design/05-code-set-version.md:55",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16"
+      ],
+      "derivation": "이 초안의 candidate_manifest와 연결한 고정 메타데이터예요."
+    },
+    "/expected/S01/rows/2/code_set_version": {
+      "sources": [
+        "product:docs/design/05-code-set-version.md:55",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16"
+      ],
+      "derivation": "이 초안의 candidate_manifest와 연결한 고정 메타데이터예요."
+    },
+    "/expected/S01/rows/2/definition_manifest_sha256": {
+      "sources": [
+        "product:docs/design/05-code-set-version.md:55",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16"
+      ],
+      "derivation": "이 초안의 candidate_manifest와 연결한 고정 메타데이터예요."
+    },
+    "/expected/S01/rows/3/hospital": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/summary_B.csv:3"
+      ]
+    },
+    "/expected/S01/rows/3/as_of_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/summary_B.csv:3"
+      ]
+    },
+    "/expected/S01/rows/3/as_of_display": {
+      "sources": [
+        "product:docs/decisions/0003-hospital-b-three-definitions.md:12",
+        "product:docs/design/06-v1-screens-from-db.md:38"
+      ]
+    },
+    "/expected/S01/rows/3/denominator": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/summary_B.csv:3"
+      ]
+    },
+    "/expected/S01/rows/3/numerator": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/summary_B.csv:3"
+      ]
+    },
+    "/expected/S01/rows/3/rate": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/summary_B.csv:3"
+      ]
+    },
+    "/expected/S01/rows/3/percent_display": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/summary_B.csv:3",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:61",
+        "product:docs/design/06-v1-screens-from-db.md:85"
+      ],
+      "derivation": "저장된 rate에 100을 곱하고 소수 둘째 자리까지 표시해요."
+    },
+    "/expected/S01/rows/3/uncontrolled_count": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/summary_B.csv:3",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:47"
+      ],
+      "derivation": "분모에서 분자를 뺀 수예요."
+    },
+    "/expected/S01/rows/3/comparison_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/summary_B.csv:3",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:19"
+      ]
+    },
+    "/expected/S01/rows/3/definition_id": {
+      "sources": [
+        "product:docs/design/05-code-set-version.md:55",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16"
+      ],
+      "derivation": "이 초안의 candidate_manifest와 연결한 고정 메타데이터예요."
+    },
+    "/expected/S01/rows/3/definition_version": {
+      "sources": [
+        "product:docs/design/05-code-set-version.md:55",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16"
+      ],
+      "derivation": "이 초안의 candidate_manifest와 연결한 고정 메타데이터예요."
+    },
+    "/expected/S01/rows/3/code_set_version": {
+      "sources": [
+        "product:docs/design/05-code-set-version.md:55",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16"
+      ],
+      "derivation": "이 초안의 candidate_manifest와 연결한 고정 메타데이터예요."
+    },
+    "/expected/S01/rows/3/definition_manifest_sha256": {
+      "sources": [
+        "product:docs/design/05-code-set-version.md:55",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:16"
+      ],
+      "derivation": "이 초안의 candidate_manifest와 연결한 고정 메타데이터예요."
+    },
+    "/expected/S01/run_id_binding": {
+      "sources": [
+        "product:docs/design/05-code-set-version.md:55",
+        "product:docs/design/06-v1-screens-from-db.md:55"
+      ]
+    },
+    "/expected/S01/last_verified_at_binding": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:38",
+        "product:docs/design/06-v1-screens-from-db.md:63",
+        "product:docs/design/06-v1-screens-from-db.md:65"
+      ]
+    },
+    "/expected/S01/calculation_note": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/summary_2025-12-31.csv:2"
+      ]
+    },
+    "/expected/S01/sum_A_and_A_prime": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:19"
+      ]
+    },
+    "/expected/S01/combined_AB_rate": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:19"
+      ]
+    },
+    "/expected/S01/zero_denominator/denominator": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:87"
+      ]
+    },
+    "/expected/S01/zero_denominator/numerator": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:87"
+      ]
+    },
+    "/expected/S01/zero_denominator/rate": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:87"
+      ]
+    },
+    "/expected/S01/zero_denominator/display": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:87"
+      ]
+    },
+    "/expected/S01/zero_denominator/present_in_fixed_summary": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:87"
+      ]
+    },
+    "/expected/S02/title": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:77"
+      ]
+    },
+    "/expected/S02/default_as_of_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:19"
+      ]
+    },
+    "/expected/S02/hospitals/A/row_count": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:7",
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:8",
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:9",
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:10",
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:11",
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:12"
+      ],
+      "derivation": "연말 대상 행을 센 수예요."
+    },
+    "/expected/S02/hospitals/A/rows/0/hospital": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:7"
+      ]
+    },
+    "/expected/S02/hospitals/A/rows/0/as_of_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:7"
+      ]
+    },
+    "/expected/S02/hospitals/A/rows/0/as_of": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:7"
+      ]
+    },
+    "/expected/S02/hospitals/A/rows/0/last_bp_date": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:7"
+      ]
+    },
+    "/expected/S02/hospitals/A/rows/0/reason": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:7"
+      ]
+    },
+    "/expected/S02/hospitals/A/rows/0/systolic": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:7"
+      ]
+    },
+    "/expected/S02/hospitals/A/rows/0/diastolic": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:7"
+      ]
+    },
+    "/expected/S02/hospitals/A/rows/0/controlled": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:7"
+      ]
+    },
+    "/expected/S02/hospitals/A/rows/0/patient_number": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:7",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:62",
+        "product:docs/design/06-v1-screens-from-db.md:76"
+      ],
+      "derivation": "병원별로 두 시점의 내부 사람 키를 합쳐 중복을 없애고 정렬한 순번이에요. 내부 키는 내보내지 않아요. 이 번호 규칙은 초안이에요."
+    },
+    "/expected/S02/hospitals/A/rows/0/patient_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:7",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:78",
+        "product:docs/design/06-v1-screens-from-db.md:76"
+      ],
+      "derivation": "화면에는 병원 안 번호만 보여 줘요."
+    },
+    "/expected/S02/hospitals/A/rows/0/control_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:7",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:63"
+      ],
+      "derivation": "controlled가 1이면 조절됨이고, 0이면 조절 안 됨이에요."
+    },
+    "/expected/S02/hospitals/A/rows/0/comparison_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:7",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:19"
+      ],
+      "derivation": "이 행과 같은 DB 값을 같은 실행에서 검증한 기준 사례에만 붙여요."
+    },
+    "/expected/S02/hospitals/A/rows/1/hospital": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:8"
+      ]
+    },
+    "/expected/S02/hospitals/A/rows/1/as_of_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:8"
+      ]
+    },
+    "/expected/S02/hospitals/A/rows/1/as_of": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:8"
+      ]
+    },
+    "/expected/S02/hospitals/A/rows/1/last_bp_date": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:8"
+      ]
+    },
+    "/expected/S02/hospitals/A/rows/1/reason": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:8"
+      ]
+    },
+    "/expected/S02/hospitals/A/rows/1/systolic": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:8"
+      ]
+    },
+    "/expected/S02/hospitals/A/rows/1/diastolic": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:8"
+      ]
+    },
+    "/expected/S02/hospitals/A/rows/1/controlled": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:8"
+      ]
+    },
+    "/expected/S02/hospitals/A/rows/1/patient_number": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:8",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:62",
+        "product:docs/design/06-v1-screens-from-db.md:76"
+      ],
+      "derivation": "병원별로 두 시점의 내부 사람 키를 합쳐 중복을 없애고 정렬한 순번이에요. 내부 키는 내보내지 않아요. 이 번호 규칙은 초안이에요."
+    },
+    "/expected/S02/hospitals/A/rows/1/patient_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:8",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:78",
+        "product:docs/design/06-v1-screens-from-db.md:76"
+      ],
+      "derivation": "화면에는 병원 안 번호만 보여 줘요."
+    },
+    "/expected/S02/hospitals/A/rows/1/control_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:8",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:63"
+      ],
+      "derivation": "controlled가 1이면 조절됨이고, 0이면 조절 안 됨이에요."
+    },
+    "/expected/S02/hospitals/A/rows/1/comparison_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:8",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:19"
+      ],
+      "derivation": "이 행과 같은 DB 값을 같은 실행에서 검증한 기준 사례에만 붙여요."
+    },
+    "/expected/S02/hospitals/A/rows/2/hospital": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:9"
+      ]
+    },
+    "/expected/S02/hospitals/A/rows/2/as_of_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:9"
+      ]
+    },
+    "/expected/S02/hospitals/A/rows/2/as_of": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:9"
+      ]
+    },
+    "/expected/S02/hospitals/A/rows/2/last_bp_date": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:9"
+      ]
+    },
+    "/expected/S02/hospitals/A/rows/2/reason": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:9"
+      ]
+    },
+    "/expected/S02/hospitals/A/rows/2/systolic": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:9"
+      ]
+    },
+    "/expected/S02/hospitals/A/rows/2/diastolic": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:9"
+      ]
+    },
+    "/expected/S02/hospitals/A/rows/2/controlled": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:9"
+      ]
+    },
+    "/expected/S02/hospitals/A/rows/2/patient_number": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:9",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:62",
+        "product:docs/design/06-v1-screens-from-db.md:76"
+      ],
+      "derivation": "병원별로 두 시점의 내부 사람 키를 합쳐 중복을 없애고 정렬한 순번이에요. 내부 키는 내보내지 않아요. 이 번호 규칙은 초안이에요."
+    },
+    "/expected/S02/hospitals/A/rows/2/patient_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:9",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:78",
+        "product:docs/design/06-v1-screens-from-db.md:76"
+      ],
+      "derivation": "화면에는 병원 안 번호만 보여 줘요."
+    },
+    "/expected/S02/hospitals/A/rows/2/control_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:9",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:63"
+      ],
+      "derivation": "controlled가 1이면 조절됨이고, 0이면 조절 안 됨이에요."
+    },
+    "/expected/S02/hospitals/A/rows/2/comparison_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:9",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:19"
+      ],
+      "derivation": "이 행과 같은 DB 값을 같은 실행에서 검증한 기준 사례에만 붙여요."
+    },
+    "/expected/S02/hospitals/A/rows/3/hospital": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:10"
+      ]
+    },
+    "/expected/S02/hospitals/A/rows/3/as_of_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:10"
+      ]
+    },
+    "/expected/S02/hospitals/A/rows/3/as_of": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:10"
+      ]
+    },
+    "/expected/S02/hospitals/A/rows/3/last_bp_date": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:10"
+      ]
+    },
+    "/expected/S02/hospitals/A/rows/3/reason": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:10"
+      ]
+    },
+    "/expected/S02/hospitals/A/rows/3/systolic": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:10"
+      ]
+    },
+    "/expected/S02/hospitals/A/rows/3/diastolic": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:10"
+      ]
+    },
+    "/expected/S02/hospitals/A/rows/3/controlled": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:10"
+      ]
+    },
+    "/expected/S02/hospitals/A/rows/3/patient_number": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:10",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:62",
+        "product:docs/design/06-v1-screens-from-db.md:76"
+      ],
+      "derivation": "병원별로 두 시점의 내부 사람 키를 합쳐 중복을 없애고 정렬한 순번이에요. 내부 키는 내보내지 않아요. 이 번호 규칙은 초안이에요."
+    },
+    "/expected/S02/hospitals/A/rows/3/patient_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:10",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:78",
+        "product:docs/design/06-v1-screens-from-db.md:76"
+      ],
+      "derivation": "화면에는 병원 안 번호만 보여 줘요."
+    },
+    "/expected/S02/hospitals/A/rows/3/control_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:10",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:63"
+      ],
+      "derivation": "controlled가 1이면 조절됨이고, 0이면 조절 안 됨이에요."
+    },
+    "/expected/S02/hospitals/A/rows/3/comparison_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:10",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:19"
+      ],
+      "derivation": "이 행과 같은 DB 값을 같은 실행에서 검증한 기준 사례에만 붙여요."
+    },
+    "/expected/S02/hospitals/A/rows/4/hospital": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:11"
+      ]
+    },
+    "/expected/S02/hospitals/A/rows/4/as_of_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:11"
+      ]
+    },
+    "/expected/S02/hospitals/A/rows/4/as_of": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:11"
+      ]
+    },
+    "/expected/S02/hospitals/A/rows/4/last_bp_date": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:11"
+      ]
+    },
+    "/expected/S02/hospitals/A/rows/4/reason": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:11"
+      ]
+    },
+    "/expected/S02/hospitals/A/rows/4/systolic": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:11"
+      ]
+    },
+    "/expected/S02/hospitals/A/rows/4/diastolic": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:11"
+      ]
+    },
+    "/expected/S02/hospitals/A/rows/4/controlled": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:11"
+      ]
+    },
+    "/expected/S02/hospitals/A/rows/4/patient_number": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:11",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:62",
+        "product:docs/design/06-v1-screens-from-db.md:76"
+      ],
+      "derivation": "병원별로 두 시점의 내부 사람 키를 합쳐 중복을 없애고 정렬한 순번이에요. 내부 키는 내보내지 않아요. 이 번호 규칙은 초안이에요."
+    },
+    "/expected/S02/hospitals/A/rows/4/patient_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:11",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:78",
+        "product:docs/design/06-v1-screens-from-db.md:76"
+      ],
+      "derivation": "화면에는 병원 안 번호만 보여 줘요."
+    },
+    "/expected/S02/hospitals/A/rows/4/control_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:11",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:63"
+      ],
+      "derivation": "controlled가 1이면 조절됨이고, 0이면 조절 안 됨이에요."
+    },
+    "/expected/S02/hospitals/A/rows/4/comparison_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:11",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:19"
+      ],
+      "derivation": "이 행과 같은 DB 값을 같은 실행에서 검증한 기준 사례에만 붙여요."
+    },
+    "/expected/S02/hospitals/A/rows/5/hospital": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:12"
+      ]
+    },
+    "/expected/S02/hospitals/A/rows/5/as_of_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:12"
+      ]
+    },
+    "/expected/S02/hospitals/A/rows/5/as_of": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:12"
+      ]
+    },
+    "/expected/S02/hospitals/A/rows/5/last_bp_date": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:12"
+      ]
+    },
+    "/expected/S02/hospitals/A/rows/5/reason": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:12"
+      ]
+    },
+    "/expected/S02/hospitals/A/rows/5/systolic": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:12"
+      ]
+    },
+    "/expected/S02/hospitals/A/rows/5/diastolic": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:12"
+      ]
+    },
+    "/expected/S02/hospitals/A/rows/5/controlled": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:12"
+      ]
+    },
+    "/expected/S02/hospitals/A/rows/5/patient_number": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:12",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:62",
+        "product:docs/design/06-v1-screens-from-db.md:76"
+      ],
+      "derivation": "병원별로 두 시점의 내부 사람 키를 합쳐 중복을 없애고 정렬한 순번이에요. 내부 키는 내보내지 않아요. 이 번호 규칙은 초안이에요."
+    },
+    "/expected/S02/hospitals/A/rows/5/patient_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:12",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:78",
+        "product:docs/design/06-v1-screens-from-db.md:76"
+      ],
+      "derivation": "화면에는 병원 안 번호만 보여 줘요."
+    },
+    "/expected/S02/hospitals/A/rows/5/control_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:12",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:63"
+      ],
+      "derivation": "controlled가 1이면 조절됨이고, 0이면 조절 안 됨이에요."
+    },
+    "/expected/S02/hospitals/A/rows/5/comparison_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:12",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:19"
+      ],
+      "derivation": "이 행과 같은 DB 값을 같은 실행에서 검증한 기준 사례에만 붙여요."
+    },
+    "/expected/S02/hospitals/B/row_count": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:11",
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:12",
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:13",
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:14",
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:15",
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:16",
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:17",
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:18",
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:19"
+      ],
+      "derivation": "연말 대상 행을 센 수예요."
+    },
+    "/expected/S02/hospitals/B/rows/0/hospital": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:11"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/0/as_of_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:11"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/0/as_of": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:11"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/0/last_bp_date": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:11"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/0/reason": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:11"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/0/systolic": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:11"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/0/diastolic": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:11"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/0/controlled": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:11"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/0/patient_number": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:11",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:62",
+        "product:docs/design/06-v1-screens-from-db.md:76"
+      ],
+      "derivation": "병원별로 두 시점의 내부 사람 키를 합쳐 중복을 없애고 정렬한 순번이에요. 내부 키는 내보내지 않아요. 이 번호 규칙은 초안이에요."
+    },
+    "/expected/S02/hospitals/B/rows/0/patient_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:11",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:78",
+        "product:docs/design/06-v1-screens-from-db.md:76"
+      ],
+      "derivation": "화면에는 병원 안 번호만 보여 줘요."
+    },
+    "/expected/S02/hospitals/B/rows/0/control_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:11",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:63"
+      ],
+      "derivation": "controlled가 1이면 조절됨이고, 0이면 조절 안 됨이에요."
+    },
+    "/expected/S02/hospitals/B/rows/0/comparison_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:11",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:19"
+      ],
+      "derivation": "이 행과 같은 DB 값을 같은 실행에서 검증한 기준 사례에만 붙여요."
+    },
+    "/expected/S02/hospitals/B/rows/1/hospital": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:12"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/1/as_of_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:12"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/1/as_of": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:12"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/1/last_bp_date": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:12"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/1/reason": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:12"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/1/systolic": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:12"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/1/diastolic": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:12"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/1/controlled": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:12"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/1/patient_number": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:12",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:62",
+        "product:docs/design/06-v1-screens-from-db.md:76"
+      ],
+      "derivation": "병원별로 두 시점의 내부 사람 키를 합쳐 중복을 없애고 정렬한 순번이에요. 내부 키는 내보내지 않아요. 이 번호 규칙은 초안이에요."
+    },
+    "/expected/S02/hospitals/B/rows/1/patient_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:12",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:78",
+        "product:docs/design/06-v1-screens-from-db.md:76"
+      ],
+      "derivation": "화면에는 병원 안 번호만 보여 줘요."
+    },
+    "/expected/S02/hospitals/B/rows/1/control_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:12",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:63"
+      ],
+      "derivation": "controlled가 1이면 조절됨이고, 0이면 조절 안 됨이에요."
+    },
+    "/expected/S02/hospitals/B/rows/1/comparison_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:12",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:19"
+      ],
+      "derivation": "이 행과 같은 DB 값을 같은 실행에서 검증한 기준 사례에만 붙여요."
+    },
+    "/expected/S02/hospitals/B/rows/2/hospital": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:13"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/2/as_of_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:13"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/2/as_of": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:13"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/2/last_bp_date": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:13"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/2/reason": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:13"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/2/systolic": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:13"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/2/diastolic": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:13"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/2/controlled": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:13"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/2/patient_number": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:13",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:62",
+        "product:docs/design/06-v1-screens-from-db.md:76"
+      ],
+      "derivation": "병원별로 두 시점의 내부 사람 키를 합쳐 중복을 없애고 정렬한 순번이에요. 내부 키는 내보내지 않아요. 이 번호 규칙은 초안이에요."
+    },
+    "/expected/S02/hospitals/B/rows/2/patient_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:13",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:78",
+        "product:docs/design/06-v1-screens-from-db.md:76"
+      ],
+      "derivation": "화면에는 병원 안 번호만 보여 줘요."
+    },
+    "/expected/S02/hospitals/B/rows/2/control_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:13",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:63"
+      ],
+      "derivation": "controlled가 1이면 조절됨이고, 0이면 조절 안 됨이에요."
+    },
+    "/expected/S02/hospitals/B/rows/2/comparison_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:13",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:19"
+      ],
+      "derivation": "이 행과 같은 DB 값을 같은 실행에서 검증한 기준 사례에만 붙여요."
+    },
+    "/expected/S02/hospitals/B/rows/3/hospital": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:14"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/3/as_of_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:14"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/3/as_of": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:14"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/3/last_bp_date": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:14"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/3/reason": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:14"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/3/systolic": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:14"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/3/diastolic": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:14"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/3/controlled": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:14"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/3/patient_number": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:14",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:62",
+        "product:docs/design/06-v1-screens-from-db.md:76"
+      ],
+      "derivation": "병원별로 두 시점의 내부 사람 키를 합쳐 중복을 없애고 정렬한 순번이에요. 내부 키는 내보내지 않아요. 이 번호 규칙은 초안이에요."
+    },
+    "/expected/S02/hospitals/B/rows/3/patient_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:14",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:78",
+        "product:docs/design/06-v1-screens-from-db.md:76"
+      ],
+      "derivation": "화면에는 병원 안 번호만 보여 줘요."
+    },
+    "/expected/S02/hospitals/B/rows/3/control_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:14",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:63"
+      ],
+      "derivation": "controlled가 1이면 조절됨이고, 0이면 조절 안 됨이에요."
+    },
+    "/expected/S02/hospitals/B/rows/3/comparison_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:14",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:19"
+      ],
+      "derivation": "이 행과 같은 DB 값을 같은 실행에서 검증한 기준 사례에만 붙여요."
+    },
+    "/expected/S02/hospitals/B/rows/4/hospital": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:15"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/4/as_of_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:15"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/4/as_of": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:15"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/4/last_bp_date": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:15"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/4/reason": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:15"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/4/systolic": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:15"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/4/diastolic": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:15"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/4/controlled": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:15"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/4/patient_number": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:15",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:62",
+        "product:docs/design/06-v1-screens-from-db.md:76"
+      ],
+      "derivation": "병원별로 두 시점의 내부 사람 키를 합쳐 중복을 없애고 정렬한 순번이에요. 내부 키는 내보내지 않아요. 이 번호 규칙은 초안이에요."
+    },
+    "/expected/S02/hospitals/B/rows/4/patient_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:15",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:78",
+        "product:docs/design/06-v1-screens-from-db.md:76"
+      ],
+      "derivation": "화면에는 병원 안 번호만 보여 줘요."
+    },
+    "/expected/S02/hospitals/B/rows/4/control_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:15",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:63"
+      ],
+      "derivation": "controlled가 1이면 조절됨이고, 0이면 조절 안 됨이에요."
+    },
+    "/expected/S02/hospitals/B/rows/4/comparison_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:15",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:19"
+      ],
+      "derivation": "이 행과 같은 DB 값을 같은 실행에서 검증한 기준 사례에만 붙여요."
+    },
+    "/expected/S02/hospitals/B/rows/5/hospital": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:16"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/5/as_of_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:16"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/5/as_of": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:16"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/5/last_bp_date": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:16"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/5/reason": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:16"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/5/systolic": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:16"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/5/diastolic": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:16"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/5/controlled": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:16"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/5/patient_number": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:16",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:62",
+        "product:docs/design/06-v1-screens-from-db.md:76"
+      ],
+      "derivation": "병원별로 두 시점의 내부 사람 키를 합쳐 중복을 없애고 정렬한 순번이에요. 내부 키는 내보내지 않아요. 이 번호 규칙은 초안이에요."
+    },
+    "/expected/S02/hospitals/B/rows/5/patient_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:16",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:78",
+        "product:docs/design/06-v1-screens-from-db.md:76"
+      ],
+      "derivation": "화면에는 병원 안 번호만 보여 줘요."
+    },
+    "/expected/S02/hospitals/B/rows/5/control_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:16",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:63"
+      ],
+      "derivation": "controlled가 1이면 조절됨이고, 0이면 조절 안 됨이에요."
+    },
+    "/expected/S02/hospitals/B/rows/5/comparison_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:16",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:19"
+      ],
+      "derivation": "이 행과 같은 DB 값을 같은 실행에서 검증한 기준 사례에만 붙여요."
+    },
+    "/expected/S02/hospitals/B/rows/6/hospital": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:17"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/6/as_of_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:17"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/6/as_of": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:17"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/6/last_bp_date": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:17"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/6/reason": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:17"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/6/systolic": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:17"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/6/diastolic": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:17"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/6/controlled": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:17"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/6/patient_number": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:17",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:62",
+        "product:docs/design/06-v1-screens-from-db.md:76"
+      ],
+      "derivation": "병원별로 두 시점의 내부 사람 키를 합쳐 중복을 없애고 정렬한 순번이에요. 내부 키는 내보내지 않아요. 이 번호 규칙은 초안이에요."
+    },
+    "/expected/S02/hospitals/B/rows/6/patient_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:17",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:78",
+        "product:docs/design/06-v1-screens-from-db.md:76"
+      ],
+      "derivation": "화면에는 병원 안 번호만 보여 줘요."
+    },
+    "/expected/S02/hospitals/B/rows/6/control_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:17",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:63"
+      ],
+      "derivation": "controlled가 1이면 조절됨이고, 0이면 조절 안 됨이에요."
+    },
+    "/expected/S02/hospitals/B/rows/6/comparison_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:17",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:19"
+      ],
+      "derivation": "이 행과 같은 DB 값을 같은 실행에서 검증한 기준 사례에만 붙여요."
+    },
+    "/expected/S02/hospitals/B/rows/7/hospital": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:18"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/7/as_of_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:18"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/7/as_of": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:18"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/7/last_bp_date": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:18"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/7/reason": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:18"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/7/systolic": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:18"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/7/diastolic": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:18"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/7/controlled": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:18"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/7/patient_number": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:18",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:62",
+        "product:docs/design/06-v1-screens-from-db.md:76"
+      ],
+      "derivation": "병원별로 두 시점의 내부 사람 키를 합쳐 중복을 없애고 정렬한 순번이에요. 내부 키는 내보내지 않아요. 이 번호 규칙은 초안이에요."
+    },
+    "/expected/S02/hospitals/B/rows/7/patient_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:18",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:78",
+        "product:docs/design/06-v1-screens-from-db.md:76"
+      ],
+      "derivation": "화면에는 병원 안 번호만 보여 줘요."
+    },
+    "/expected/S02/hospitals/B/rows/7/control_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:18",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:63"
+      ],
+      "derivation": "controlled가 1이면 조절됨이고, 0이면 조절 안 됨이에요."
+    },
+    "/expected/S02/hospitals/B/rows/7/comparison_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:18",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:19"
+      ],
+      "derivation": "이 행과 같은 DB 값을 같은 실행에서 검증한 기준 사례에만 붙여요."
+    },
+    "/expected/S02/hospitals/B/rows/8/hospital": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:19"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/8/as_of_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:19"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/8/as_of": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:19"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/8/last_bp_date": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:19"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/8/reason": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:19"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/8/systolic": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:19"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/8/diastolic": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:19"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/8/controlled": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:19"
+      ]
+    },
+    "/expected/S02/hospitals/B/rows/8/patient_number": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:19",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:62",
+        "product:docs/design/06-v1-screens-from-db.md:76"
+      ],
+      "derivation": "병원별로 두 시점의 내부 사람 키를 합쳐 중복을 없애고 정렬한 순번이에요. 내부 키는 내보내지 않아요. 이 번호 규칙은 초안이에요."
+    },
+    "/expected/S02/hospitals/B/rows/8/patient_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:19",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:78",
+        "product:docs/design/06-v1-screens-from-db.md:76"
+      ],
+      "derivation": "화면에는 병원 안 번호만 보여 줘요."
+    },
+    "/expected/S02/hospitals/B/rows/8/control_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:19",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:63"
+      ],
+      "derivation": "controlled가 1이면 조절됨이고, 0이면 조절 안 됨이에요."
+    },
+    "/expected/S02/hospitals/B/rows/8/comparison_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:19",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:19"
+      ],
+      "derivation": "이 행과 같은 DB 값을 같은 실행에서 검증한 기준 사례에만 붙여요."
+    },
+    "/expected/S02/row_filter_values/0": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:48",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:63"
+      ]
+    },
+    "/expected/S02/row_filter_values/1": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:48",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:63"
+      ]
+    },
+    "/expected/S02/row_filter_values/2": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:48",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:63"
+      ]
+    },
+    "/expected/S02/navigation": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:48",
+        "product:docs/design/06-v1-screens-from-db.md:76"
+      ]
+    },
+    "/expected/S03/title": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:19",
+        "product:docs/design/06-v1-screens-from-db.md:40"
+      ]
+    },
+    "/expected/S03/representative/hospital": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:12"
+      ]
+    },
+    "/expected/S03/representative/as_of_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:12"
+      ]
+    },
+    "/expected/S03/representative/as_of": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:12"
+      ]
+    },
+    "/expected/S03/representative/last_bp_date": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:12"
+      ]
+    },
+    "/expected/S03/representative/reason": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:12"
+      ]
+    },
+    "/expected/S03/representative/systolic": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:12"
+      ]
+    },
+    "/expected/S03/representative/diastolic": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:12"
+      ]
+    },
+    "/expected/S03/representative/controlled": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:12"
+      ]
+    },
+    "/expected/S03/representative/patient_number": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:12",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:62",
+        "product:docs/design/06-v1-screens-from-db.md:76"
+      ],
+      "derivation": "병원별로 두 시점의 내부 사람 키를 합쳐 중복을 없애고 정렬한 순번이에요. 내부 키는 내보내지 않아요. 이 번호 규칙은 초안이에요."
+    },
+    "/expected/S03/representative/patient_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:12",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:78",
+        "product:docs/design/06-v1-screens-from-db.md:76"
+      ],
+      "derivation": "화면에는 병원 안 번호만 보여 줘요."
+    },
+    "/expected/S03/representative/control_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:12",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:63"
+      ],
+      "derivation": "controlled가 1이면 조절됨이고, 0이면 조절 안 됨이에요."
+    },
+    "/expected/S03/representative/comparison_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:12",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:19"
+      ],
+      "derivation": "이 행과 같은 DB 값을 같은 실행에서 검증한 기준 사례에만 붙여요."
+    },
+    "/expected/S03/last_measurement_date": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:12"
+      ]
+    },
+    "/expected/S03/selected_source_type": {
+      "sources": [
+        "product:docs/decisions/0003-hospital-b-three-definitions.md:14"
+      ]
+    },
+    "/expected/S03/original_unit_written": {
+      "sources": [
+        "product:seeds/source_to_concept_map.csv:29",
+        "personal:builds/medical-data-hands-on/answer-key/make_expected_omop.py:22"
+      ]
+    },
+    "/expected/S03/standard_row_count": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_omop/omop_follow.csv:4",
+        "personal:builds/medical-data-hands-on/answer-key/expected_omop/omop_follow.csv:5"
+      ]
+    },
+    "/expected/S03/standard_rows/0/hospital": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_omop/omop_follow.csv:4"
+      ]
+    },
+    "/expected/S03/standard_rows/0/measurement_source_value": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_omop/omop_follow.csv:4"
+      ]
+    },
+    "/expected/S03/standard_rows/0/measurement_date": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_omop/omop_follow.csv:4"
+      ]
+    },
+    "/expected/S03/standard_rows/0/measurement_concept_id": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_omop/omop_follow.csv:4"
+      ]
+    },
+    "/expected/S03/standard_rows/0/value_as_number": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_omop/omop_follow.csv:4"
+      ]
+    },
+    "/expected/S03/standard_rows/0/unit_concept_id": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_omop/omop_follow.csv:4"
+      ]
+    },
+    "/expected/S03/standard_rows/0/unit_display": {
+      "sources": [
+        "product:seeds/concept.csv:4",
+        "personal:builds/medical-data-hands-on/answer-key/make_expected_omop.py:22"
+      ]
+    },
+    "/expected/S03/standard_rows/0/source_link_status": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_omop/omop_follow.csv:4",
+        "product:docs/design/06-v1-screens-from-db.md:46"
+      ],
+      "derivation": "고정 기대 결과에는 원천 행 키가 없어요. 날짜와 값이 같다는 이유만으로 유일한 원천 연결을 확정하지 않아요."
+    },
+    "/expected/S03/standard_rows/1/hospital": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_omop/omop_follow.csv:5"
+      ]
+    },
+    "/expected/S03/standard_rows/1/measurement_source_value": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_omop/omop_follow.csv:5"
+      ]
+    },
+    "/expected/S03/standard_rows/1/measurement_date": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_omop/omop_follow.csv:5"
+      ]
+    },
+    "/expected/S03/standard_rows/1/measurement_concept_id": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_omop/omop_follow.csv:5"
+      ]
+    },
+    "/expected/S03/standard_rows/1/value_as_number": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_omop/omop_follow.csv:5"
+      ]
+    },
+    "/expected/S03/standard_rows/1/unit_concept_id": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_omop/omop_follow.csv:5"
+      ]
+    },
+    "/expected/S03/standard_rows/1/unit_display": {
+      "sources": [
+        "product:seeds/concept.csv:4",
+        "personal:builds/medical-data-hands-on/answer-key/make_expected_omop.py:22"
+      ]
+    },
+    "/expected/S03/standard_rows/1/source_link_status": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_omop/omop_follow.csv:5",
+        "product:docs/design/06-v1-screens-from-db.md:46"
+      ],
+      "derivation": "고정 기대 결과에는 원천 행 키가 없어요. 날짜와 값이 같다는 이유만으로 유일한 원천 연결을 확정하지 않아요."
+    },
+    "/expected/S03/decision/systolic_threshold": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/README.md:21"
+      ]
+    },
+    "/expected/S03/decision/diastolic_threshold": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/README.md:21"
+      ]
+    },
+    "/expected/S03/decision/comparison_operator": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/README.md:21"
+      ]
+    },
+    "/expected/S03/decision/systolic_matches": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:12",
+        "personal:builds/medical-data-hands-on/answer-key/README.md:21"
+      ],
+      "derivation": "140은 140 미만 조건을 만족하지 않아요."
+    },
+    "/expected/S03/decision/diastolic_matches": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:12",
+        "personal:builds/medical-data-hands-on/answer-key/README.md:21"
+      ],
+      "derivation": "60은 90 미만이에요."
+    },
+    "/expected/S03/decision/controlled": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:12"
+      ]
+    },
+    "/expected/S03/decision/reason": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/person_B.csv:12"
+      ]
+    },
+    "/expected/S03/decision/recalculate_in_browser": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:46"
+      ]
+    },
+    "/expected/S03/original_record_key/internal_expected_value": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_omop/omop_follow.csv:1",
+        "product:docs/design/06-v1-screens-from-db.md:46"
+      ],
+      "derivation": "입력 기대 결과에는 원래 행 키가 없어서 고정하지 못했어요."
+    },
+    "/expected/S03/original_record_key/verification_status": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_omop/omop_follow.csv:1",
+        "product:docs/design/06-v1-screens-from-db.md:46"
+      ]
+    },
+    "/expected/S03/original_record_key/browser_export_allowed": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:40",
+        "product:docs/design/06-v1-screens-from-db.md:75"
+      ]
+    },
+    "/expected/S03/original_record_key/display_without_verified_link": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:46"
+      ],
+      "derivation": "연결을 확인하지 못했을 때 쓸 표시 문구 초안이에요."
+    },
+    "/expected/S03/component_lineage/separate_component_provenance": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:46"
+      ]
+    },
+    "/expected/S03/component_lineage/ties_show_all_candidates": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:46"
+      ]
+    },
+    "/expected/S03/component_lineage/assert_unique_origin_from_date_and_value": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:46"
+      ]
+    },
+    "/expected/S03/component_lineage/missing_partial_decimal_values_preserved": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:78"
+      ]
+    },
+    "/expected/S03/additional_A_dec31_anchor/hospital": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:7"
+      ]
+    },
+    "/expected/S03/additional_A_dec31_anchor/as_of_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:7"
+      ]
+    },
+    "/expected/S03/additional_A_dec31_anchor/as_of": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:7"
+      ]
+    },
+    "/expected/S03/additional_A_dec31_anchor/last_bp_date": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:7"
+      ]
+    },
+    "/expected/S03/additional_A_dec31_anchor/reason": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:7"
+      ]
+    },
+    "/expected/S03/additional_A_dec31_anchor/systolic": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:7"
+      ]
+    },
+    "/expected/S03/additional_A_dec31_anchor/diastolic": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:7"
+      ]
+    },
+    "/expected/S03/additional_A_dec31_anchor/controlled": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:7"
+      ]
+    },
+    "/expected/S03/additional_A_dec31_anchor/patient_number": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:7",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:62",
+        "product:docs/design/06-v1-screens-from-db.md:76"
+      ],
+      "derivation": "병원별로 두 시점의 내부 사람 키를 합쳐 중복을 없애고 정렬한 순번이에요. 내부 키는 내보내지 않아요. 이 번호 규칙은 초안이에요."
+    },
+    "/expected/S03/additional_A_dec31_anchor/patient_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:7",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:78",
+        "product:docs/design/06-v1-screens-from-db.md:76"
+      ],
+      "derivation": "화면에는 병원 안 번호만 보여 줘요."
+    },
+    "/expected/S03/additional_A_dec31_anchor/control_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:7",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:63"
+      ],
+      "derivation": "controlled가 1이면 조절됨이고, 0이면 조절 안 됨이에요."
+    },
+    "/expected/S03/additional_A_dec31_anchor/comparison_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:7",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:19"
+      ],
+      "derivation": "이 행과 같은 DB 값을 같은 실행에서 검증한 기준 사례에만 붙여요."
+    },
+    "/expected/S03/A_124_92_standard_row_assertions_available": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_omop/omop_follow.csv:2",
+        "personal:builds/medical-data-hands-on/answer-key/expected_omop/omop_follow.csv:3",
+        "product:docs/design/06-v1-screens-from-db.md:86"
+      ],
+      "derivation": "독립 OMOP 기대 행은 A의 다른 환자 145/75예요. 124/92의 표준 행을 지어내지 않아요."
+    },
+    "/expected/S04/title": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:84"
+      ]
+    },
+    "/expected/S04/preflight/external_cell_cases_required": {
+      "sources": [
+        "product:scripts/check.sh:8",
+        "product:scripts/check.sh:13"
+      ]
+    },
+    "/expected/S04/preflight/skip_means_success": {
+      "sources": [
+        "product:scripts/check.sh:10"
+      ]
+    },
+    "/expected/S04/stages/0/stage_id": {
+      "sources": [
+        "product:scripts/check.sh:19",
+        "product:scripts/check.sh:21",
+        "product:docs/design/06-v1-screens-from-db.md:41"
+      ],
+      "derivation": "화면에서 쓸 단계 ID를 제안해요."
+    },
+    "/expected/S04/stages/0/label": {
+      "sources": [
+        "product:scripts/check.sh:19",
+        "product:scripts/check.sh:21",
+        "product:docs/design/06-v1-screens-from-db.md:41"
+      ]
+    },
+    "/expected/S04/stages/0/status_binding": {
+      "sources": [
+        "product:scripts/check.sh:19",
+        "product:scripts/check.sh:21",
+        "product:docs/design/06-v1-screens-from-db.md:41",
+        "product:docs/design/06-v1-screens-from-db.md:62"
+      ]
+    },
+    "/expected/S04/stages/0/completed_success": {
+      "sources": [
+        "product:scripts/check.sh:19",
+        "product:scripts/check.sh:21",
+        "product:docs/design/06-v1-screens-from-db.md:41",
+        "product:docs/design/06-v1-screens-from-db.md:67"
+      ]
+    },
+    "/expected/S04/stages/0/not_run": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:62",
+        "product:docs/design/06-v1-screens-from-db.md:67"
+      ]
+    },
+    "/expected/S04/stages/0/error": {
+      "sources": [
+        "product:scripts/check.sh:19",
+        "product:scripts/check.sh:21",
+        "product:docs/design/06-v1-screens-from-db.md:41",
+        "product:docs/design/06-v1-screens-from-db.md:67"
+      ]
+    },
+    "/expected/S04/stages/1/stage_id": {
+      "sources": [
+        "product:scripts/check.sh:22",
+        "product:scripts/check.sh:23",
+        "product:docs/design/06-v1-screens-from-db.md:41"
+      ],
+      "derivation": "화면에서 쓸 단계 ID를 제안해요."
+    },
+    "/expected/S04/stages/1/label": {
+      "sources": [
+        "product:scripts/check.sh:22",
+        "product:scripts/check.sh:23",
+        "product:docs/design/06-v1-screens-from-db.md:41"
+      ]
+    },
+    "/expected/S04/stages/1/status_binding": {
+      "sources": [
+        "product:scripts/check.sh:22",
+        "product:scripts/check.sh:23",
+        "product:docs/design/06-v1-screens-from-db.md:41",
+        "product:docs/design/06-v1-screens-from-db.md:62"
+      ]
+    },
+    "/expected/S04/stages/1/completed_success": {
+      "sources": [
+        "product:scripts/check.sh:22",
+        "product:scripts/check.sh:23",
+        "product:docs/design/06-v1-screens-from-db.md:41",
+        "product:docs/design/06-v1-screens-from-db.md:67"
+      ]
+    },
+    "/expected/S04/stages/1/not_run": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:62",
+        "product:docs/design/06-v1-screens-from-db.md:67"
+      ]
+    },
+    "/expected/S04/stages/1/error": {
+      "sources": [
+        "product:scripts/check.sh:22",
+        "product:scripts/check.sh:23",
+        "product:docs/design/06-v1-screens-from-db.md:41",
+        "product:docs/design/06-v1-screens-from-db.md:67"
+      ]
+    },
+    "/expected/S04/stages/2/stage_id": {
+      "sources": [
+        "product:scripts/check.sh:25",
+        "product:scripts/check.sh:33",
+        "product:docs/design/06-v1-screens-from-db.md:41"
+      ],
+      "derivation": "화면에서 쓸 단계 ID를 제안해요."
+    },
+    "/expected/S04/stages/2/label": {
+      "sources": [
+        "product:scripts/check.sh:25",
+        "product:scripts/check.sh:33",
+        "product:docs/design/06-v1-screens-from-db.md:41"
+      ]
+    },
+    "/expected/S04/stages/2/status_binding": {
+      "sources": [
+        "product:scripts/check.sh:25",
+        "product:scripts/check.sh:33",
+        "product:docs/design/06-v1-screens-from-db.md:41",
+        "product:docs/design/06-v1-screens-from-db.md:62"
+      ]
+    },
+    "/expected/S04/stages/2/completed_success": {
+      "sources": [
+        "product:scripts/check.sh:25",
+        "product:scripts/check.sh:33",
+        "product:docs/design/06-v1-screens-from-db.md:41",
+        "product:docs/design/06-v1-screens-from-db.md:67"
+      ]
+    },
+    "/expected/S04/stages/2/not_run": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:62",
+        "product:docs/design/06-v1-screens-from-db.md:67"
+      ]
+    },
+    "/expected/S04/stages/2/error": {
+      "sources": [
+        "product:scripts/check.sh:25",
+        "product:scripts/check.sh:33",
+        "product:docs/design/06-v1-screens-from-db.md:41",
+        "product:docs/design/06-v1-screens-from-db.md:67"
+      ]
+    },
+    "/expected/S04/stages/3/stage_id": {
+      "sources": [
+        "product:scripts/check.sh:35",
+        "product:scripts/check.sh:36",
+        "product:docs/design/06-v1-screens-from-db.md:41"
+      ],
+      "derivation": "화면에서 쓸 단계 ID를 제안해요."
+    },
+    "/expected/S04/stages/3/label": {
+      "sources": [
+        "product:scripts/check.sh:35",
+        "product:scripts/check.sh:36",
+        "product:docs/design/06-v1-screens-from-db.md:41"
+      ]
+    },
+    "/expected/S04/stages/3/status_binding": {
+      "sources": [
+        "product:scripts/check.sh:35",
+        "product:scripts/check.sh:36",
+        "product:docs/design/06-v1-screens-from-db.md:41",
+        "product:docs/design/06-v1-screens-from-db.md:62"
+      ]
+    },
+    "/expected/S04/stages/3/completed_success": {
+      "sources": [
+        "product:scripts/check.sh:35",
+        "product:scripts/check.sh:36",
+        "product:docs/design/06-v1-screens-from-db.md:41",
+        "product:docs/design/06-v1-screens-from-db.md:67"
+      ]
+    },
+    "/expected/S04/stages/3/not_run": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:62",
+        "product:docs/design/06-v1-screens-from-db.md:67"
+      ]
+    },
+    "/expected/S04/stages/3/error": {
+      "sources": [
+        "product:scripts/check.sh:35",
+        "product:scripts/check.sh:36",
+        "product:docs/design/06-v1-screens-from-db.md:41",
+        "product:docs/design/06-v1-screens-from-db.md:67"
+      ]
+    },
+    "/expected/S04/stages/4/stage_id": {
+      "sources": [
+        "product:scripts/check.sh:39",
+        "product:docs/design/06-v1-screens-from-db.md:41"
+      ],
+      "derivation": "화면에서 쓸 단계 ID를 제안해요."
+    },
+    "/expected/S04/stages/4/label": {
+      "sources": [
+        "product:scripts/check.sh:39",
+        "product:docs/design/06-v1-screens-from-db.md:41"
+      ]
+    },
+    "/expected/S04/stages/4/status_binding": {
+      "sources": [
+        "product:scripts/check.sh:39",
+        "product:docs/design/06-v1-screens-from-db.md:41",
+        "product:docs/design/06-v1-screens-from-db.md:62"
+      ]
+    },
+    "/expected/S04/stages/4/completed_success": {
+      "sources": [
+        "product:scripts/check.sh:39",
+        "product:docs/design/06-v1-screens-from-db.md:41",
+        "product:docs/design/06-v1-screens-from-db.md:67"
+      ]
+    },
+    "/expected/S04/stages/4/not_run": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:62",
+        "product:docs/design/06-v1-screens-from-db.md:67"
+      ]
+    },
+    "/expected/S04/stages/4/error": {
+      "sources": [
+        "product:scripts/check.sh:39",
+        "product:docs/design/06-v1-screens-from-db.md:41",
+        "product:docs/design/06-v1-screens-from-db.md:67"
+      ]
+    },
+    "/expected/S04/stages/5/stage_id": {
+      "sources": [
+        "product:scripts/check.sh:38",
+        "product:scripts/check.sh:41",
+        "product:docs/design/06-v1-screens-from-db.md:41"
+      ],
+      "derivation": "화면에서 쓸 단계 ID를 제안해요."
+    },
+    "/expected/S04/stages/5/label": {
+      "sources": [
+        "product:scripts/check.sh:38",
+        "product:scripts/check.sh:41",
+        "product:docs/design/06-v1-screens-from-db.md:41"
+      ]
+    },
+    "/expected/S04/stages/5/status_binding": {
+      "sources": [
+        "product:scripts/check.sh:38",
+        "product:scripts/check.sh:41",
+        "product:docs/design/06-v1-screens-from-db.md:41",
+        "product:docs/design/06-v1-screens-from-db.md:62"
+      ]
+    },
+    "/expected/S04/stages/5/completed_success": {
+      "sources": [
+        "product:scripts/check.sh:38",
+        "product:scripts/check.sh:41",
+        "product:docs/design/06-v1-screens-from-db.md:41",
+        "product:docs/design/06-v1-screens-from-db.md:67"
+      ]
+    },
+    "/expected/S04/stages/5/not_run": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:62",
+        "product:docs/design/06-v1-screens-from-db.md:67"
+      ]
+    },
+    "/expected/S04/stages/5/error": {
+      "sources": [
+        "product:scripts/check.sh:38",
+        "product:scripts/check.sh:41",
+        "product:docs/design/06-v1-screens-from-db.md:41",
+        "product:docs/design/06-v1-screens-from-db.md:67"
+      ]
+    },
+    "/expected/S04/failed_stages_first": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:50"
+      ]
+    },
+    "/expected/S04/dbt_quality/DQD_check_count": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:41"
+      ]
+    },
+    "/expected/S04/dbt_quality/unmapped_warning_separate": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:41"
+      ]
+    },
+    "/expected/S04/dbt_quality/statuses/0": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:73"
+      ]
+    },
+    "/expected/S04/dbt_quality/statuses/1": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:73"
+      ]
+    },
+    "/expected/S04/dbt_quality/statuses/2": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:73"
+      ]
+    },
+    "/expected/S04/dbt_quality/statuses/3": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:73"
+      ]
+    },
+    "/expected/S04/dbt_quality/warning_is_expected_match": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:41",
+        "product:docs/design/06-v1-screens-from-db.md:73"
+      ]
+    },
+    "/expected/S04/dbt_quality/exact_current_test_results": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:62",
+        "product:docs/design/06-v1-screens-from-db.md:73"
+      ],
+      "derivation": "같은 실행의 run_results를 생성하지 않았어요. 기존 CSV에서 dbt 결과를 추측하지 않아요."
+    },
+    "/expected/S04/last_attempt_binding": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:55",
+        "product:docs/design/06-v1-screens-from-db.md:67"
+      ]
+    },
+    "/expected/S04/last_success_binding": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:65",
+        "product:docs/design/06-v1-screens-from-db.md:67"
+      ]
+    },
+    "/expected/S04/index_columns/0": {
+      "sources": [
+        "product:fhir_line/ladder.py:36",
+        "runtime:.local/FHIR-LINE-02/runs/index.csv:1"
+      ]
+    },
+    "/expected/S04/index_columns/1": {
+      "sources": [
+        "product:fhir_line/ladder.py:36",
+        "runtime:.local/FHIR-LINE-02/runs/index.csv:1"
+      ]
+    },
+    "/expected/S04/index_columns/2": {
+      "sources": [
+        "product:fhir_line/ladder.py:36",
+        "runtime:.local/FHIR-LINE-02/runs/index.csv:1"
+      ]
+    },
+    "/expected/S04/index_columns/3": {
+      "sources": [
+        "product:fhir_line/ladder.py:36",
+        "runtime:.local/FHIR-LINE-02/runs/index.csv:1"
+      ]
+    },
+    "/expected/S04/index_columns/4": {
+      "sources": [
+        "product:fhir_line/ladder.py:36",
+        "runtime:.local/FHIR-LINE-02/runs/index.csv:1"
+      ]
+    },
+    "/expected/S04/index_columns/5": {
+      "sources": [
+        "product:fhir_line/ladder.py:36",
+        "runtime:.local/FHIR-LINE-02/runs/index.csv:1"
+      ]
+    },
+    "/expected/S04/index_display": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:19",
+        "product:docs/design/06-v1-screens-from-db.md:41"
+      ]
+    },
+    "/expected/S04/historical_last_index_row/run_at": {
+      "sources": [
+        "runtime:.local/FHIR-LINE-02/runs/index.csv:8"
+      ]
+    },
+    "/expected/S04/historical_last_index_row/product_commit": {
+      "sources": [
+        "runtime:.local/FHIR-LINE-02/runs/index.csv:8"
+      ]
+    },
+    "/expected/S04/historical_last_index_row/status": {
+      "sources": [
+        "runtime:.local/FHIR-LINE-02/runs/index.csv:8"
+      ]
+    },
+    "/expected/S04/historical_last_index_row/cell_diffs": {
+      "sources": [
+        "runtime:.local/FHIR-LINE-02/runs/index.csv:8"
+      ]
+    },
+    "/expected/S04/historical_last_index_row/missing_rows": {
+      "sources": [
+        "runtime:.local/FHIR-LINE-02/runs/index.csv:8"
+      ]
+    },
+    "/expected/S04/historical_last_index_row/unexpected_rows": {
+      "sources": [
+        "runtime:.local/FHIR-LINE-02/runs/index.csv:8"
+      ]
+    },
+    "/expected/S04/historical_row_confirms_current_run": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:13",
+        "product:docs/design/06-v1-screens-from-db.md:62"
+      ]
+    },
+    "/expected/S04/index_has_full_historical_details": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:13",
+        "product:docs/design/06-v1-screens-from-db.md:67"
+      ]
+    },
+    "/expected/S04/current_index_missing": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:13",
+        "product:docs/design/06-v1-screens-from-db.md:62"
+      ],
+      "derivation": "새 실행의 행이 없을 때 쓸 표시 문구 초안이에요."
+    },
+    "/expected/S04/old_success_reused_for_current_status": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:13",
+        "product:docs/design/06-v1-screens-from-db.md:65"
+      ]
+    },
+    "/expected/S04/unbound_db_manifest_payload_status": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:63",
+        "product:docs/design/06-v1-screens-from-db.md:65"
+      ]
+    },
+    "/expected/S05/title": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:84"
+      ]
+    },
+    "/expected/S05/categories/0": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:19",
+        "personal:builds/medical-data-hands-on/answer-key/cell_diff/cases.json:20"
+      ]
+    },
+    "/expected/S05/categories/1": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:19",
+        "personal:builds/medical-data-hands-on/answer-key/cell_diff/cases.json:20"
+      ]
+    },
+    "/expected/S05/categories/2": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:19",
+        "personal:builds/medical-data-hands-on/answer-key/cell_diff/cases.json:20"
+      ]
+    },
+    "/expected/S05/baseline/status": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/cell_diff/cases.json:19"
+      ]
+    },
+    "/expected/S05/baseline/cell_diffs": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/cell_diff/cases.json:20"
+      ]
+    },
+    "/expected/S05/baseline/missing_rows": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/cell_diff/cases.json:21"
+      ]
+    },
+    "/expected/S05/baseline/unexpected_rows": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/cell_diff/cases.json:22"
+      ]
+    },
+    "/expected/S05/baseline/message": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:19",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:51"
+      ]
+    },
+    "/expected/S05/baseline/rows": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/cell_diff/cases.json:20"
+      ]
+    },
+    "/expected/S05/detail_scope": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:42"
+      ]
+    },
+    "/expected/S05/dqd_aggregate_detail": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:42"
+      ]
+    },
+    "/expected/S05/raw_row_key_export_allowed": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:75"
+      ]
+    },
+    "/expected/S05/data_source_binding": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:42",
+        "product:docs/design/06-v1-screens-from-db.md:56"
+      ]
+    },
+    "/expected/case_2_summary_numerator_mismatch/case_id": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/cell_diff/cases.json:55"
+      ]
+    },
+    "/expected/case_2_summary_numerator_mismatch/change/table": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/cell_diff/cases.json:57"
+      ]
+    },
+    "/expected/case_2_summary_numerator_mismatch/change/column": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/cell_diff/cases.json:62"
+      ]
+    },
+    "/expected/case_2_summary_numerator_mismatch/change/from": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/cell_diff/cases.json:63"
+      ]
+    },
+    "/expected/case_2_summary_numerator_mismatch/change/to": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/cell_diff/cases.json:64"
+      ]
+    },
+    "/expected/case_2_summary_numerator_mismatch/change_row/hospital": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/cell_diff/cases.json:59"
+      ]
+    },
+    "/expected/case_2_summary_numerator_mismatch/change_row/as_of_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/cell_diff/cases.json:60"
+      ]
+    },
+    "/expected/case_2_summary_numerator_mismatch/S04/status": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/cell_diff/cases.json:66"
+      ]
+    },
+    "/expected/case_2_summary_numerator_mismatch/S04/ladder_step": {
+      "sources": [
+        "product:fhir_line/ladder.py:115",
+        "product:fhir_line/ladder.py:123"
+      ]
+    },
+    "/expected/case_2_summary_numerator_mismatch/S04/summary_comparison": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/cell_diff/cases.json:66",
+        "personal:builds/medical-data-hands-on/answer-key/cell_diff/cases.json:69"
+      ]
+    },
+    "/expected/case_2_summary_numerator_mismatch/S04/person_comparison": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/cell_diff/cases.json:57"
+      ],
+      "derivation": "분자 한 셀만 바꾼 경우이므로 사람별 표는 그대로예요. 정상 기준 실행과 비교하는 조건이에요."
+    },
+    "/expected/case_2_summary_numerator_mismatch/S04/cell_diffs": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/cell_diff/cases.json:67",
+        "personal:builds/medical-data-hands-on/answer-key/cell_diff/cases.json:77"
+      ]
+    },
+    "/expected/case_2_summary_numerator_mismatch/S04/missing_rows": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/cell_diff/cases.json:79"
+      ]
+    },
+    "/expected/case_2_summary_numerator_mismatch/S04/unexpected_rows": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/cell_diff/cases.json:80"
+      ]
+    },
+    "/expected/case_2_summary_numerator_mismatch/S04/failed_stage_first": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:50"
+      ]
+    },
+    "/expected/case_2_summary_numerator_mismatch/S04/unrelated_stage_states": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:62",
+        "product:docs/design/06-v1-screens-from-db.md:67"
+      ]
+    },
+    "/expected/case_2_summary_numerator_mismatch/S04/new_index_row/status": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/cell_diff/cases.json:66",
+        "product:fhir_line/ladder.py:317"
+      ]
+    },
+    "/expected/case_2_summary_numerator_mismatch/S04/new_index_row/cell_diffs": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/cell_diff/cases.json:67"
+      ]
+    },
+    "/expected/case_2_summary_numerator_mismatch/S04/new_index_row/missing_rows": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/cell_diff/cases.json:79"
+      ]
+    },
+    "/expected/case_2_summary_numerator_mismatch/S04/new_index_row/unexpected_rows": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/cell_diff/cases.json:80"
+      ]
+    },
+    "/expected/case_2_summary_numerator_mismatch/S04/new_index_row/run_at_binding": {
+      "sources": [
+        "product:fhir_line/ladder.py:285",
+        "product:docs/design/06-v1-screens-from-db.md:55"
+      ]
+    },
+    "/expected/case_2_summary_numerator_mismatch/S04/new_index_row/product_commit_binding": {
+      "sources": [
+        "product:fhir_line/ladder.py:286"
+      ]
+    },
+    "/expected/case_2_summary_numerator_mismatch/S04/new_index_row/when_written": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:13",
+        "product:docs/design/06-v1-screens-from-db.md:62"
+      ]
+    },
+    "/expected/case_2_summary_numerator_mismatch/S05/message": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/cell_diff/cases.json:67",
+        "personal:builds/medical-data-hands-on/answer-key/cell_diff/cases.json:79",
+        "personal:builds/medical-data-hands-on/answer-key/cell_diff/cases.json:80"
+      ],
+      "derivation": "차이 배열의 길이를 표시해요."
+    },
+    "/expected/case_2_summary_numerator_mismatch/S05/all_pass_message_allowed": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/cell_diff/cases.json:66"
+      ]
+    },
+    "/expected/case_2_summary_numerator_mismatch/S05/row_count": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/cell_diff/cases.json:67"
+      ]
+    },
+    "/expected/case_2_summary_numerator_mismatch/S05/row/kind": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/cell_diff/cases.json:67"
+      ]
+    },
+    "/expected/case_2_summary_numerator_mismatch/S05/row/hospital": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/cell_diff/cases.json:71"
+      ]
+    },
+    "/expected/case_2_summary_numerator_mismatch/S05/row/as_of_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/cell_diff/cases.json:72"
+      ]
+    },
+    "/expected/case_2_summary_numerator_mismatch/S05/row/table": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/cell_diff/cases.json:69"
+      ]
+    },
+    "/expected/case_2_summary_numerator_mismatch/S05/row/column": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/cell_diff/cases.json:74"
+      ]
+    },
+    "/expected/case_2_summary_numerator_mismatch/S05/row/column_display": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/cell_diff/cases.json:74",
+        "personal:builds/medical-data-hands-on/thinking/exchange/REQ-medical-v1-expected-1027/REQUEST.md:21"
+      ]
+    },
+    "/expected/case_2_summary_numerator_mismatch/S05/row/expected": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/cell_diff/cases.json:75"
+      ]
+    },
+    "/expected/case_2_summary_numerator_mismatch/S05/row/actual": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/cell_diff/cases.json:76"
+      ]
+    },
+    "/expected/case_2_summary_numerator_mismatch/S05/row/patient_number": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/cell_diff/cases.json:70"
+      ],
+      "derivation": "요약 행에는 환자 키가 없어요."
+    },
+    "/expected/case_2_summary_numerator_mismatch/S05/row/patient_detail_link": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/cell_diff/cases.json:70",
+        "product:docs/design/06-v1-screens-from-db.md:46"
+      ],
+      "derivation": "요약 불일치를 임의 환자 한 명에게 연결하지 않아요."
+    },
+    "/expected/case_2_summary_numerator_mismatch/S05/missing_rows": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/cell_diff/cases.json:79"
+      ]
+    },
+    "/expected/case_2_summary_numerator_mismatch/S05/unexpected_rows": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/cell_diff/cases.json:80"
+      ]
+    },
+    "/expected/case_2_summary_numerator_mismatch/S01_actual_summary/numerator": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/cell_diff/cases.json:76"
+      ]
+    },
+    "/expected/case_2_summary_numerator_mismatch/S01_actual_summary/denominator": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/summary_B.csv:3"
+      ]
+    },
+    "/expected/case_2_summary_numerator_mismatch/S01_actual_summary/rate": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected_b/summary_B.csv:3",
+        "personal:builds/medical-data-hands-on/answer-key/cell_diff/cases.json:62"
+      ],
+      "derivation": "이 사례는 분자 한 셀만 바꾸고 rate는 바꾸지 않아요."
+    },
+    "/expected/case_2_summary_numerator_mismatch/S01_actual_summary/comparison_label": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/cell_diff/cases.json:66",
+        "personal:builds/medical-data-hands-on/book/02-screens/05-screen-spec.md:47"
+      ]
+    },
+    "/expected/case_2_summary_numerator_mismatch/S01_actual_summary/recompute_rate_in_ui": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:17",
+        "product:docs/design/06-v1-screens-from-db.md:46"
+      ]
+    },
+    "/expected/privacy/allowed_current_reasons": {
+      "sources": [
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:7",
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:8",
+        "personal:builds/medical-data-hands-on/answer-key/expected/person_A.csv:9",
+        "product:docs/design/06-v1-screens-from-db.md:77"
+      ],
+      "derivation": "이번 고정 대상 행에서 읽은 사유만 모은 목록이에요. 새 입력에서 혈압 없음 등의 사유가 나오면 검토한 허용 문구를 별도로 확인해야 해요."
+    },
+    "/expected/privacy/forbidden_fields/10": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:75"
+      ]
+    },
+    "/expected/privacy/forbidden_fields/11": {
+      "sources": [
+        "product:docs/design/06-v1-screens-from-db.md:75"
+      ]
+    }
+  }
+}

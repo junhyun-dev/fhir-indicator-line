@@ -102,6 +102,9 @@ def prepare_expected(root=ROOT):
             raise ValueError('기존 작업실 expected 권한은 변경하지 않습니다; 새 복제본에서 시작하세요')
         lock_tree(folder)
     print('expected: 고정 해시 확인 · 읽기 전용')
+    if (root / 'fhir_line/report_ui.py').exists():
+        subprocess.run([sys.executable, str(root / 'scripts/verify_lead_answers.py'), '--prepare'],
+                       cwd=root, check=True)
     # ADR0013: a clone loses write-bit protection; verify every byte before chmod.
     prime = root / 'expected_a_prime'
     if not prime.exists() and not (root/'fhir_line/a_prime.py').exists():

@@ -1,0 +1,131 @@
+{
+ "made_by": "만들기 · 의료(Claude 리드) · 2026-10-27 · Codex 밖",
+ "key_rule": {
+  "fct_bp_person": [
+   "hospital",
+   "as_of_label",
+   "person_id"
+  ],
+  "bp_summary": [
+   "hospital",
+   "as_of_label"
+  ]
+ },
+ "numbers": "숫자 칸은 normalized_cell 규칙으로 견줌(4 = 4.0)",
+ "cases": [
+  {
+   "case": 0,
+   "change": "없음",
+   "status": "통과",
+   "cell_diffs": [],
+   "missing_rows": [],
+   "unexpected_rows": []
+  },
+  {
+   "case": 1,
+   "change": {
+    "table": "fct_bp_person",
+    "row": {
+     "hospital": "A",
+     "as_of_label": "sep30",
+     "person_id": "5393ea7f-1fea-4064-9df4-460a2f662d07"
+    },
+    "column": "systolic",
+    "from": "128",
+    "to": "129"
+   },
+   "status": "실패",
+   "cell_diffs": [
+    {
+     "table": "fct_bp_person",
+     "row": {
+      "hospital": "A",
+      "as_of_label": "sep30",
+      "person_id": "5393ea7f-1fea-4064-9df4-460a2f662d07"
+     },
+     "column": "systolic",
+     "expected": "128",
+     "actual": "129"
+    }
+   ],
+   "missing_rows": [],
+   "unexpected_rows": []
+  },
+  {
+   "case": 2,
+   "change": {
+    "table": "bp_summary",
+    "row": {
+     "hospital": "B",
+     "as_of_label": "dec31"
+    },
+    "column": "numerator",
+    "from": "3",
+    "to": "4"
+   },
+   "status": "실패",
+   "cell_diffs": [
+    {
+     "table": "bp_summary",
+     "row": {
+      "hospital": "B",
+      "as_of_label": "dec31"
+     },
+     "column": "numerator",
+     "expected": "3",
+     "actual": "4"
+    }
+   ],
+   "missing_rows": [],
+   "unexpected_rows": []
+  },
+  {
+   "case": 3,
+   "change": {
+    "table": "fct_bp_person",
+    "delete_row": {
+     "hospital": "B",
+     "as_of_label": "dec31",
+     "person_id": "10004235"
+    }
+   },
+   "status": "실패",
+   "cell_diffs": [],
+   "missing_rows": [
+    {
+     "table": "fct_bp_person",
+     "row": {
+      "hospital": "B",
+      "as_of_label": "dec31",
+      "person_id": "10004235"
+     }
+    }
+   ],
+   "unexpected_rows": []
+  },
+  {
+   "case": 4,
+   "change": {
+    "table": "fct_bp_person",
+    "duplicate_row": {
+     "hospital": "A",
+     "as_of_label": "dec31",
+     "person_id": "5393ea7f-1fea-4064-9df4-460a2f662d07"
+    }
+   },
+   "status": "실패",
+   "cell_diffs": [],
+   "missing_rows": [],
+   "unexpected_rows": [
+    {
+     "table": "fct_bp_person",
+     "row": {
+      "hospital": "A",
+      "as_of_label": "dec31",
+      "person_id": "5393ea7f-1fea-4064-9df4-460a2f662d07"
+     }
+    }
+   ]
+  }
+ ]
+}

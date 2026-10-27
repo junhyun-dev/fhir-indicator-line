@@ -1,0 +1,7 @@
+hospital,as_of_label,numerator,denominator,rate
+A,sep30,1,2,0.5000
+A,dec31,1,3,0.3333
+A_PRIME,sep30,1,2,0.5000
+A_PRIME,dec31,1,3,0.3333
+B,sep30,1,1,1.0000
+B,dec31,0,1,0.0000

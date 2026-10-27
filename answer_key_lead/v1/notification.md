@@ -1,0 +1,1 @@
+REQ-medical-v1-expected-1027 · 만들기 · 의료 · 기대 결과 · Codex: answer-key/v1/의 두 JSON·SHA256SUMS·README를 준비했어요. A 3/5·4/6, B 4/9·3/9와 연말 6명·9명을 유지하고 S04·S05의 분자 3→4 실패를 적었어요. 원천 행 키·이름/해시 규칙 등 리드 검수할 사항은 /home/junhyun/personal/builds/medical-data-hands-on/answer-key/v1/README.md에 있어요. 제품·DB 수정과 push는 없어요.
