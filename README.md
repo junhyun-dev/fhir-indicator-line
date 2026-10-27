@@ -84,6 +84,28 @@ FHIR_SKIP_EXTERNAL_CELL_CASES=1 .venv/bin/python -m unittest discover -s tests
 
 원천에서 옮기지 못한 진단 수는 병원별로 따로 경고해요. 이미 옮겨진 진단에서 개념 0이 없다는 것만으로 전체 매핑이 완전하다고 보지 않아요. 이 경고는 기본 실행을 실패로 바꾸지 않으며, 지표 모델과 출력 테이블은 그대로예요.
 
+## 로컬 조회 화면 v1
+
+글: 만들기 · 의료 · Codex · 2026-10-27
+
+기존 설치와 DB가 있으면 명령 하나로 S01 지표 현황·S02 대상 환자·S03 상세·S04 품질 검사·S05 오류내역을 만들어요. 서버나 로그인은 필요하지 않아요.
+
+```sh
+systemd-run --user --scope -p MemoryMax=4G -p MemorySwapMax=0 --quiet nice -n 10 .venv/bin/python -B scripts/render_report.py
+```
+
+명령이 알려 준 `S01.html`을 브라우저에서 열어요. 결과는 `.local/FHIR-LINE-V1-1027/ui-runs/local/<run_id>/`에 있어요. `latest.json`은 이번 시도, `latest-success.json`은 마지막으로 생성·검증한 묶음이에요. 실패한 시도와 과거 성공을 구분하고, 기존 결과는 덮어쓰지 않아요.
+
+DB는 읽기 전용 트랜잭션으로 읽어요. 같은 스냅샷에서 A/B 사람별·요약·자료형과 품질 SELECT를 확인하고, 저장된 수치로 화면을 만들어요. expected의 값을 실제값으로 채우거나 rate를 다시 계산하지 않아요. **이 조회 검증의 통과는 `check.sh` 전체 실행 통과와 달라요.** 이번 명령에서 실행하지 않은 Python 시험·dbt 빌드는 미실행이며, 과거 dbt 결과와 `runs/index.csv`는 현재 DB와 연결 미확인인 과거 기록으로 구분해요. 기존 전체 검사 이력에 부분 검증의 성공을 추가하지 않아요.
+
+정의·코드 목록 v1은 `config/indicator_definitions/v1/manifest.json`으로 등록했어요. 목록은 기존 seed에서 생성한 사본이며 A/B의 진단 코드 다섯 개와 A′의 같은 SNOMED 의미를 유지해요. 등록된 해시와 실제 정의 파일이 다르면 같은 v1로 완료 처리하지 않아요. 메타데이터만 화면 출력에 붙이며 기존 DB 모델·키·수치는 그대로예요.
+
+환자 번호는 병원·실행 안에서만 사용하고 두 시점과 필터에서 유지돼요. 원래 사람 ID·앞부분·해시·나이·원문·파일 경로는 브라우저 HTML·JSON·링크에 내보내지 않아요. 상세의 표준 행은 성분별 후보이며, 같은 날짜·값만으로 원천 선택을 확정하지 않아 **원천 연결 미확인**으로 표시해요. 동률 후보와 부분값을 보존해요.
+
+`--public`은 별도 `ui-runs/public/`에 집계·검증 화면만 생성하고 사람별 객체와 S02/S03 파일을 만들지 않아요. 이 옵션은 게시 승인이 아니며 push나 배포를 하지 않아요. 원래 행 키가 필요한 차이 CSV는 브라우저 폴더 밖 `private-runs/`에만 남겨요.
+
+v1 완료 검증에는 리드가 별도로 검수한 `~/personal/builds/medical-data-hands-on/answer-key/v1/`의 두 JSON·README와 SHA256SUMS가 필요해요. 없거나 해시/검수 문구가 다르면 실패해요. 이 자료를 새 실행값으로 만들거나 자동으로 보충하지 않아요. 새 시험은 `tests/test_v1_report.py`이며 기존 셀 비교 다섯 경우와 E01 시험도 유지해요. S00 로그인·S06/S07 제품 변경 이력·AI·공개 게시·임상 정의 v2는 이번 구현에 없어요.
+
 ## A′ 임상 보존 검사
 
 A′ 원래 임상 의미 보존 범위는 2026-10-22 방법 감독의 최종 검수로 완료했습니다(수용 대상 `52726ab`). 초기 실패 처리 R02·코드 이해 C01·실제 저장값 독립 대조 A01/A02를 포함하며, 수용 범위와 근거는 [결정 0013](docs/decisions/0013-a-prime-derived-source-and-precision.md#최종-수용2026-10-22)에 기록했습니다. KCD 연결은 계속 보류합니다.
@@ -146,7 +168,7 @@ A에서 파생한 CSV·혈압 문자열 → A′ staging ─┘
 - **OMOP DDL:** OHDSI CommonDataModel의 공식 DuckDB DDL, Apache-2.0. [vendor/omop](vendor/omop/README.md)에 버전과 출처가 있습니다.
 - **이 저장소 코드:** [Apache-2.0](LICENSE). 원천 데이터는 저장소에 넣지 않으며 위 각 원천의 라이선스를 따릅니다.
 
-원천과 생성 데이터·DB·캐시를 Git에 넣지 않습니다.
+원문 파일과 실행 중 생성한 입력·DB·캐시는 Git에서 제외해요. 검증용 `expected/`·`expected_a_prime/`에는 합성 개인별·임상 행과 공개 MIMIC 데모 유래 기대 결과가 들어 있어요. 이 파일의 데이터 이용조건은 코드의 Apache-2.0과 구분해 확인해야 해요.
 
 ## 범위와 한계
 
