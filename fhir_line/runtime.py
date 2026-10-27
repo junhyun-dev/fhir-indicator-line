@@ -13,7 +13,11 @@ def writable_path(path):
     path = Path(path).resolve()
     if not path.is_relative_to(ROOT):
         raise ValueError('Output must stay in this project')
-    if any(path.is_relative_to(protected) for protected in (ROOT/'expected',ROOT/'.local/FHIR-LINE-01')):
+    # ADR0013: frozen references and all original inputs are output-protected.
+    protected_paths = (ROOT/'expected', ROOT/'answer_key', ROOT/'expected_a_prime',
+                       ROOT/'answer_key_a_prime', ROOT/'.local/FHIR-LINE-01',
+                       ROOT/'.local/public-data')
+    if any(path.is_relative_to(protected) for protected in protected_paths):
         raise ValueError('Expected answers and original experiment are read-only')
     return path
 

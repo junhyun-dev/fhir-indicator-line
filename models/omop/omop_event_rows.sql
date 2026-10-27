@@ -1,4 +1,4 @@
--- D1,D2,D3 / decisions 0007-0009,0011: number each carried event once, retain source keys.
+-- D1,D2,D3 / decisions 0007-0009,0011: number each carried event once, retain source keys. ADR0013: derived source union only.
 {{ config(materialized='table') }}
 with visits as (
     select hospital, person_id as source_person_id, source_row_key, source_code,
@@ -8,6 +8,10 @@ with visits as (
     select hospital, person_id as source_person_id, source_row_key, source_code,
            source_vocabulary_id, start_day, end_day
     from {{ ref('stg_b_visit') }}
+    union all
+    select hospital, person_id as source_person_id, source_row_key, source_code,
+           source_vocabulary_id, start_day, end_day
+    from {{ ref('stg_aprime_visit') }}
 ), blood_pressure as (
     select hospital, person_id as source_person_id, source_row_key, source_code,
            source_vocabulary_id, bp_day, value, unit_vocabulary_id, unit_mapping_code,
@@ -18,6 +22,11 @@ with visits as (
            source_vocabulary_id, bp_day, value, unit_vocabulary_id, unit_mapping_code,
            unit_source_value, value_source_value
     from {{ ref('stg_b_bp_value') }} where is_omop_bp
+    union all
+    select hospital, person_id as source_person_id, source_row_key, source_code,
+           source_vocabulary_id, bp_day, value, unit_vocabulary_id, unit_mapping_code,
+           unit_source_value, value_source_value
+    from {{ ref('stg_aprime_bp_value') }} where is_omop_bp
 ), events as (
     select 'visit_occurrence'::varchar as omop_table, visit.hospital, visit.source_person_id,
            visit.source_row_key, visit.source_code, visit.start_day,

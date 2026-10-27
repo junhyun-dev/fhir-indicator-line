@@ -188,10 +188,10 @@ class LadderTests(unittest.TestCase):
     def test_L2_ladder_expected_cells_and_read_only_failure(self):
         CACHE.mkdir(parents=True,exist_ok=True)
         with tempfile.TemporaryDirectory(dir=CACHE) as folder, connect(':memory:') as connection:
-            connection.execute('CREATE TABLE fct_bp_person(hospital VARCHAR,person_id VARCHAR,as_of DATE,systolic DOUBLE,controlled BOOLEAN)')
-            connection.execute("INSERT INTO fct_bp_person VALUES ('A','fixture','2025-12-31',124.0,true)")
+            connection.execute('CREATE TABLE fct_bp_person(hospital VARCHAR,as_of_label VARCHAR,person_id VARCHAR,as_of DATE,systolic DOUBLE,controlled BOOLEAN)')
+            connection.execute("INSERT INTO fct_bp_person VALUES ('A','dec31','fixture','2025-12-31',124.0,true)")
             file=Path(folder)/'person_A.csv'
-            fixture=b'hospital,person_id,systolic,controlled\nA,fixture,124,True\n'
+            fixture=b'hospital,as_of_label,person_id,systolic,controlled\nA,dec31,fixture,124,True\n'
             file.write_bytes(fixture)
             self.assertEqual(compare_expected(connection,Path(folder))['status'],'통과')
             connection.execute('UPDATE fct_bp_person SET systolic=125')
