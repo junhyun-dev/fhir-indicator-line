@@ -24,6 +24,8 @@ Linux x64, **Python 3.12**와 venv, Git, curl, coreutils(cmp·sha256sum·du 등)
 sh scripts/quickstart.sh
 ```
 
+완료 검증에는 리드가 별도로 고정한 셀 비교 사례 `cases.json`과 `SHA256SUMS`도 필요해요. 기본 경로와 다른 곳에 받았다면 `FHIR_CELL_DIFF_CASES=/고정한/경로/cases.json sh scripts/quickstart.sh`로 지정해요. 파일을 못 찾으면 실패하며, 승인 없이 기대 입력을 새로 만들거나 저장소에 복사하지 않아요. 아래의 ‘셀 단위 비교와 실행 이력’에서 부분 시험과 완료 검증을 구분해요.
+
 받기 → 고정 해시 확인 → FHIR 생성 → 배치 나누기와 적재 → A′ 입력 생성 → 전체 검사 → 독립 재계산을 차례로 실행합니다. 처음에는 인터넷이 필요합니다. Temurin **17.0.20.1+1**, Synthea **v4.0.0**, MIMIC-IV demo **2.2**를 고정하며, Python 패키지는 requirements.lock의 해시와 대조합니다. 이미 해시가 맞는 원천은 받거나 생성하지 않고 재사용합니다.
 
 아래 받기·디스크·시간은 A/B 판(2026-10-21)의 측정 기록입니다. A′는 기존 설치와 원천을 사용하며 새 패키지를 추가하지 않습니다.
@@ -58,12 +60,21 @@ A′ 독립 재계산: 4파일 모두 같음(cmp)
 
 `sh scripts/check.sh`의 검사 ④는 A/B의 사람별 결과와 요약에서 다른 열의 기대값·실제값을 알려 줍니다. 사람별 행 키는 `(hospital, as_of_label, person_id)`, 요약은 `(hospital, as_of_label)`입니다. 같은 키가 양쪽에 하나씩 있으면 셀을 비교하고, 키가 중복되면 같은 행을 중복 횟수만큼 제외한 뒤 빠진 행·남는 행을 기록합니다. 숫자는 기존 정규화 규칙으로 비교하므로 `4`와 `4.0`은 같습니다.
 
+비교 전에 기대 CSV와 DB 양쪽에 필수 행 키가 모두 있는지 확인해요. 하나라도 빠지면 열 계약 실패와 빠진 열 이름을 반환하며, 일부 키만으로 비교를 계속하지 않아요.
+
 - 최신 결과는 기존 `.local/FHIR-LINE-02/summaries/verification-ladder.md`와 `.json`에 계속 씁니다.
 - 매 검사 보고마다 `.local/FHIR-LINE-02/runs/<UTC 시각>/cell-diff.csv`를 새로 만들고 `runs/index.csv`에 실행 시각·현재 Git 커밋·통과/실패·셀 차이/빠진 행/남는 행 수를 덧붙입니다. 통과 시 CSV에는 헤더만 남습니다. 이전 실행 CSV는 덮어쓰지 않습니다.
-- 전체 행 키·사람 ID는 Git 밖의 로컬 CSV/JSON에만 보존합니다. Markdown과 `python -m fhir_line check`의 화면 출력은 사람 ID를 표시하지 않습니다. JSON의 `run.product_dirty`는 기록한 커밋에 미커밋 변경이 있었는지 알려 줍니다.
+- 전체 행 키와 원래 오류 설명은 Git 밖의 로컬 CSV/JSON에만 보존해요. Markdown과 `python -m fhir_line check`는 같은 허용 목록으로 병원·기준 시점·표·열·공개 가능한 기대값/실제값·건수·상태를 새로 구성해요. 설명 문자열에 ID가 들어 있어도 그 원문을 화면으로 보내지 않아요. 알 수 없는 설명·필드는 제외하고, 식별자 열의 셀값이나 허용하지 않은 문자열은 비공개로 표시해요. 로컬 JSON의 `run.product_dirty`는 기록한 커밋에 미커밋 변경이 있었는지 알려 줘요.
+- `index.csv`는 파일 잠금 안에서 기존 머리줄의 순서·열 수와 각 행의 열 수를 확인해요. 계약이 다르면 기존 파일을 덧쓰지 않고 오류를 반환하며, 이번 실행의 CSV는 남겨요. 최신 JSON/Markdown도 실패로 바꿔 이전 성공을 이번 결과로 오인하지 않도록 해요. 강제 종료 중 여러 파일의 갱신을 하나의 트랜잭션으로 보장하는 기능은 아니에요.
 - 이 CSV의 셀 상세 범위는 검사 ④의 A/B 두 결과 테이블입니다. 자료형·OMOP·A′ 등 기존 검사도 전체 통과/실패에는 포함되므로 셀 차이 0개만으로 전체 통과를 판단하지 않습니다.
 
-리드가 제품 밖에서 고정한 다섯 경우의 시험은 `FHIR_CELL_DIFF_CASES`로 지정한 `cases.json`과 같은 폴더의 `SHA256SUMS`를 읽습니다. 기본 위치는 `~/personal/builds/medical-data-hands-on/answer-key/cell_diff/cases.json`입니다. 다른 복제본에서 이 파일이 없으면 해당 다섯 시험은 건너뛰었다고 표시하며, 저장소 안의 중복·숫자 비교·이력·비표시 시험은 그대로 실행합니다. 고정 기대값과 실제 사람 ID를 제품 코드에 복사하지 않습니다.
+리드가 제품 밖에서 고정한 다섯 경우의 시험은 `FHIR_CELL_DIFF_CASES`로 지정한 `cases.json`과 같은 폴더의 `SHA256SUMS`를 읽어요. 기본 위치는 `~/personal/builds/medical-data-hands-on/answer-key/cell_diff/cases.json`이에요. 파일이 없으면 기본 시험도 실패하고, `sh scripts/check.sh`와 quickstart의 완료 검증에서도 필수예요. 고정 기대값과 실제 사람 ID를 제품 코드에 복사하지 않아요.
+
+다른 복제본에서 외부 다섯 사례를 의도적으로 빼고 **부분 시험만** 하려면 아래처럼 명시해요. 출력에는 `건너뜀 · 완료 검증 아님`이 나와요. 이 환경변수로 `check.sh`를 실행하면 바로 실패하며 완료 검증을 우회하지 못해요.
+
+```sh
+FHIR_SKIP_EXTERNAL_CELL_CASES=1 .venv/bin/python -m unittest discover -s tests
+```
 
 ## A′ 임상 보존 검사
 

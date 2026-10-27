@@ -30,8 +30,12 @@ EXTERNAL_CASES = Path(os.environ.get('FHIR_CELL_DIFF_CASES',
 class LeadFrozenCellCases(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        if not EXTERNAL_CASES.exists() and 'FHIR_CELL_DIFF_CASES' not in os.environ:
-            raise unittest.SkipTest('Lead-owned cases are outside this clone; set FHIR_CELL_DIFF_CASES to run them')
+        if os.environ.get('FHIR_SKIP_EXTERNAL_CELL_CASES')=='1':
+            message='건너뜀 · 완료 검증 아님: 외부 고정 사례 다섯 개를 실행하지 않아요.'
+            print(message)
+            raise unittest.SkipTest(message)
+        if not EXTERNAL_CASES.is_file():
+            raise FileNotFoundError('필수 외부 기대 입력 cases.json이 없어요. FHIR_CELL_DIFF_CASES로 고정 파일을 지정하세요.')
         digest = hashlib.sha256(EXTERNAL_CASES.read_bytes()).hexdigest()
         locks = dict((name.removeprefix('*'),sha) for sha,name in
                      (line.split(maxsplit=1) for line in EXTERNAL_CASES.with_name('SHA256SUMS').read_text().splitlines() if line.strip()))
