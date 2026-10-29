@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 from .runtime import ROOT
 
-REGISTERED = {'v2': '054d929194309e2ffdb78d4cbc3eb9701ed4836177d106cb7d3dd7dc763b9f46'}
+REGISTERED = {'v2': '88229a1d7d30411e90e509afdad844e381c10c82116b7d2a5fa0aad649265280'}
 FILES = ('docs/decisions/0001-indicator-definition-d1-d7.md',
          'docs/decisions/0003-hospital-b-three-definitions.md',
          'docs/decisions/0010-definition-rules-in-calculation-layer.md',

@@ -18,7 +18,7 @@
     },
     {
       "path": "docs/decisions/0015-bp-days-require-both-components.md",
-      "sha256": "b8b2b7cf9f1aff93c006ecfec678067fbc7ff065be05340328e097d5b4a18c86"
+      "sha256": "ba0b60894dd75d64139e35faac4e42fc8eedaa266e6213407ee56c7439092ece"
     },
     {
       "path": "models/intermediate/int_bp_daily.sql",
