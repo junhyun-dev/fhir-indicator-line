@@ -15,6 +15,7 @@ from fhir_line.runtime import ROOT, connect, environment
 from fhir_line.store import append_rows, initialize
 from mimic_fixture import HEADERS, write_sources
 from test_m1_models import Fixture, coding, identifier, timestamp
+from wp5_expected import cases as wp5_cases, person_values
 
 
 def fhir_rows(resources):
@@ -101,6 +102,14 @@ class OmopModels(unittest.TestCase):
     def query(self, sql, parameters=()):
         with connect(self.database,read_only=True) as con:
             return con.execute(sql,parameters).fetchall()
+
+    def test_0015_D3_D6_reviewed_omop_case(self):
+        cases=wp5_cases('OMOP_fixture');self.assertEqual(len(cases),1)
+        for case in cases:
+            actual=self.query('''SELECT cast(last_bp_date as varchar),systolic,diastolic,controlled,reason
+                FROM fct_bp_person WHERE hospital=? AND person_id=? AND as_of_label=?''',
+                [case['hospital'],identifier('Patient',case['person']),case['as_of_label']])
+            self.assertEqual(actual,[person_values(case)])
 
     def test_0004_D1_official_shape_and_required_values(self):
         with connect(self.database,read_only=True) as con:

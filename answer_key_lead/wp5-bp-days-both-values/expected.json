@@ -1,0 +1,4032 @@
+{
+  "schema_version": 1,
+  "author": "만들기 · OMOP 임상 지표 · Codex(기대 결과)",
+  "date": "2026-10-29",
+  "status": "리드 검수 전이에요.",
+  "counting": "사례 하나는 기존 입력의 출처·사람·기준 시점 하나예요. UI 바꿔 넣기는 9행을 한 사례로 세요. 실제 DB의 여섯 요약과 아래 집계는 사례 수에 더하지 않아요.",
+  "scope": "부분값 관련 사례와 같은 날 최솟값·단위·측정 기간·입원 제외의 기존 확인 사례를 골랐어요. 저장소의 모든 시험을 실행하거나 모든 사례를 새로 채점한 것은 아니에요.",
+  "reason_name_status": "△ 「혈압 없음」 유지 제안이에요. CQL은 한국어 이유 이름을 정하지 않아요.",
+  "counts": {
+    "cases": 43,
+    "changed": 8,
+    "unchanged": 35
+  },
+  "cases": [
+    {
+      "id": "M1-t01-dec31",
+      "group": "M1",
+      "person": "t01",
+      "hospital": "A",
+      "as_of_label": "dec31",
+      "inputs": [
+        {
+          "key": "t01-bp",
+          "date": "2025-02-01",
+          "written_datetime": "2025-02-01",
+          "systolic": 104,
+          "diastolic": 81,
+          "systolic_unit": "mm[Hg]",
+          "diastolic_unit": "mm[Hg]",
+          "unit_display": "mm[Hg]",
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:87",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:67",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:71",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:72",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:75"
+          ]
+        }
+      ],
+      "current_expected": {
+        "last_bp_date": "2025-02-01",
+        "systolic": 104,
+        "diastolic": 81,
+        "controlled": 1,
+        "classification": "조절됨",
+        "reason": "조절됨",
+        "denominator_contribution": 1
+      },
+      "new_expected": {
+        "last_bp_date": "2025-02-01",
+        "systolic": 104,
+        "diastolic": 81,
+        "controlled": 1,
+        "classification": "조절됨",
+        "reason": "조절됨",
+        "denominator_contribution": 1
+      },
+      "changed": false,
+      "changed_fields": [],
+      "current_evidence": [
+        "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:243"
+      ],
+      "manual_steps": [
+        "두 성분이 모두 있는 마지막 날의 값을 유지해요. 수축기 140 미만과 이완기 90 미만을 함께 확인해요.",
+        "기간은 2025-01-01부터 2025-12-31까지 양 끝을 포함해요."
+      ],
+      "evidence_kind": "◆ 원문과 입력 파일에서 직접 따졌어요."
+    },
+    {
+      "id": "M1-t02-dec31",
+      "group": "M1",
+      "person": "t02",
+      "hospital": "A",
+      "as_of_label": "dec31",
+      "inputs": [
+        {
+          "key": "t02-bp",
+          "date": "2025-02-01",
+          "written_datetime": "2025-02-01",
+          "systolic": 140,
+          "diastolic": 81,
+          "systolic_unit": "mm[Hg]",
+          "diastolic_unit": "mm[Hg]",
+          "unit_display": "mm[Hg]",
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:88",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:67",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:71",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:72",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:75"
+          ]
+        }
+      ],
+      "current_expected": {
+        "last_bp_date": "2025-02-01",
+        "systolic": 140,
+        "diastolic": 81,
+        "controlled": 0,
+        "classification": "조절 안 됨",
+        "reason": "수축기 140 이상",
+        "denominator_contribution": 1
+      },
+      "new_expected": {
+        "last_bp_date": "2025-02-01",
+        "systolic": 140,
+        "diastolic": 81,
+        "controlled": 0,
+        "classification": "조절 안 됨",
+        "reason": "수축기 140 이상",
+        "denominator_contribution": 1
+      },
+      "changed": false,
+      "changed_fields": [],
+      "current_evidence": [
+        "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:251"
+      ],
+      "manual_steps": [
+        "두 성분이 모두 있는 마지막 날의 값을 유지해요. 수축기 140 미만과 이완기 90 미만을 함께 확인해요.",
+        "기간은 2025-01-01부터 2025-12-31까지 양 끝을 포함해요."
+      ],
+      "evidence_kind": "◆ 원문과 입력 파일에서 직접 따졌어요."
+    },
+    {
+      "id": "M1-t03-dec31",
+      "group": "M1",
+      "person": "t03",
+      "hospital": "A",
+      "as_of_label": "dec31",
+      "inputs": [
+        {
+          "key": "t03-bp",
+          "date": "2025-02-01",
+          "written_datetime": "2025-02-01",
+          "systolic": 104,
+          "diastolic": 90,
+          "systolic_unit": "mm[Hg]",
+          "diastolic_unit": "mm[Hg]",
+          "unit_display": "mm[Hg]",
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:89",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:67",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:71",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:72",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:75"
+          ]
+        }
+      ],
+      "current_expected": {
+        "last_bp_date": "2025-02-01",
+        "systolic": 104,
+        "diastolic": 90,
+        "controlled": 0,
+        "classification": "조절 안 됨",
+        "reason": "이완기 90 이상",
+        "denominator_contribution": 1
+      },
+      "new_expected": {
+        "last_bp_date": "2025-02-01",
+        "systolic": 104,
+        "diastolic": 90,
+        "controlled": 0,
+        "classification": "조절 안 됨",
+        "reason": "이완기 90 이상",
+        "denominator_contribution": 1
+      },
+      "changed": false,
+      "changed_fields": [],
+      "current_evidence": [
+        "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:254"
+      ],
+      "manual_steps": [
+        "두 성분이 모두 있는 마지막 날의 값을 유지해요. 수축기 140 미만과 이완기 90 미만을 함께 확인해요.",
+        "기간은 2025-01-01부터 2025-12-31까지 양 끝을 포함해요."
+      ],
+      "evidence_kind": "◆ 원문과 입력 파일에서 직접 따졌어요."
+    },
+    {
+      "id": "M1-t04-sep30",
+      "group": "M1",
+      "person": "t04",
+      "hospital": "A",
+      "as_of_label": "sep30",
+      "inputs": [
+        {
+          "key": "t04-old",
+          "date": "2025-02-01",
+          "written_datetime": "2025-02-01",
+          "systolic": 104,
+          "diastolic": 81,
+          "systolic_unit": "mm[Hg]",
+          "diastolic_unit": "mm[Hg]",
+          "unit_display": "mm[Hg]",
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:90",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:67",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:71",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:72",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:75"
+          ]
+        },
+        {
+          "key": "t04-last",
+          "date": "2025-08-01",
+          "written_datetime": "2025-08-01",
+          "systolic": 150,
+          "diastolic": null,
+          "systolic_unit": "mm[Hg]",
+          "diastolic_unit": "mm[Hg]",
+          "unit_display": "mm[Hg]",
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:91",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:67",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:71",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:72",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:75"
+          ]
+        }
+      ],
+      "current_expected": {
+        "last_bp_date": "2025-08-01",
+        "systolic": 150,
+        "diastolic": null,
+        "controlled": 0,
+        "classification": "조절 안 됨",
+        "reason": "마지막 날에 한쪽 값만",
+        "denominator_contribution": 1
+      },
+      "new_expected": {
+        "last_bp_date": "2025-02-01",
+        "systolic": 104,
+        "diastolic": 81,
+        "controlled": 1,
+        "classification": "조절됨",
+        "reason": "조절됨",
+        "denominator_contribution": 1
+      },
+      "changed": true,
+      "changed_fields": [
+        "last_bp_date",
+        "systolic",
+        "diastolic",
+        "controlled",
+        "classification",
+        "reason"
+      ],
+      "current_evidence": [
+        "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:257"
+      ],
+      "manual_steps": [
+        "8/1의 150/NULL은 후보에서 빼고, 2/1의 104/81을 써요. 150을 기준값과 비교하지 않아요.",
+        "기간은 2025-01-01부터 2025-09-30까지 양 끝을 포함해요."
+      ],
+      "evidence_kind": "◆ 원문과 입력 파일에서 직접 따졌어요."
+    },
+    {
+      "id": "M1-t04-dec31",
+      "group": "M1",
+      "person": "t04",
+      "hospital": "A",
+      "as_of_label": "dec31",
+      "inputs": [
+        {
+          "key": "t04-old",
+          "date": "2025-02-01",
+          "written_datetime": "2025-02-01",
+          "systolic": 104,
+          "diastolic": 81,
+          "systolic_unit": "mm[Hg]",
+          "diastolic_unit": "mm[Hg]",
+          "unit_display": "mm[Hg]",
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:90",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:67",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:71",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:72",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:75"
+          ]
+        },
+        {
+          "key": "t04-last",
+          "date": "2025-08-01",
+          "written_datetime": "2025-08-01",
+          "systolic": 150,
+          "diastolic": null,
+          "systolic_unit": "mm[Hg]",
+          "diastolic_unit": "mm[Hg]",
+          "unit_display": "mm[Hg]",
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:91",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:67",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:71",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:72",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:75"
+          ]
+        }
+      ],
+      "current_expected": {
+        "last_bp_date": "2025-08-01",
+        "systolic": 150,
+        "diastolic": null,
+        "controlled": 0,
+        "classification": "조절 안 됨",
+        "reason": "마지막 날에 한쪽 값만",
+        "denominator_contribution": 1
+      },
+      "new_expected": {
+        "last_bp_date": "2025-02-01",
+        "systolic": 104,
+        "diastolic": 81,
+        "controlled": 1,
+        "classification": "조절됨",
+        "reason": "조절됨",
+        "denominator_contribution": 1
+      },
+      "changed": true,
+      "changed_fields": [
+        "last_bp_date",
+        "systolic",
+        "diastolic",
+        "controlled",
+        "classification",
+        "reason"
+      ],
+      "current_evidence": [
+        "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:257"
+      ],
+      "manual_steps": [
+        "8/1의 150/NULL은 후보에서 빼고, 2/1의 104/81을 써요. 150을 기준값과 비교하지 않아요.",
+        "기간은 2025-01-01부터 2025-12-31까지 양 끝을 포함해요."
+      ],
+      "evidence_kind": "◆ 원문과 입력 파일에서 직접 따졌어요."
+    },
+    {
+      "id": "M1-t04-dia-sep30",
+      "group": "M1",
+      "person": "t04-dia",
+      "hospital": "A",
+      "as_of_label": "sep30",
+      "inputs": [
+        {
+          "key": "t04-dia-bp",
+          "date": "2025-08-01",
+          "written_datetime": "2025-08-01",
+          "systolic": null,
+          "diastolic": 75,
+          "systolic_unit": "mm[Hg]",
+          "diastolic_unit": "mm[Hg]",
+          "unit_display": "mm[Hg]",
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:92",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:67",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:71",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:72",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:75"
+          ]
+        }
+      ],
+      "current_expected": {
+        "last_bp_date": "2025-08-01",
+        "systolic": null,
+        "diastolic": 75,
+        "controlled": 0,
+        "classification": "조절 안 됨",
+        "reason": "마지막 날에 한쪽 값만",
+        "denominator_contribution": 1
+      },
+      "new_expected": {
+        "last_bp_date": null,
+        "systolic": null,
+        "diastolic": null,
+        "controlled": 0,
+        "classification": "조절 안 됨",
+        "reason": "혈압 없음",
+        "denominator_contribution": 1
+      },
+      "changed": true,
+      "changed_fields": [
+        "last_bp_date",
+        "diastolic",
+        "reason"
+      ],
+      "current_evidence": [
+        "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:258"
+      ],
+      "manual_steps": [
+        "8/1에는 이완기 75만 있어요. 수축기가 있는 날과 겹치는 날이 없어서 날짜와 두 값이 NULL이고 분자는 0이에요.",
+        "분모에서는 빼지 않아요. 「혈압 없음」은 이유 이름 유지 제안이며 리드 검수 전이에요.",
+        "기간은 2025-01-01부터 2025-09-30까지 양 끝을 포함해요."
+      ],
+      "evidence_kind": "◆ 원문과 입력 파일에서 직접 따졌어요."
+    },
+    {
+      "id": "M1-t04-dia-dec31",
+      "group": "M1",
+      "person": "t04-dia",
+      "hospital": "A",
+      "as_of_label": "dec31",
+      "inputs": [
+        {
+          "key": "t04-dia-bp",
+          "date": "2025-08-01",
+          "written_datetime": "2025-08-01",
+          "systolic": null,
+          "diastolic": 75,
+          "systolic_unit": "mm[Hg]",
+          "diastolic_unit": "mm[Hg]",
+          "unit_display": "mm[Hg]",
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:92",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:67",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:71",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:72",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:75"
+          ]
+        }
+      ],
+      "current_expected": {
+        "last_bp_date": "2025-08-01",
+        "systolic": null,
+        "diastolic": 75,
+        "controlled": 0,
+        "classification": "조절 안 됨",
+        "reason": "마지막 날에 한쪽 값만",
+        "denominator_contribution": 1
+      },
+      "new_expected": {
+        "last_bp_date": null,
+        "systolic": null,
+        "diastolic": null,
+        "controlled": 0,
+        "classification": "조절 안 됨",
+        "reason": "혈압 없음",
+        "denominator_contribution": 1
+      },
+      "changed": true,
+      "changed_fields": [
+        "last_bp_date",
+        "diastolic",
+        "reason"
+      ],
+      "current_evidence": [
+        "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:258"
+      ],
+      "manual_steps": [
+        "8/1에는 이완기 75만 있어요. 수축기가 있는 날과 겹치는 날이 없어서 날짜와 두 값이 NULL이고 분자는 0이에요.",
+        "분모에서는 빼지 않아요. 「혈압 없음」은 이유 이름 유지 제안이며 리드 검수 전이에요.",
+        "기간은 2025-01-01부터 2025-12-31까지 양 끝을 포함해요."
+      ],
+      "evidence_kind": "◆ 원문과 입력 파일에서 직접 따졌어요."
+    },
+    {
+      "id": "M1-t05-dec31",
+      "group": "M1",
+      "person": "t05",
+      "hospital": "A",
+      "as_of_label": "dec31",
+      "inputs": [
+        {
+          "key": "t05-first",
+          "date": "2025-02-01",
+          "written_datetime": "2025-02-01",
+          "systolic": 160,
+          "diastolic": 100,
+          "systolic_unit": "mm[Hg]",
+          "diastolic_unit": "mm[Hg]",
+          "unit_display": "mm[Hg]",
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:93",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:67",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:71",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:72",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:75"
+          ]
+        },
+        {
+          "key": "t05-second",
+          "date": "2025-02-01",
+          "written_datetime": "2025-02-01",
+          "systolic": 150,
+          "diastolic": 70,
+          "systolic_unit": "mm[Hg]",
+          "diastolic_unit": "mm[Hg]",
+          "unit_display": "mm[Hg]",
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:94",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:67",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:71",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:72",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:75"
+          ]
+        }
+      ],
+      "current_expected": {
+        "last_bp_date": "2025-02-01",
+        "systolic": 150,
+        "diastolic": 70,
+        "controlled": 0,
+        "classification": "조절 안 됨",
+        "reason": "수축기 140 이상",
+        "denominator_contribution": 1
+      },
+      "new_expected": {
+        "last_bp_date": "2025-02-01",
+        "systolic": 150,
+        "diastolic": 70,
+        "controlled": 0,
+        "classification": "조절 안 됨",
+        "reason": "수축기 140 이상",
+        "denominator_contribution": 1
+      },
+      "changed": false,
+      "changed_fields": [],
+      "current_evidence": [
+        "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:261"
+      ],
+      "manual_steps": [
+        "같은 날 수축기는 min(160,150)=150, 이완기는 min(100,70)=70이에요. 수축기 때문에 조절 안 됨이에요.",
+        "기간은 2025-01-01부터 2025-12-31까지 양 끝을 포함해요."
+      ],
+      "evidence_kind": "◆ 원문과 입력 파일에서 직접 따졌어요."
+    },
+    {
+      "id": "M1-t06-dec31",
+      "group": "M1",
+      "person": "t06",
+      "hospital": "A",
+      "as_of_label": "dec31",
+      "inputs": [
+        {
+          "key": "t06-before",
+          "date": "2024-12-31",
+          "written_datetime": "2024-12-31",
+          "systolic": 104,
+          "diastolic": 81,
+          "systolic_unit": "mm[Hg]",
+          "diastolic_unit": "mm[Hg]",
+          "unit_display": "mm[Hg]",
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:95",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:67",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:71",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:72",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:75"
+          ]
+        },
+        {
+          "key": "t06-after",
+          "date": "2026-01-01",
+          "written_datetime": "2026-01-01",
+          "systolic": 104,
+          "diastolic": 81,
+          "systolic_unit": "mm[Hg]",
+          "diastolic_unit": "mm[Hg]",
+          "unit_display": "mm[Hg]",
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:96",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:67",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:71",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:72",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:75"
+          ]
+        }
+      ],
+      "current_expected": {
+        "last_bp_date": null,
+        "systolic": null,
+        "diastolic": null,
+        "controlled": 0,
+        "classification": "조절 안 됨",
+        "reason": "혈압 없음",
+        "denominator_contribution": 1
+      },
+      "new_expected": {
+        "last_bp_date": null,
+        "systolic": null,
+        "diastolic": null,
+        "controlled": 0,
+        "classification": "조절 안 됨",
+        "reason": "혈압 없음",
+        "denominator_contribution": 1
+      },
+      "changed": false,
+      "changed_fields": [],
+      "current_evidence": [
+        "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:265"
+      ],
+      "manual_steps": [
+        "2024-12-31과 2026-01-01은 2025년 측정 기간 밖이에요.",
+        "기간은 2025-01-01부터 2025-12-31까지 양 끝을 포함해요."
+      ],
+      "evidence_kind": "◆ 원문과 입력 파일에서 직접 따졌어요."
+    },
+    {
+      "id": "M1-t07-imp-dec31",
+      "group": "M1",
+      "person": "t07-imp",
+      "hospital": "A",
+      "as_of_label": "dec31",
+      "inputs": [
+        {
+          "key": "imp-2025-01-10",
+          "date": "2025-01-10",
+          "written_datetime": "2025-01-10",
+          "systolic": 180,
+          "diastolic": 110,
+          "systolic_unit": "mm[Hg]",
+          "diastolic_unit": "mm[Hg]",
+          "unit_display": "mm[Hg]",
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:99",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:67",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:71",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:72",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:75"
+          ]
+        },
+        {
+          "key": "imp-2025-01-11",
+          "date": "2025-01-11",
+          "written_datetime": "2025-01-11",
+          "systolic": 180,
+          "diastolic": 110,
+          "systolic_unit": "mm[Hg]",
+          "diastolic_unit": "mm[Hg]",
+          "unit_display": "mm[Hg]",
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:99",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:67",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:71",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:72",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:75"
+          ]
+        },
+        {
+          "key": "imp-2025-01-12",
+          "date": "2025-01-12",
+          "written_datetime": "2025-01-12",
+          "systolic": 180,
+          "diastolic": 110,
+          "systolic_unit": "mm[Hg]",
+          "diastolic_unit": "mm[Hg]",
+          "unit_display": "mm[Hg]",
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:99",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:67",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:71",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:72",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:75"
+          ]
+        },
+        {
+          "key": "imp-before",
+          "date": "2025-01-09",
+          "written_datetime": "2025-01-09",
+          "systolic": 104,
+          "diastolic": 81,
+          "systolic_unit": "mm[Hg]",
+          "diastolic_unit": "mm[Hg]",
+          "unit_display": "mm[Hg]",
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:100",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:67",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:71",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:72",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:75"
+          ]
+        },
+        {
+          "key": "imp-after",
+          "date": "2025-01-13",
+          "written_datetime": "2025-01-13",
+          "systolic": 130,
+          "diastolic": 81,
+          "systolic_unit": "mm[Hg]",
+          "diastolic_unit": "mm[Hg]",
+          "unit_display": "mm[Hg]",
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:101",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:67",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:71",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:72",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:75"
+          ]
+        }
+      ],
+      "current_expected": {
+        "last_bp_date": "2025-01-13",
+        "systolic": 130,
+        "diastolic": 81,
+        "controlled": 1,
+        "classification": "조절됨",
+        "reason": "조절됨",
+        "denominator_contribution": 1
+      },
+      "new_expected": {
+        "last_bp_date": "2025-01-13",
+        "systolic": 130,
+        "diastolic": 81,
+        "controlled": 1,
+        "classification": "조절됨",
+        "reason": "조절됨",
+        "denominator_contribution": 1
+      },
+      "changed": false,
+      "changed_fields": [],
+      "current_evidence": [
+        "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:268"
+      ],
+      "manual_steps": [
+        "입원 기간 1/10~1/12의 양 끝을 포함해 제외해요. 남은 마지막 날은 1/13이에요.",
+        "기간은 2025-01-01부터 2025-12-31까지 양 끝을 포함해요."
+      ],
+      "evidence_kind": "◆ 원문과 입력 파일에서 직접 따졌어요."
+    },
+    {
+      "id": "M1-t07-emer-dec31",
+      "group": "M1",
+      "person": "t07-emer",
+      "hospital": "A",
+      "as_of_label": "dec31",
+      "inputs": [
+        {
+          "key": "emer-before",
+          "date": "2025-01-19",
+          "written_datetime": "2025-01-19",
+          "systolic": 104,
+          "diastolic": 81,
+          "systolic_unit": "mm[Hg]",
+          "diastolic_unit": "mm[Hg]",
+          "unit_display": "mm[Hg]",
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:103",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:67",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:71",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:72",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:75"
+          ]
+        },
+        {
+          "key": "emer-at",
+          "date": "2025-01-20",
+          "written_datetime": "2025-01-20",
+          "systolic": 180,
+          "diastolic": 110,
+          "systolic_unit": "mm[Hg]",
+          "diastolic_unit": "mm[Hg]",
+          "unit_display": "mm[Hg]",
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:104",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:67",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:71",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:72",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:75"
+          ]
+        },
+        {
+          "key": "emer-after",
+          "date": "2025-01-21",
+          "written_datetime": "2025-01-21",
+          "systolic": 120,
+          "diastolic": 80,
+          "systolic_unit": "mm[Hg]",
+          "diastolic_unit": "mm[Hg]",
+          "unit_display": "mm[Hg]",
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:105",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:67",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:71",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:72",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:75"
+          ]
+        }
+      ],
+      "current_expected": {
+        "last_bp_date": "2025-01-21",
+        "systolic": 120,
+        "diastolic": 80,
+        "controlled": 1,
+        "classification": "조절됨",
+        "reason": "조절됨",
+        "denominator_contribution": 1
+      },
+      "new_expected": {
+        "last_bp_date": "2025-01-21",
+        "systolic": 120,
+        "diastolic": 80,
+        "controlled": 1,
+        "classification": "조절됨",
+        "reason": "조절됨",
+        "denominator_contribution": 1
+      },
+      "changed": false,
+      "changed_fields": [],
+      "current_evidence": [
+        "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:269"
+      ],
+      "manual_steps": [
+        "종료일이 없는 응급실 방문의 1/20을 제외해요. 마지막 날은 1/21이에요.",
+        "기간은 2025-01-01부터 2025-12-31까지 양 끝을 포함해요."
+      ],
+      "evidence_kind": "◆ 원문과 입력 파일에서 직접 따졌어요."
+    },
+    {
+      "id": "M1-t07-year-dec31",
+      "group": "M1",
+      "person": "t07-year",
+      "hospital": "A",
+      "as_of_label": "dec31",
+      "inputs": [
+        {
+          "key": "year-at-start",
+          "date": "2025-01-01",
+          "written_datetime": "2025-01-01",
+          "systolic": 180,
+          "diastolic": 110,
+          "systolic_unit": "mm[Hg]",
+          "diastolic_unit": "mm[Hg]",
+          "unit_display": "mm[Hg]",
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:109",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:67",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:71",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:72",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:75"
+          ]
+        },
+        {
+          "key": "year-at-end",
+          "date": "2025-01-02",
+          "written_datetime": "2025-01-02",
+          "systolic": 180,
+          "diastolic": 110,
+          "systolic_unit": "mm[Hg]",
+          "diastolic_unit": "mm[Hg]",
+          "unit_display": "mm[Hg]",
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:110",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:67",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:71",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:72",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:75"
+          ]
+        },
+        {
+          "key": "year-after",
+          "date": "2025-01-03",
+          "written_datetime": "2025-01-03",
+          "systolic": 118,
+          "diastolic": 78,
+          "systolic_unit": "mm[Hg]",
+          "diastolic_unit": "mm[Hg]",
+          "unit_display": "mm[Hg]",
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:111",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:67",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:71",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:72",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:75"
+          ]
+        }
+      ],
+      "current_expected": {
+        "last_bp_date": "2025-01-03",
+        "systolic": 118,
+        "diastolic": 78,
+        "controlled": 1,
+        "classification": "조절됨",
+        "reason": "조절됨",
+        "denominator_contribution": 1
+      },
+      "new_expected": {
+        "last_bp_date": "2025-01-03",
+        "systolic": 118,
+        "diastolic": 78,
+        "controlled": 1,
+        "classification": "조절됨",
+        "reason": "조절됨",
+        "denominator_contribution": 1
+      },
+      "changed": false,
+      "changed_fields": [],
+      "current_evidence": [
+        "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:270"
+      ],
+      "manual_steps": [
+        "해가 바뀌는 입원 기간에 겹친 1/1~1/2를 제외해요. 마지막 날은 1/3이에요.",
+        "기간은 2025-01-01부터 2025-12-31까지 양 끝을 포함해요."
+      ],
+      "evidence_kind": "◆ 원문과 입력 파일에서 직접 따졌어요."
+    },
+    {
+      "id": "M1-t08-unit-sep30",
+      "group": "M1",
+      "person": "t08-unit",
+      "hospital": "A",
+      "as_of_label": "sep30",
+      "inputs": [
+        {
+          "key": "unit-wrong-code",
+          "date": "2025-08-01",
+          "written_datetime": "2025-08-01",
+          "systolic": 104,
+          "diastolic": 81,
+          "systolic_unit": "kPa",
+          "diastolic_unit": "mm[Hg]",
+          "unit_display": "mm[Hg]",
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:112",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:67",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:71",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:72",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:75"
+          ],
+          "systolic_after_unit_filter": null
+        }
+      ],
+      "current_expected": {
+        "last_bp_date": "2025-08-01",
+        "systolic": null,
+        "diastolic": 81,
+        "controlled": 0,
+        "classification": "조절 안 됨",
+        "reason": "마지막 날에 한쪽 값만",
+        "denominator_contribution": 1
+      },
+      "new_expected": {
+        "last_bp_date": null,
+        "systolic": null,
+        "diastolic": null,
+        "controlled": 0,
+        "classification": "조절 안 됨",
+        "reason": "혈압 없음",
+        "denominator_contribution": 1
+      },
+      "changed": true,
+      "changed_fields": [
+        "last_bp_date",
+        "diastolic",
+        "reason"
+      ],
+      "current_evidence": [
+        "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:273"
+      ],
+      "manual_steps": [
+        "8/1의 수축기 104는 단위가 kPa라 제외돼요. 남는 이완기 81만으로 측정일을 만들지 않아요.",
+        "분모에서는 빼지 않아요. 「혈압 없음」은 이유 이름 유지 제안이며 리드 검수 전이에요.",
+        "기간은 2025-01-01부터 2025-09-30까지 양 끝을 포함해요."
+      ],
+      "evidence_kind": "◆ 원문과 입력 파일에서 직접 따졌어요."
+    },
+    {
+      "id": "M1-t08-unit-dec31",
+      "group": "M1",
+      "person": "t08-unit",
+      "hospital": "A",
+      "as_of_label": "dec31",
+      "inputs": [
+        {
+          "key": "unit-wrong-code",
+          "date": "2025-08-01",
+          "written_datetime": "2025-08-01",
+          "systolic": 104,
+          "diastolic": 81,
+          "systolic_unit": "kPa",
+          "diastolic_unit": "mm[Hg]",
+          "unit_display": "mm[Hg]",
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:112",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:67",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:71",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:72",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:75"
+          ],
+          "systolic_after_unit_filter": null
+        }
+      ],
+      "current_expected": {
+        "last_bp_date": "2025-08-01",
+        "systolic": null,
+        "diastolic": 81,
+        "controlled": 0,
+        "classification": "조절 안 됨",
+        "reason": "마지막 날에 한쪽 값만",
+        "denominator_contribution": 1
+      },
+      "new_expected": {
+        "last_bp_date": null,
+        "systolic": null,
+        "diastolic": null,
+        "controlled": 0,
+        "classification": "조절 안 됨",
+        "reason": "혈압 없음",
+        "denominator_contribution": 1
+      },
+      "changed": true,
+      "changed_fields": [
+        "last_bp_date",
+        "diastolic",
+        "reason"
+      ],
+      "current_evidence": [
+        "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:273"
+      ],
+      "manual_steps": [
+        "8/1의 수축기 104는 단위가 kPa라 제외돼요. 남는 이완기 81만으로 측정일을 만들지 않아요.",
+        "분모에서는 빼지 않아요. 「혈압 없음」은 이유 이름 유지 제안이며 리드 검수 전이에요.",
+        "기간은 2025-01-01부터 2025-12-31까지 양 끝을 포함해요."
+      ],
+      "evidence_kind": "◆ 원문과 입력 파일에서 직접 따졌어요."
+    },
+    {
+      "id": "M1-t08-both-dec31",
+      "group": "M1",
+      "person": "t08-both",
+      "hospital": "A",
+      "as_of_label": "dec31",
+      "inputs": [
+        {
+          "key": "t08-both-old",
+          "date": "2025-02-01",
+          "written_datetime": "2025-02-01",
+          "systolic": 104,
+          "diastolic": 81,
+          "systolic_unit": "mm[Hg]",
+          "diastolic_unit": "mm[Hg]",
+          "unit_display": "mm[Hg]",
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:114",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:67",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:71",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:72",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:75"
+          ]
+        },
+        {
+          "key": "unit-both-bad",
+          "date": "2025-08-01",
+          "written_datetime": "2025-08-01",
+          "systolic": 104,
+          "diastolic": 81,
+          "systolic_unit": "kPa",
+          "diastolic_unit": "kPa",
+          "unit_display": "mm[Hg]",
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:115",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:67",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:71",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:72",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:75"
+          ],
+          "systolic_after_unit_filter": null,
+          "diastolic_after_unit_filter": null
+        }
+      ],
+      "current_expected": {
+        "last_bp_date": "2025-02-01",
+        "systolic": 104,
+        "diastolic": 81,
+        "controlled": 1,
+        "classification": "조절됨",
+        "reason": "조절됨",
+        "denominator_contribution": 1
+      },
+      "new_expected": {
+        "last_bp_date": "2025-02-01",
+        "systolic": 104,
+        "diastolic": 81,
+        "controlled": 1,
+        "classification": "조절됨",
+        "reason": "조절됨",
+        "denominator_contribution": 1
+      },
+      "changed": false,
+      "changed_fields": [],
+      "current_evidence": [
+        "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:276"
+      ],
+      "manual_steps": [
+        "8/1의 두 값은 모두 kPa라 제외돼요. 2/1의 완전한 측정일을 유지해요.",
+        "기간은 2025-01-01부터 2025-12-31까지 양 끝을 포함해요."
+      ],
+      "evidence_kind": "◆ 원문과 입력 파일에서 직접 따졌어요."
+    },
+    {
+      "id": "M1-t08-missing-dec31",
+      "group": "M1",
+      "person": "t08-missing",
+      "hospital": "A",
+      "as_of_label": "dec31",
+      "inputs": [
+        {
+          "key": "t08-missing-old",
+          "date": "2025-02-01",
+          "written_datetime": "2025-02-01",
+          "systolic": 104,
+          "diastolic": 81,
+          "systolic_unit": "mm[Hg]",
+          "diastolic_unit": "mm[Hg]",
+          "unit_display": "mm[Hg]",
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:114",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:67",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:71",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:72",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:75"
+          ]
+        },
+        {
+          "key": "unit-missing-values",
+          "date": "2025-08-02",
+          "written_datetime": "2025-08-02",
+          "systolic": null,
+          "diastolic": null,
+          "systolic_unit": "mm[Hg]",
+          "diastolic_unit": "mm[Hg]",
+          "unit_display": "mm[Hg]",
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:116",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:67",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:71",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:72",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:75"
+          ]
+        }
+      ],
+      "current_expected": {
+        "last_bp_date": "2025-02-01",
+        "systolic": 104,
+        "diastolic": 81,
+        "controlled": 1,
+        "classification": "조절됨",
+        "reason": "조절됨",
+        "denominator_contribution": 1
+      },
+      "new_expected": {
+        "last_bp_date": "2025-02-01",
+        "systolic": 104,
+        "diastolic": 81,
+        "controlled": 1,
+        "classification": "조절됨",
+        "reason": "조절됨",
+        "denominator_contribution": 1
+      },
+      "changed": false,
+      "changed_fields": [],
+      "current_evidence": [
+        "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:276"
+      ],
+      "manual_steps": [
+        "8/2의 두 성분에는 숫자가 없어요. 2/1의 완전한 측정일을 유지해요.",
+        "기간은 2025-01-01부터 2025-12-31까지 양 끝을 포함해요."
+      ],
+      "evidence_kind": "◆ 원문과 입력 파일에서 직접 따졌어요."
+    },
+    {
+      "id": "M1-t08-label-dec31",
+      "group": "M1",
+      "person": "t08-label",
+      "hospital": "A",
+      "as_of_label": "dec31",
+      "inputs": [
+        {
+          "key": "unit-display-only",
+          "date": "2025-08-01",
+          "written_datetime": "2025-08-01",
+          "systolic": 104,
+          "diastolic": 81,
+          "systolic_unit": "mm[Hg]",
+          "diastolic_unit": "mm[Hg]",
+          "unit_display": "display is not the code",
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:117",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:67",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:71",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:72",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:75"
+          ]
+        }
+      ],
+      "current_expected": {
+        "last_bp_date": "2025-08-01",
+        "systolic": 104,
+        "diastolic": 81,
+        "controlled": 1,
+        "classification": "조절됨",
+        "reason": "조절됨",
+        "denominator_contribution": 1
+      },
+      "new_expected": {
+        "last_bp_date": "2025-08-01",
+        "systolic": 104,
+        "diastolic": 81,
+        "controlled": 1,
+        "classification": "조절됨",
+        "reason": "조절됨",
+        "denominator_contribution": 1
+      },
+      "changed": false,
+      "changed_fields": [],
+      "current_evidence": [
+        "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:278"
+      ],
+      "manual_steps": [
+        "단위의 표시 문구와 관계없이 코드 mm[Hg]를 사용해요.",
+        "기간은 2025-01-01부터 2025-12-31까지 양 끝을 포함해요."
+      ],
+      "evidence_kind": "◆ 원문과 입력 파일에서 직접 따졌어요."
+    },
+    {
+      "id": "M1-t13-dec31",
+      "group": "M1",
+      "person": "t13",
+      "hospital": "A",
+      "as_of_label": "dec31",
+      "inputs": [
+        {
+          "key": "t13-reversed",
+          "date": "2025-09-13",
+          "written_datetime": "2025-09-13",
+          "systolic": 145,
+          "diastolic": 75,
+          "systolic_unit": "mm[Hg]",
+          "diastolic_unit": "mm[Hg]",
+          "unit_display": "mm[Hg]",
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:139",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:67",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:71",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:72",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:75"
+          ]
+        }
+      ],
+      "current_expected": {
+        "last_bp_date": "2025-09-13",
+        "systolic": 145,
+        "diastolic": 75,
+        "controlled": 0,
+        "classification": "조절 안 됨",
+        "reason": "수축기 140 이상",
+        "denominator_contribution": 1
+      },
+      "new_expected": {
+        "last_bp_date": "2025-09-13",
+        "systolic": 145,
+        "diastolic": 75,
+        "controlled": 0,
+        "classification": "조절 안 됨",
+        "reason": "수축기 140 이상",
+        "denominator_contribution": 1
+      },
+      "changed": false,
+      "changed_fields": [],
+      "current_evidence": [
+        "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:316"
+      ],
+      "manual_steps": [
+        "두 성분이 모두 있는 마지막 날의 값을 유지해요. 수축기 140 미만과 이완기 90 미만을 함께 확인해요.",
+        "기간은 2025-01-01부터 2025-12-31까지 양 끝을 포함해요."
+      ],
+      "evidence_kind": "◆ 원문과 입력 파일에서 직접 따졌어요."
+    },
+    {
+      "id": "M1-t14-sep30",
+      "group": "M1",
+      "person": "t14",
+      "hospital": "A",
+      "as_of_label": "sep30",
+      "inputs": [
+        {
+          "key": "t14-september",
+          "date": "2025-09-30",
+          "written_datetime": "2025-09-30T23:59:00-09:00",
+          "systolic": 104,
+          "diastolic": 81,
+          "systolic_unit": "mm[Hg]",
+          "diastolic_unit": "mm[Hg]",
+          "unit_display": "mm[Hg]",
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:140",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:67",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:71",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:72",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:75"
+          ]
+        },
+        {
+          "key": "t14-december",
+          "date": "2025-12-31",
+          "written_datetime": "2025-12-31T22:34:00+00:00",
+          "systolic": 128,
+          "diastolic": 82,
+          "systolic_unit": "mm[Hg]",
+          "diastolic_unit": "mm[Hg]",
+          "unit_display": "mm[Hg]",
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:141",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:67",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:71",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:72",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:75"
+          ]
+        }
+      ],
+      "current_expected": {
+        "last_bp_date": "2025-09-30",
+        "systolic": 104,
+        "diastolic": 81,
+        "controlled": 1,
+        "classification": "조절됨",
+        "reason": "조절됨",
+        "denominator_contribution": 1
+      },
+      "new_expected": {
+        "last_bp_date": "2025-09-30",
+        "systolic": 104,
+        "diastolic": 81,
+        "controlled": 1,
+        "classification": "조절됨",
+        "reason": "조절됨",
+        "denominator_contribution": 1
+      },
+      "changed": false,
+      "changed_fields": [],
+      "current_evidence": [
+        "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:319"
+      ],
+      "manual_steps": [
+        "날짜에 적힌 글자를 사용해요. 시간대 변환으로 날짜를 옮기지 않고 기준일까지 읽어요.",
+        "기간은 2025-01-01부터 2025-09-30까지 양 끝을 포함해요."
+      ],
+      "evidence_kind": "◆ 원문과 입력 파일에서 직접 따졌어요."
+    },
+    {
+      "id": "M1-t14-dec31",
+      "group": "M1",
+      "person": "t14",
+      "hospital": "A",
+      "as_of_label": "dec31",
+      "inputs": [
+        {
+          "key": "t14-september",
+          "date": "2025-09-30",
+          "written_datetime": "2025-09-30T23:59:00-09:00",
+          "systolic": 104,
+          "diastolic": 81,
+          "systolic_unit": "mm[Hg]",
+          "diastolic_unit": "mm[Hg]",
+          "unit_display": "mm[Hg]",
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:140",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:67",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:71",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:72",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:75"
+          ]
+        },
+        {
+          "key": "t14-december",
+          "date": "2025-12-31",
+          "written_datetime": "2025-12-31T22:34:00+00:00",
+          "systolic": 128,
+          "diastolic": 82,
+          "systolic_unit": "mm[Hg]",
+          "diastolic_unit": "mm[Hg]",
+          "unit_display": "mm[Hg]",
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:141",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:67",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:71",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:72",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:75"
+          ]
+        }
+      ],
+      "current_expected": {
+        "last_bp_date": "2025-12-31",
+        "systolic": 128,
+        "diastolic": 82,
+        "controlled": 1,
+        "classification": "조절됨",
+        "reason": "조절됨",
+        "denominator_contribution": 1
+      },
+      "new_expected": {
+        "last_bp_date": "2025-12-31",
+        "systolic": 128,
+        "diastolic": 82,
+        "controlled": 1,
+        "classification": "조절됨",
+        "reason": "조절됨",
+        "denominator_contribution": 1
+      },
+      "changed": false,
+      "changed_fields": [],
+      "current_evidence": [
+        "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:319"
+      ],
+      "manual_steps": [
+        "날짜에 적힌 글자를 사용해요. 시간대 변환으로 날짜를 옮기지 않고 기준일까지 읽어요.",
+        "기간은 2025-01-01부터 2025-12-31까지 양 끝을 포함해요."
+      ],
+      "evidence_kind": "◆ 원문과 입력 파일에서 직접 따졌어요."
+    },
+    {
+      "id": "M1-t15-dec31",
+      "group": "M1",
+      "person": "t15",
+      "hospital": "A",
+      "as_of_label": "dec31",
+      "inputs": [
+        {
+          "key": "t15-first",
+          "date": "2025-02-01",
+          "written_datetime": "2025-02-01",
+          "systolic": 160,
+          "diastolic": 80,
+          "systolic_unit": "mm[Hg]",
+          "diastolic_unit": "mm[Hg]",
+          "unit_display": "mm[Hg]",
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:142",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:67",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:71",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:72",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:75"
+          ]
+        },
+        {
+          "key": "t15-second",
+          "date": "2025-02-01",
+          "written_datetime": "2025-02-01",
+          "systolic": 120,
+          "diastolic": 90,
+          "systolic_unit": "mm[Hg]",
+          "diastolic_unit": "mm[Hg]",
+          "unit_display": "mm[Hg]",
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:143",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:67",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:71",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:72",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:75"
+          ]
+        }
+      ],
+      "current_expected": {
+        "last_bp_date": "2025-02-01",
+        "systolic": 120,
+        "diastolic": 80,
+        "controlled": 1,
+        "classification": "조절됨",
+        "reason": "조절됨",
+        "denominator_contribution": 1
+      },
+      "new_expected": {
+        "last_bp_date": "2025-02-01",
+        "systolic": 120,
+        "diastolic": 80,
+        "controlled": 1,
+        "classification": "조절됨",
+        "reason": "조절됨",
+        "denominator_contribution": 1
+      },
+      "changed": false,
+      "changed_fields": [],
+      "current_evidence": [
+        "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:324"
+      ],
+      "manual_steps": [
+        "같은 날 160/80과 120/90에서 수축기는 120, 이완기는 80을 써요. 한 행에서 두 값을 가져와야 한다는 조건은 없어요.",
+        "기간은 2025-01-01부터 2025-12-31까지 양 끝을 포함해요."
+      ],
+      "evidence_kind": "◆ 원문과 입력 파일에서 직접 따졌어요."
+    },
+    {
+      "id": "E01-A-p1-sep30",
+      "group": "E01",
+      "person": "p1",
+      "hospital": "A",
+      "as_of_label": "sep30",
+      "inputs": [
+        {
+          "source_row_key": "A|p1|m1|3004249",
+          "date": "2025-09-30",
+          "component": "systolic",
+          "value": 145.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:2"
+          ]
+        },
+        {
+          "source_row_key": "A|p1|m1|3012888",
+          "date": "2025-09-30",
+          "component": "diastolic",
+          "value": 75.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:3"
+          ]
+        },
+        {
+          "source_row_key": "A|p1|m2|3004249",
+          "date": "2025-09-30",
+          "component": "systolic",
+          "value": 135.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:6"
+          ]
+        },
+        {
+          "source_row_key": "A|p1|m2|3012888",
+          "date": "2025-09-30",
+          "component": "diastolic",
+          "value": 95.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:7"
+          ]
+        },
+        {
+          "source_row_key": "A|p1|m3|3004249",
+          "date": "2025-10-01",
+          "component": "systolic",
+          "value": 120.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:10"
+          ]
+        },
+        {
+          "source_row_key": "A|p1|m3|3012888",
+          "date": "2025-10-01",
+          "component": "diastolic",
+          "value": 70.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:11"
+          ]
+        },
+        {
+          "source_row_key": "A|p1|m4|3004249",
+          "date": "2025-10-02",
+          "component": "systolic",
+          "value": 110.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:14"
+          ]
+        },
+        {
+          "source_row_key": "A|p1|m4|3012888",
+          "date": "2025-10-02",
+          "component": "diastolic",
+          "value": 65.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:15"
+          ]
+        },
+        {
+          "source_row_key": "A|p1|m5|3004249",
+          "date": "2025-12-01",
+          "component": "systolic",
+          "value": 124.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:18"
+          ]
+        },
+        {
+          "source_row_key": "A|p1|m5|3012888",
+          "date": "2025-12-01",
+          "component": "diastolic",
+          "value": 92.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:19"
+          ]
+        },
+        {
+          "source_row_key": "A|p1|m6|3004249",
+          "date": "2025-12-20",
+          "component": "systolic",
+          "value": 121.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:22"
+          ]
+        },
+        {
+          "source_row_key": "A|p1|m6|3012888",
+          "date": "2025-12-20",
+          "component": "diastolic",
+          "value": null,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:23"
+          ]
+        },
+        {
+          "source_row_key": "A|p1|m7|3004249",
+          "date": "2025-12-30",
+          "component": "systolic",
+          "value": 100.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:26"
+          ]
+        },
+        {
+          "source_row_key": "A|p1|m7|3012888",
+          "date": "2025-12-30",
+          "component": "diastolic",
+          "value": 60.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:27"
+          ]
+        },
+        {
+          "source_row_key": "A|p1|m8|3004249",
+          "date": "2025-12-31",
+          "component": "systolic",
+          "value": null,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:30"
+          ]
+        },
+        {
+          "source_row_key": "A|p1|m8|3012888",
+          "date": "2025-12-31",
+          "component": "diastolic",
+          "value": null,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:31"
+          ]
+        }
+      ],
+      "current_expected": {
+        "last_bp_date": "2025-09-30",
+        "systolic": 135.0,
+        "diastolic": 75.0,
+        "controlled": 1,
+        "classification": "조절됨",
+        "reason": "조절됨",
+        "denominator_contribution": 1
+      },
+      "new_expected": {
+        "last_bp_date": "2025-09-30",
+        "systolic": 135.0,
+        "diastolic": 75.0,
+        "controlled": 1,
+        "classification": "조절됨",
+        "reason": "조절됨",
+        "denominator_contribution": 1
+      },
+      "changed": false,
+      "changed_fields": [],
+      "current_evidence": [
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/expected_manual/person.csv:2",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/persons.csv:2",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/visits.csv:2",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/visits.csv:3",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/visits.csv:12",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/visits.csv:13",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/conditions.csv:2",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/conditions.csv:3"
+      ],
+      "manual_steps": [
+        "10월 이후 기록은 9/30 기준 결과에 들어가지 않아요. 9/30의 145/75와 135/95에서 각각 최솟값 135/75를 유지해요."
+      ],
+      "evidence_kind": "◆ 원문과 입력 파일에서 직접 따졌어요."
+    },
+    {
+      "id": "E01-A_PRIME-p1-sep30",
+      "group": "E01",
+      "person": "p1",
+      "hospital": "A_PRIME",
+      "as_of_label": "sep30",
+      "inputs": [
+        {
+          "source_row_key": "A_PRIME|p1|m1|3004249",
+          "date": "2025-09-30",
+          "component": "systolic",
+          "value": 145.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:4"
+          ]
+        },
+        {
+          "source_row_key": "A_PRIME|p1|m1|3012888",
+          "date": "2025-09-30",
+          "component": "diastolic",
+          "value": 75.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:5"
+          ]
+        },
+        {
+          "source_row_key": "A_PRIME|p1|m2|3004249",
+          "date": "2025-09-30",
+          "component": "systolic",
+          "value": 135.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:8"
+          ]
+        },
+        {
+          "source_row_key": "A_PRIME|p1|m2|3012888",
+          "date": "2025-09-30",
+          "component": "diastolic",
+          "value": 95.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:9"
+          ]
+        },
+        {
+          "source_row_key": "A_PRIME|p1|m3|3004249",
+          "date": "2025-10-01",
+          "component": "systolic",
+          "value": 120.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:12"
+          ]
+        },
+        {
+          "source_row_key": "A_PRIME|p1|m3|3012888",
+          "date": "2025-10-01",
+          "component": "diastolic",
+          "value": 70.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:13"
+          ]
+        },
+        {
+          "source_row_key": "A_PRIME|p1|m4|3004249",
+          "date": "2025-10-02",
+          "component": "systolic",
+          "value": 110.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:16"
+          ]
+        },
+        {
+          "source_row_key": "A_PRIME|p1|m4|3012888",
+          "date": "2025-10-02",
+          "component": "diastolic",
+          "value": 65.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:17"
+          ]
+        },
+        {
+          "source_row_key": "A_PRIME|p1|m5|3004249",
+          "date": "2025-12-01",
+          "component": "systolic",
+          "value": 124.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:20"
+          ]
+        },
+        {
+          "source_row_key": "A_PRIME|p1|m5|3012888",
+          "date": "2025-12-01",
+          "component": "diastolic",
+          "value": 92.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:21"
+          ]
+        },
+        {
+          "source_row_key": "A_PRIME|p1|m6|3004249",
+          "date": "2025-12-20",
+          "component": "systolic",
+          "value": 121.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:24"
+          ]
+        },
+        {
+          "source_row_key": "A_PRIME|p1|m6|3012888",
+          "date": "2025-12-20",
+          "component": "diastolic",
+          "value": null,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:25"
+          ]
+        },
+        {
+          "source_row_key": "A_PRIME|p1|m7|3004249",
+          "date": "2025-12-30",
+          "component": "systolic",
+          "value": 100.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:28"
+          ]
+        },
+        {
+          "source_row_key": "A_PRIME|p1|m7|3012888",
+          "date": "2025-12-30",
+          "component": "diastolic",
+          "value": 60.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:29"
+          ]
+        },
+        {
+          "source_row_key": "A_PRIME|p1|m8|3004249",
+          "date": "2025-12-31",
+          "component": "systolic",
+          "value": null,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:32"
+          ]
+        },
+        {
+          "source_row_key": "A_PRIME|p1|m8|3012888",
+          "date": "2025-12-31",
+          "component": "diastolic",
+          "value": null,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:33"
+          ]
+        }
+      ],
+      "current_expected": {
+        "last_bp_date": "2025-09-30",
+        "systolic": 135.0,
+        "diastolic": 75.0,
+        "controlled": 1,
+        "classification": "조절됨",
+        "reason": "조절됨",
+        "denominator_contribution": 1
+      },
+      "new_expected": {
+        "last_bp_date": "2025-09-30",
+        "systolic": 135.0,
+        "diastolic": 75.0,
+        "controlled": 1,
+        "classification": "조절됨",
+        "reason": "조절됨",
+        "denominator_contribution": 1
+      },
+      "changed": false,
+      "changed_fields": [],
+      "current_evidence": [
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/expected_manual/person.csv:3",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/persons.csv:3",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/visits.csv:4",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/visits.csv:5",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/visits.csv:14",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/visits.csv:15",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/conditions.csv:4",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/conditions.csv:5"
+      ],
+      "manual_steps": [
+        "10월 이후 기록은 9/30 기준 결과에 들어가지 않아요. 9/30의 145/75와 135/95에서 각각 최솟값 135/75를 유지해요."
+      ],
+      "evidence_kind": "◆ 원문과 입력 파일에서 직접 따졌어요."
+    },
+    {
+      "id": "E01-A-p2-sep30",
+      "group": "E01",
+      "person": "p2",
+      "hospital": "A",
+      "as_of_label": "sep30",
+      "inputs": [],
+      "current_expected": {
+        "last_bp_date": null,
+        "systolic": null,
+        "diastolic": null,
+        "controlled": 0,
+        "classification": "조절 안 됨",
+        "reason": "혈압 없음",
+        "denominator_contribution": 1
+      },
+      "new_expected": {
+        "last_bp_date": null,
+        "systolic": null,
+        "diastolic": null,
+        "controlled": 0,
+        "classification": "조절 안 됨",
+        "reason": "혈압 없음",
+        "denominator_contribution": 1
+      },
+      "changed": false,
+      "changed_fields": [],
+      "current_evidence": [
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/expected_manual/person.csv:4",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/persons.csv:4",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/visits.csv:6",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/conditions.csv:6"
+      ],
+      "manual_steps": [
+        "측정 입력이 없어서 유효한 측정일이 없어요. 분자 0·분모 1과 NULL 날짜·값을 유지해요."
+      ],
+      "evidence_kind": "◆ 원문과 입력 파일에서 직접 따졌어요."
+    },
+    {
+      "id": "E01-A_PRIME-p2-sep30",
+      "group": "E01",
+      "person": "p2",
+      "hospital": "A_PRIME",
+      "as_of_label": "sep30",
+      "inputs": [],
+      "current_expected": {
+        "last_bp_date": null,
+        "systolic": null,
+        "diastolic": null,
+        "controlled": 0,
+        "classification": "조절 안 됨",
+        "reason": "혈압 없음",
+        "denominator_contribution": 1
+      },
+      "new_expected": {
+        "last_bp_date": null,
+        "systolic": null,
+        "diastolic": null,
+        "controlled": 0,
+        "classification": "조절 안 됨",
+        "reason": "혈압 없음",
+        "denominator_contribution": 1
+      },
+      "changed": false,
+      "changed_fields": [],
+      "current_evidence": [
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/expected_manual/person.csv:5",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/persons.csv:5",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/visits.csv:7",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/conditions.csv:7"
+      ],
+      "manual_steps": [
+        "측정 입력이 없어서 유효한 측정일이 없어요. 분자 0·분모 1과 NULL 날짜·값을 유지해요."
+      ],
+      "evidence_kind": "◆ 원문과 입력 파일에서 직접 따졌어요."
+    },
+    {
+      "id": "E01-A-p1-dec31",
+      "group": "E01",
+      "person": "p1",
+      "hospital": "A",
+      "as_of_label": "dec31",
+      "inputs": [
+        {
+          "source_row_key": "A|p1|m1|3004249",
+          "date": "2025-09-30",
+          "component": "systolic",
+          "value": 145.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:2"
+          ]
+        },
+        {
+          "source_row_key": "A|p1|m1|3012888",
+          "date": "2025-09-30",
+          "component": "diastolic",
+          "value": 75.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:3"
+          ]
+        },
+        {
+          "source_row_key": "A|p1|m2|3004249",
+          "date": "2025-09-30",
+          "component": "systolic",
+          "value": 135.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:6"
+          ]
+        },
+        {
+          "source_row_key": "A|p1|m2|3012888",
+          "date": "2025-09-30",
+          "component": "diastolic",
+          "value": 95.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:7"
+          ]
+        },
+        {
+          "source_row_key": "A|p1|m3|3004249",
+          "date": "2025-10-01",
+          "component": "systolic",
+          "value": 120.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:10"
+          ]
+        },
+        {
+          "source_row_key": "A|p1|m3|3012888",
+          "date": "2025-10-01",
+          "component": "diastolic",
+          "value": 70.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:11"
+          ]
+        },
+        {
+          "source_row_key": "A|p1|m4|3004249",
+          "date": "2025-10-02",
+          "component": "systolic",
+          "value": 110.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:14"
+          ]
+        },
+        {
+          "source_row_key": "A|p1|m4|3012888",
+          "date": "2025-10-02",
+          "component": "diastolic",
+          "value": 65.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:15"
+          ]
+        },
+        {
+          "source_row_key": "A|p1|m5|3004249",
+          "date": "2025-12-01",
+          "component": "systolic",
+          "value": 124.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:18"
+          ]
+        },
+        {
+          "source_row_key": "A|p1|m5|3012888",
+          "date": "2025-12-01",
+          "component": "diastolic",
+          "value": 92.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:19"
+          ]
+        },
+        {
+          "source_row_key": "A|p1|m6|3004249",
+          "date": "2025-12-20",
+          "component": "systolic",
+          "value": 121.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:22"
+          ]
+        },
+        {
+          "source_row_key": "A|p1|m6|3012888",
+          "date": "2025-12-20",
+          "component": "diastolic",
+          "value": null,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:23"
+          ]
+        },
+        {
+          "source_row_key": "A|p1|m7|3004249",
+          "date": "2025-12-30",
+          "component": "systolic",
+          "value": 100.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:26"
+          ]
+        },
+        {
+          "source_row_key": "A|p1|m7|3012888",
+          "date": "2025-12-30",
+          "component": "diastolic",
+          "value": 60.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:27"
+          ]
+        },
+        {
+          "source_row_key": "A|p1|m8|3004249",
+          "date": "2025-12-31",
+          "component": "systolic",
+          "value": null,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:30"
+          ]
+        },
+        {
+          "source_row_key": "A|p1|m8|3012888",
+          "date": "2025-12-31",
+          "component": "diastolic",
+          "value": null,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:31"
+          ]
+        }
+      ],
+      "current_expected": {
+        "last_bp_date": "2025-12-20",
+        "systolic": 121.0,
+        "diastolic": null,
+        "controlled": 0,
+        "classification": "조절 안 됨",
+        "reason": "마지막 날에 한쪽 값만",
+        "denominator_contribution": 1
+      },
+      "new_expected": {
+        "last_bp_date": "2025-12-01",
+        "systolic": 124.0,
+        "diastolic": 92.0,
+        "controlled": 0,
+        "classification": "조절 안 됨",
+        "reason": "이완기 90 이상",
+        "denominator_contribution": 1
+      },
+      "changed": true,
+      "changed_fields": [
+        "last_bp_date",
+        "systolic",
+        "diastolic",
+        "reason"
+      ],
+      "current_evidence": [
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/expected_manual/person.csv:6",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/persons.csv:2",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/visits.csv:2",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/visits.csv:3",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/visits.csv:12",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/visits.csv:13",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/conditions.csv:2",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/conditions.csv:3"
+      ],
+      "manual_steps": [
+        "9/30의 두 번 측정에서 135/75를 얻어요. 10/1~10/2와 12/29~12/30은 입원 기간이어서 제외해요.",
+        "12/31은 두 값이 없고, 12/20은 수축기 121만 있어요. 가장 최근의 완전한 날은 12/1의 124/92예요.",
+        "124는 140 미만이지만 92는 90 이상이에요. 분자 0과 분모 1은 유지되고 날짜·두 값·이유가 바뀌어요."
+      ],
+      "evidence_kind": "◆ 원문과 입력 파일에서 직접 따졌어요."
+    },
+    {
+      "id": "E01-A_PRIME-p1-dec31",
+      "group": "E01",
+      "person": "p1",
+      "hospital": "A_PRIME",
+      "as_of_label": "dec31",
+      "inputs": [
+        {
+          "source_row_key": "A_PRIME|p1|m1|3004249",
+          "date": "2025-09-30",
+          "component": "systolic",
+          "value": 145.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:4"
+          ]
+        },
+        {
+          "source_row_key": "A_PRIME|p1|m1|3012888",
+          "date": "2025-09-30",
+          "component": "diastolic",
+          "value": 75.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:5"
+          ]
+        },
+        {
+          "source_row_key": "A_PRIME|p1|m2|3004249",
+          "date": "2025-09-30",
+          "component": "systolic",
+          "value": 135.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:8"
+          ]
+        },
+        {
+          "source_row_key": "A_PRIME|p1|m2|3012888",
+          "date": "2025-09-30",
+          "component": "diastolic",
+          "value": 95.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:9"
+          ]
+        },
+        {
+          "source_row_key": "A_PRIME|p1|m3|3004249",
+          "date": "2025-10-01",
+          "component": "systolic",
+          "value": 120.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:12"
+          ]
+        },
+        {
+          "source_row_key": "A_PRIME|p1|m3|3012888",
+          "date": "2025-10-01",
+          "component": "diastolic",
+          "value": 70.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:13"
+          ]
+        },
+        {
+          "source_row_key": "A_PRIME|p1|m4|3004249",
+          "date": "2025-10-02",
+          "component": "systolic",
+          "value": 110.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:16"
+          ]
+        },
+        {
+          "source_row_key": "A_PRIME|p1|m4|3012888",
+          "date": "2025-10-02",
+          "component": "diastolic",
+          "value": 65.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:17"
+          ]
+        },
+        {
+          "source_row_key": "A_PRIME|p1|m5|3004249",
+          "date": "2025-12-01",
+          "component": "systolic",
+          "value": 124.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:20"
+          ]
+        },
+        {
+          "source_row_key": "A_PRIME|p1|m5|3012888",
+          "date": "2025-12-01",
+          "component": "diastolic",
+          "value": 92.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:21"
+          ]
+        },
+        {
+          "source_row_key": "A_PRIME|p1|m6|3004249",
+          "date": "2025-12-20",
+          "component": "systolic",
+          "value": 121.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:24"
+          ]
+        },
+        {
+          "source_row_key": "A_PRIME|p1|m6|3012888",
+          "date": "2025-12-20",
+          "component": "diastolic",
+          "value": null,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:25"
+          ]
+        },
+        {
+          "source_row_key": "A_PRIME|p1|m7|3004249",
+          "date": "2025-12-30",
+          "component": "systolic",
+          "value": 100.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:28"
+          ]
+        },
+        {
+          "source_row_key": "A_PRIME|p1|m7|3012888",
+          "date": "2025-12-30",
+          "component": "diastolic",
+          "value": 60.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:29"
+          ]
+        },
+        {
+          "source_row_key": "A_PRIME|p1|m8|3004249",
+          "date": "2025-12-31",
+          "component": "systolic",
+          "value": null,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:32"
+          ]
+        },
+        {
+          "source_row_key": "A_PRIME|p1|m8|3012888",
+          "date": "2025-12-31",
+          "component": "diastolic",
+          "value": null,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:33"
+          ]
+        }
+      ],
+      "current_expected": {
+        "last_bp_date": "2025-12-20",
+        "systolic": 121.0,
+        "diastolic": null,
+        "controlled": 0,
+        "classification": "조절 안 됨",
+        "reason": "마지막 날에 한쪽 값만",
+        "denominator_contribution": 1
+      },
+      "new_expected": {
+        "last_bp_date": "2025-12-01",
+        "systolic": 124.0,
+        "diastolic": 92.0,
+        "controlled": 0,
+        "classification": "조절 안 됨",
+        "reason": "이완기 90 이상",
+        "denominator_contribution": 1
+      },
+      "changed": true,
+      "changed_fields": [
+        "last_bp_date",
+        "systolic",
+        "diastolic",
+        "reason"
+      ],
+      "current_evidence": [
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/expected_manual/person.csv:7",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/persons.csv:3",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/visits.csv:4",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/visits.csv:5",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/visits.csv:14",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/visits.csv:15",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/conditions.csv:4",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/conditions.csv:5"
+      ],
+      "manual_steps": [
+        "9/30의 두 번 측정에서 135/75를 얻어요. 10/1~10/2와 12/29~12/30은 입원 기간이어서 제외해요.",
+        "12/31은 두 값이 없고, 12/20은 수축기 121만 있어요. 가장 최근의 완전한 날은 12/1의 124/92예요.",
+        "124는 140 미만이지만 92는 90 이상이에요. 분자 0과 분모 1은 유지되고 날짜·두 값·이유가 바뀌어요."
+      ],
+      "evidence_kind": "◆ 원문과 입력 파일에서 직접 따졌어요."
+    },
+    {
+      "id": "E01-A-p2-dec31",
+      "group": "E01",
+      "person": "p2",
+      "hospital": "A",
+      "as_of_label": "dec31",
+      "inputs": [],
+      "current_expected": {
+        "last_bp_date": null,
+        "systolic": null,
+        "diastolic": null,
+        "controlled": 0,
+        "classification": "조절 안 됨",
+        "reason": "혈압 없음",
+        "denominator_contribution": 1
+      },
+      "new_expected": {
+        "last_bp_date": null,
+        "systolic": null,
+        "diastolic": null,
+        "controlled": 0,
+        "classification": "조절 안 됨",
+        "reason": "혈압 없음",
+        "denominator_contribution": 1
+      },
+      "changed": false,
+      "changed_fields": [],
+      "current_evidence": [
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/expected_manual/person.csv:8",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/persons.csv:4",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/visits.csv:6",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/conditions.csv:6"
+      ],
+      "manual_steps": [
+        "측정 입력이 없어서 유효한 측정일이 없어요. 분자 0·분모 1과 NULL 날짜·값을 유지해요."
+      ],
+      "evidence_kind": "◆ 원문과 입력 파일에서 직접 따졌어요."
+    },
+    {
+      "id": "E01-A_PRIME-p2-dec31",
+      "group": "E01",
+      "person": "p2",
+      "hospital": "A_PRIME",
+      "as_of_label": "dec31",
+      "inputs": [],
+      "current_expected": {
+        "last_bp_date": null,
+        "systolic": null,
+        "diastolic": null,
+        "controlled": 0,
+        "classification": "조절 안 됨",
+        "reason": "혈압 없음",
+        "denominator_contribution": 1
+      },
+      "new_expected": {
+        "last_bp_date": null,
+        "systolic": null,
+        "diastolic": null,
+        "controlled": 0,
+        "classification": "조절 안 됨",
+        "reason": "혈압 없음",
+        "denominator_contribution": 1
+      },
+      "changed": false,
+      "changed_fields": [],
+      "current_evidence": [
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/expected_manual/person.csv:9",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/persons.csv:5",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/visits.csv:7",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/conditions.csv:7"
+      ],
+      "manual_steps": [
+        "측정 입력이 없어서 유효한 측정일이 없어요. 분자 0·분모 1과 NULL 날짜·값을 유지해요."
+      ],
+      "evidence_kind": "◆ 원문과 입력 파일에서 직접 따졌어요."
+    },
+    {
+      "id": "E01-A-p3-dec31",
+      "group": "E01",
+      "person": "p3",
+      "hospital": "A",
+      "as_of_label": "dec31",
+      "inputs": [
+        {
+          "source_row_key": "A|p3|m9|3004249",
+          "date": "2025-09-30",
+          "component": "systolic",
+          "value": 109.51,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:34"
+          ]
+        },
+        {
+          "source_row_key": "A|p3|m9|3012888",
+          "date": "2025-09-30",
+          "component": "diastolic",
+          "value": 76.761,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:35"
+          ]
+        },
+        {
+          "source_row_key": "A|p3|m10|3004249",
+          "date": "2025-12-01",
+          "component": "systolic",
+          "value": 139.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:38"
+          ]
+        },
+        {
+          "source_row_key": "A|p3|m10|3012888",
+          "date": "2025-12-01",
+          "component": "diastolic",
+          "value": 89.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:39"
+          ]
+        }
+      ],
+      "current_expected": {
+        "last_bp_date": "2025-12-01",
+        "systolic": 139.0,
+        "diastolic": 89.0,
+        "controlled": 1,
+        "classification": "조절됨",
+        "reason": "조절됨",
+        "denominator_contribution": 1
+      },
+      "new_expected": {
+        "last_bp_date": "2025-12-01",
+        "systolic": 139.0,
+        "diastolic": 89.0,
+        "controlled": 1,
+        "classification": "조절됨",
+        "reason": "조절됨",
+        "denominator_contribution": 1
+      },
+      "changed": false,
+      "changed_fields": [],
+      "current_evidence": [
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/expected_manual/person.csv:10",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/persons.csv:6",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/visits.csv:8",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/conditions.csv:8"
+      ],
+      "manual_steps": [
+        "두 성분이 모두 있는 측정일을 선택해도 현재 결과가 같아요."
+      ],
+      "evidence_kind": "◆ 원문과 입력 파일에서 직접 따졌어요."
+    },
+    {
+      "id": "E01-A_PRIME-p3-dec31",
+      "group": "E01",
+      "person": "p3",
+      "hospital": "A_PRIME",
+      "as_of_label": "dec31",
+      "inputs": [
+        {
+          "source_row_key": "A_PRIME|p3|m9|3004249",
+          "date": "2025-09-30",
+          "component": "systolic",
+          "value": 109.51,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:36"
+          ]
+        },
+        {
+          "source_row_key": "A_PRIME|p3|m9|3012888",
+          "date": "2025-09-30",
+          "component": "diastolic",
+          "value": 76.761,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:37"
+          ]
+        },
+        {
+          "source_row_key": "A_PRIME|p3|m10|3004249",
+          "date": "2025-12-01",
+          "component": "systolic",
+          "value": 139.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:40"
+          ]
+        },
+        {
+          "source_row_key": "A_PRIME|p3|m10|3012888",
+          "date": "2025-12-01",
+          "component": "diastolic",
+          "value": 89.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:41"
+          ]
+        }
+      ],
+      "current_expected": {
+        "last_bp_date": "2025-12-01",
+        "systolic": 139.0,
+        "diastolic": 89.0,
+        "controlled": 1,
+        "classification": "조절됨",
+        "reason": "조절됨",
+        "denominator_contribution": 1
+      },
+      "new_expected": {
+        "last_bp_date": "2025-12-01",
+        "systolic": 139.0,
+        "diastolic": 89.0,
+        "controlled": 1,
+        "classification": "조절됨",
+        "reason": "조절됨",
+        "denominator_contribution": 1
+      },
+      "changed": false,
+      "changed_fields": [],
+      "current_evidence": [
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/expected_manual/person.csv:11",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/persons.csv:7",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/visits.csv:9",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/conditions.csv:9"
+      ],
+      "manual_steps": [
+        "두 성분이 모두 있는 측정일을 선택해도 현재 결과가 같아요."
+      ],
+      "evidence_kind": "◆ 원문과 입력 파일에서 직접 따졌어요."
+    },
+    {
+      "id": "E01-B-p1-sep30",
+      "group": "E01",
+      "person": "p1",
+      "hospital": "B",
+      "as_of_label": "sep30",
+      "inputs": [
+        {
+          "source_row_key": "B|p1|m11|3004249",
+          "date": "2031-09-30",
+          "component": "systolic",
+          "value": 130.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:42"
+          ]
+        },
+        {
+          "source_row_key": "B|p1|m11|3012888",
+          "date": "2031-09-30",
+          "component": "diastolic",
+          "value": 80.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:43"
+          ]
+        },
+        {
+          "source_row_key": "B|p1|m12|3004249",
+          "date": "2031-12-01",
+          "component": "systolic",
+          "value": 140.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:44"
+          ]
+        },
+        {
+          "source_row_key": "B|p1|m12|3012888",
+          "date": "2031-12-01",
+          "component": "diastolic",
+          "value": 90.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:45"
+          ]
+        }
+      ],
+      "current_expected": {
+        "last_bp_date": "2031-09-30",
+        "systolic": 130.0,
+        "diastolic": 80.0,
+        "controlled": 1,
+        "classification": "조절됨",
+        "reason": "조절됨",
+        "denominator_contribution": 1
+      },
+      "new_expected": {
+        "last_bp_date": "2031-09-30",
+        "systolic": 130.0,
+        "diastolic": 80.0,
+        "controlled": 1,
+        "classification": "조절됨",
+        "reason": "조절됨",
+        "denominator_contribution": 1
+      },
+      "changed": false,
+      "changed_fields": [],
+      "current_evidence": [
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/expected_manual/person.csv:12",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/persons.csv:8",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/visits.csv:10",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/conditions.csv:10"
+      ],
+      "manual_steps": [
+        "두 성분이 모두 있는 측정일을 선택해도 현재 결과가 같아요."
+      ],
+      "evidence_kind": "◆ 원문과 입력 파일에서 직접 따졌어요."
+    },
+    {
+      "id": "E01-B-p1-dec31",
+      "group": "E01",
+      "person": "p1",
+      "hospital": "B",
+      "as_of_label": "dec31",
+      "inputs": [
+        {
+          "source_row_key": "B|p1|m11|3004249",
+          "date": "2031-09-30",
+          "component": "systolic",
+          "value": 130.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:42"
+          ]
+        },
+        {
+          "source_row_key": "B|p1|m11|3012888",
+          "date": "2031-09-30",
+          "component": "diastolic",
+          "value": 80.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:43"
+          ]
+        },
+        {
+          "source_row_key": "B|p1|m12|3004249",
+          "date": "2031-12-01",
+          "component": "systolic",
+          "value": 140.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:44"
+          ]
+        },
+        {
+          "source_row_key": "B|p1|m12|3012888",
+          "date": "2031-12-01",
+          "component": "diastolic",
+          "value": 90.0,
+          "unit_concept_id": 8876,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv:45"
+          ]
+        }
+      ],
+      "current_expected": {
+        "last_bp_date": "2031-12-01",
+        "systolic": 140.0,
+        "diastolic": 90.0,
+        "controlled": 0,
+        "classification": "조절 안 됨",
+        "reason": "수축기 140 이상",
+        "denominator_contribution": 1
+      },
+      "new_expected": {
+        "last_bp_date": "2031-12-01",
+        "systolic": 140.0,
+        "diastolic": 90.0,
+        "controlled": 0,
+        "classification": "조절 안 됨",
+        "reason": "수축기 140 이상",
+        "denominator_contribution": 1
+      },
+      "changed": false,
+      "changed_fields": [],
+      "current_evidence": [
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/expected_manual/person.csv:13",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/persons.csv:8",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/visits.csv:10",
+        "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/conditions.csv:10"
+      ],
+      "manual_steps": [
+        "두 성분이 모두 있는 측정일을 선택해도 현재 결과가 같아요."
+      ],
+      "evidence_kind": "◆ 원문과 입력 파일에서 직접 따졌어요."
+    },
+    {
+      "id": "APRIME-good-sep30",
+      "group": "A_PRIME_fixture",
+      "person": "good",
+      "hospital": "A_PRIME",
+      "as_of_label": "sep30",
+      "inputs": [
+        {
+          "key": "fraction",
+          "date": "2025-09-30",
+          "written_datetime": "2025-09-30T23:00:00-02:00",
+          "systolic": 109.51,
+          "diastolic": 76.761,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_a_prime.py:35"
+          ],
+          "usable": true
+        },
+        {
+          "key": "same-day",
+          "date": "2025-09-30",
+          "written_datetime": "2025-09-30T09:00:00Z",
+          "systolic": 115.0,
+          "diastolic": 80.0,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_a_prime.py:37"
+          ],
+          "usable": true
+        },
+        {
+          "key": "last",
+          "date": "2025-12-01",
+          "written_datetime": "2025-12-01",
+          "systolic": 124.0,
+          "diastolic": 92.0,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_a_prime.py:38"
+          ],
+          "usable": true
+        },
+        {
+          "key": "other-panel",
+          "date": "2025-12-15",
+          "written_datetime": "2025-12-15",
+          "systolic": 110.0,
+          "diastolic": 70.0,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_a_prime.py:39"
+          ],
+          "usable": false,
+          "exclusion": "단위·패널·성분 코드가 맞지 않거나 입원일이에요."
+        },
+        {
+          "key": "other-unit",
+          "date": "2025-12-20",
+          "written_datetime": "2025-12-20",
+          "systolic": 110.0,
+          "diastolic": 70.0,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_a_prime.py:40"
+          ],
+          "usable": false,
+          "exclusion": "단위·패널·성분 코드가 맞지 않거나 입원일이에요."
+        },
+        {
+          "key": "other-component",
+          "date": "2025-12-21",
+          "written_datetime": "2025-12-21",
+          "systolic": 110.0,
+          "diastolic": 70.0,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_a_prime.py:41"
+          ],
+          "usable": false,
+          "exclusion": "단위·패널·성분 코드가 맞지 않거나 입원일이에요."
+        },
+        {
+          "key": "ip-end",
+          "date": "2025-12-30",
+          "written_datetime": "2025-12-30",
+          "systolic": 110.0,
+          "diastolic": 70.0,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_a_prime.py:42"
+          ],
+          "usable": false,
+          "exclusion": "단위·패널·성분 코드가 맞지 않거나 입원일이에요."
+        },
+        {
+          "key": "partial",
+          "date": "2025-08-20",
+          "written_datetime": "2025-08-20",
+          "systolic": 121.0,
+          "diastolic": null,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_a_prime.py:43",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_a_prime.py:44"
+          ],
+          "usable": true
+        }
+      ],
+      "current_expected": {
+        "last_bp_date": "2025-09-30",
+        "systolic": 109.51,
+        "diastolic": 76.761,
+        "controlled": 1,
+        "classification": "조절됨",
+        "reason": "조절됨",
+        "denominator_contribution": 1
+      },
+      "new_expected": {
+        "last_bp_date": "2025-09-30",
+        "systolic": 109.51,
+        "diastolic": 76.761,
+        "controlled": 1,
+        "classification": "조절됨",
+        "reason": "조절됨",
+        "denominator_contribution": 1
+      },
+      "changed": false,
+      "changed_fields": [],
+      "current_evidence": [
+        "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_a_prime.py:257",
+        "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_a_prime.py:260",
+        "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_a_prime.py:262",
+        "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_a_prime.py:264"
+      ],
+      "manual_steps": [
+        "8/20은 수축기 121만 있는 날이에요. 이완기 0은 pop()으로 제거한 자리의 원래 인자여서 실제 입력값이 아니에요.",
+        "9/30은 두 번 측정한 값 중 109.51/76.761을 쓰고, 연말은 12/1의 124/92를 써요. 부분값이 있는 날은 더 이르므로 최종 결과가 같아요."
+      ],
+      "evidence_kind": "◆ 원문과 입력 파일에서 직접 따졌어요."
+    },
+    {
+      "id": "APRIME-good-dec31",
+      "group": "A_PRIME_fixture",
+      "person": "good",
+      "hospital": "A_PRIME",
+      "as_of_label": "dec31",
+      "inputs": [
+        {
+          "key": "fraction",
+          "date": "2025-09-30",
+          "written_datetime": "2025-09-30T23:00:00-02:00",
+          "systolic": 109.51,
+          "diastolic": 76.761,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_a_prime.py:35"
+          ],
+          "usable": true
+        },
+        {
+          "key": "same-day",
+          "date": "2025-09-30",
+          "written_datetime": "2025-09-30T09:00:00Z",
+          "systolic": 115.0,
+          "diastolic": 80.0,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_a_prime.py:37"
+          ],
+          "usable": true
+        },
+        {
+          "key": "last",
+          "date": "2025-12-01",
+          "written_datetime": "2025-12-01",
+          "systolic": 124.0,
+          "diastolic": 92.0,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_a_prime.py:38"
+          ],
+          "usable": true
+        },
+        {
+          "key": "other-panel",
+          "date": "2025-12-15",
+          "written_datetime": "2025-12-15",
+          "systolic": 110.0,
+          "diastolic": 70.0,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_a_prime.py:39"
+          ],
+          "usable": false,
+          "exclusion": "단위·패널·성분 코드가 맞지 않거나 입원일이에요."
+        },
+        {
+          "key": "other-unit",
+          "date": "2025-12-20",
+          "written_datetime": "2025-12-20",
+          "systolic": 110.0,
+          "diastolic": 70.0,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_a_prime.py:40"
+          ],
+          "usable": false,
+          "exclusion": "단위·패널·성분 코드가 맞지 않거나 입원일이에요."
+        },
+        {
+          "key": "other-component",
+          "date": "2025-12-21",
+          "written_datetime": "2025-12-21",
+          "systolic": 110.0,
+          "diastolic": 70.0,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_a_prime.py:41"
+          ],
+          "usable": false,
+          "exclusion": "단위·패널·성분 코드가 맞지 않거나 입원일이에요."
+        },
+        {
+          "key": "ip-end",
+          "date": "2025-12-30",
+          "written_datetime": "2025-12-30",
+          "systolic": 110.0,
+          "diastolic": 70.0,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_a_prime.py:42"
+          ],
+          "usable": false,
+          "exclusion": "단위·패널·성분 코드가 맞지 않거나 입원일이에요."
+        },
+        {
+          "key": "partial",
+          "date": "2025-08-20",
+          "written_datetime": "2025-08-20",
+          "systolic": 121.0,
+          "diastolic": null,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_a_prime.py:43",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_a_prime.py:44"
+          ],
+          "usable": true
+        }
+      ],
+      "current_expected": {
+        "last_bp_date": "2025-12-01",
+        "systolic": 124.0,
+        "diastolic": 92.0,
+        "controlled": 0,
+        "classification": "조절 안 됨",
+        "reason": "이완기 90 이상",
+        "denominator_contribution": 1
+      },
+      "new_expected": {
+        "last_bp_date": "2025-12-01",
+        "systolic": 124.0,
+        "diastolic": 92.0,
+        "controlled": 0,
+        "classification": "조절 안 됨",
+        "reason": "이완기 90 이상",
+        "denominator_contribution": 1
+      },
+      "changed": false,
+      "changed_fields": [],
+      "current_evidence": [
+        "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_a_prime.py:257",
+        "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_a_prime.py:260",
+        "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_a_prime.py:262",
+        "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_a_prime.py:264"
+      ],
+      "manual_steps": [
+        "8/20은 수축기 121만 있는 날이에요. 이완기 0은 pop()으로 제거한 자리의 원래 인자여서 실제 입력값이 아니에요.",
+        "9/30은 두 번 측정한 값 중 109.51/76.761을 쓰고, 연말은 12/1의 124/92를 써요. 부분값이 있는 날은 더 이르므로 최종 결과가 같아요."
+      ],
+      "evidence_kind": "◆ 원문과 입력 파일에서 직접 따졌어요."
+    },
+    {
+      "id": "M2B-split-dec31",
+      "group": "M2B",
+      "person": "split",
+      "hospital": "B",
+      "as_of_label": "dec31",
+      "inputs": [
+        {
+          "date": "2111-02-01",
+          "result_name": "Blood Pressure",
+          "source_text": "113/44",
+          "systolic": 113.0,
+          "diastolic": 44.0,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m2b_models.py:33",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m2b_models.py:28"
+          ]
+        }
+      ],
+      "current_expected": {
+        "last_bp_date": "2111-02-01",
+        "systolic": 113.0,
+        "diastolic": 44.0,
+        "controlled": 1,
+        "classification": "조절됨",
+        "reason": "조절됨",
+        "denominator_contribution": 1
+      },
+      "new_expected": {
+        "last_bp_date": "2111-02-01",
+        "systolic": 113.0,
+        "diastolic": 44.0,
+        "controlled": 1,
+        "classification": "조절됨",
+        "reason": "조절됨",
+        "denominator_contribution": 1
+      },
+      "changed": false,
+      "changed_fields": [],
+      "current_evidence": [
+        "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m2b_models.py:104"
+      ],
+      "manual_steps": [
+        "환자별 기준 연도와 현재 측정 기간 경계를 유지해요. 선택한 날에 수축기·이완기가 모두 있어요."
+      ],
+      "evidence_kind": "◆ 원문과 입력 파일에서 직접 따졌어요."
+    },
+    {
+      "id": "M2B-height_only-dec31",
+      "group": "M2B",
+      "person": "height_only",
+      "hospital": "B",
+      "as_of_label": "dec31",
+      "inputs": [
+        {
+          "date": "2111-02-01",
+          "result_name": "Height",
+          "source_text": "170",
+          "systolic": null,
+          "diastolic": null,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m2b_models.py:39",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m2b_models.py:28"
+          ]
+        },
+        {
+          "date": "2111-03-01",
+          "result_name": "Blood Pressure Sitting",
+          "source_text": "120/80",
+          "systolic": 120.0,
+          "diastolic": 80.0,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m2b_models.py:40",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m2b_models.py:28"
+          ]
+        }
+      ],
+      "current_expected": {
+        "last_bp_date": null,
+        "systolic": null,
+        "diastolic": null,
+        "controlled": 0,
+        "classification": "조절 안 됨",
+        "reason": "혈압 없음",
+        "denominator_contribution": 1
+      },
+      "new_expected": {
+        "last_bp_date": null,
+        "systolic": null,
+        "diastolic": null,
+        "controlled": 0,
+        "classification": "조절 안 됨",
+        "reason": "혈압 없음",
+        "denominator_contribution": 1
+      },
+      "changed": false,
+      "changed_fields": [],
+      "current_evidence": [
+        "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m2b_models.py:119"
+      ],
+      "manual_steps": [
+        "Height와 Blood Pressure Sitting은 현재 정의의 혈압 코드가 아니에요. 기록이 있어도 분자 0·분모 1과 NULL 날짜·값을 유지해요."
+      ],
+      "evidence_kind": "◆ 원문과 입력 파일에서 직접 따졌어요."
+    },
+    {
+      "id": "M2B-other_year-dec31",
+      "group": "M2B",
+      "person": "other_year",
+      "hospital": "B",
+      "as_of_label": "dec31",
+      "inputs": [
+        {
+          "date": "2196-02-01",
+          "result_name": "Blood Pressure",
+          "source_text": "113/44",
+          "systolic": 113.0,
+          "diastolic": 44.0,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m2b_models.py:50",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m2b_models.py:28"
+          ]
+        },
+        {
+          "date": "2197-01-01",
+          "result_name": "Blood Pressure",
+          "source_text": "190/110",
+          "systolic": 190.0,
+          "diastolic": 110.0,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m2b_models.py:51",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m2b_models.py:28"
+          ]
+        }
+      ],
+      "current_expected": {
+        "last_bp_date": "2196-02-01",
+        "systolic": 113.0,
+        "diastolic": 44.0,
+        "controlled": 1,
+        "classification": "조절됨",
+        "reason": "조절됨",
+        "denominator_contribution": 1
+      },
+      "new_expected": {
+        "last_bp_date": "2196-02-01",
+        "systolic": 113.0,
+        "diastolic": 44.0,
+        "controlled": 1,
+        "classification": "조절됨",
+        "reason": "조절됨",
+        "denominator_contribution": 1
+      },
+      "changed": false,
+      "changed_fields": [],
+      "current_evidence": [
+        "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m2b_models.py:132"
+      ],
+      "manual_steps": [
+        "기준 연도는 2196년이에요. 2197-01-01의 190/110은 기간 밖이어서 2196-02-01의 113/44를 유지해요."
+      ],
+      "evidence_kind": "◆ 원문과 입력 파일에서 직접 따졌어요."
+    },
+    {
+      "id": "M2B-icu-dec31",
+      "group": "M2B",
+      "person": "icu",
+      "hospital": "B",
+      "as_of_label": "dec31",
+      "inputs": [
+        {
+          "date": "2111-05-01",
+          "result_name": "Blood Pressure",
+          "source_text": "113/44",
+          "systolic": 113.0,
+          "diastolic": 44.0,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m2b_models.py:53",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m2b_models.py:28"
+          ]
+        },
+        {
+          "date": "2111-08-11",
+          "systolic": 200,
+          "diastolic": 120,
+          "excluded": true,
+          "exclusion": "입원 기간의 ICU 측정값이에요.",
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m2b_models.py:54",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m2b_models.py:55",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m2b_models.py:57"
+          ]
+        }
+      ],
+      "current_expected": {
+        "last_bp_date": "2111-05-01",
+        "systolic": 113.0,
+        "diastolic": 44.0,
+        "controlled": 1,
+        "classification": "조절됨",
+        "reason": "조절됨",
+        "denominator_contribution": 1
+      },
+      "new_expected": {
+        "last_bp_date": "2111-05-01",
+        "systolic": 113.0,
+        "diastolic": 44.0,
+        "controlled": 1,
+        "classification": "조절됨",
+        "reason": "조절됨",
+        "denominator_contribution": 1
+      },
+      "changed": false,
+      "changed_fields": [],
+      "current_evidence": [
+        "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m2b_models.py:146"
+      ],
+      "manual_steps": [
+        "8/11의 ICU 200/120은 입원 기간이어서 제외해요. 5/1의 113/44를 유지해요."
+      ],
+      "evidence_kind": "◆ 원문과 입력 파일에서 직접 따졌어요."
+    },
+    {
+      "id": "M2B-boundary-sep30",
+      "group": "M2B",
+      "person": "boundary",
+      "hospital": "B",
+      "as_of_label": "sep30",
+      "inputs": [
+        {
+          "date": "2111-06-06",
+          "result_name": "Blood Pressure",
+          "source_text": "139/60",
+          "systolic": 139.0,
+          "diastolic": 60.0,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m2b_models.py:60",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m2b_models.py:28"
+          ]
+        },
+        {
+          "date": "2111-11-23",
+          "result_name": "Blood Pressure",
+          "source_text": "140/60",
+          "systolic": 140.0,
+          "diastolic": 60.0,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m2b_models.py:61",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m2b_models.py:28"
+          ]
+        }
+      ],
+      "current_expected": {
+        "last_bp_date": "2111-06-06",
+        "systolic": 139.0,
+        "diastolic": 60.0,
+        "controlled": 1,
+        "classification": "조절됨",
+        "reason": "조절됨",
+        "denominator_contribution": 1
+      },
+      "new_expected": {
+        "last_bp_date": "2111-06-06",
+        "systolic": 139.0,
+        "diastolic": 60.0,
+        "controlled": 1,
+        "classification": "조절됨",
+        "reason": "조절됨",
+        "denominator_contribution": 1
+      },
+      "changed": false,
+      "changed_fields": [],
+      "current_evidence": [
+        "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m2b_models.py:150"
+      ],
+      "manual_steps": [
+        "9월 말은 6/6의 139/60이므로 조절됨이에요. 연말은 11/23의 140/60이므로 수축기 140 이상이에요."
+      ],
+      "evidence_kind": "◆ 원문과 입력 파일에서 직접 따졌어요."
+    },
+    {
+      "id": "M2B-boundary-dec31",
+      "group": "M2B",
+      "person": "boundary",
+      "hospital": "B",
+      "as_of_label": "dec31",
+      "inputs": [
+        {
+          "date": "2111-06-06",
+          "result_name": "Blood Pressure",
+          "source_text": "139/60",
+          "systolic": 139.0,
+          "diastolic": 60.0,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m2b_models.py:60",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m2b_models.py:28"
+          ]
+        },
+        {
+          "date": "2111-11-23",
+          "result_name": "Blood Pressure",
+          "source_text": "140/60",
+          "systolic": 140.0,
+          "diastolic": 60.0,
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m2b_models.py:61",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m2b_models.py:28"
+          ]
+        }
+      ],
+      "current_expected": {
+        "last_bp_date": "2111-11-23",
+        "systolic": 140.0,
+        "diastolic": 60.0,
+        "controlled": 0,
+        "classification": "조절 안 됨",
+        "reason": "수축기 140 이상",
+        "denominator_contribution": 1
+      },
+      "new_expected": {
+        "last_bp_date": "2111-11-23",
+        "systolic": 140.0,
+        "diastolic": 60.0,
+        "controlled": 0,
+        "classification": "조절 안 됨",
+        "reason": "수축기 140 이상",
+        "denominator_contribution": 1
+      },
+      "changed": false,
+      "changed_fields": [],
+      "current_evidence": [
+        "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m2b_models.py:150"
+      ],
+      "manual_steps": [
+        "9월 말은 6/6의 139/60이므로 조절됨이에요. 연말은 11/23의 140/60이므로 수축기 140 이상이에요."
+      ],
+      "evidence_kind": "◆ 원문과 입력 파일에서 직접 따졌어요."
+    },
+    {
+      "id": "OMOP-omop-a-dec31",
+      "group": "OMOP_fixture",
+      "person": "omop-a",
+      "hospital": "A",
+      "as_of_label": "dec31",
+      "inputs": [
+        {
+          "key": "omop-pair",
+          "date": "2025-09-13",
+          "systolic": 145,
+          "diastolic": 75,
+          "systolic_unit": "mm[Hg]",
+          "diastolic_unit": "mm[Hg]",
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_omop_models.py:39",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:67"
+          ]
+        },
+        {
+          "key": "omop-unit",
+          "date": "2025-10-01",
+          "systolic": 120,
+          "diastolic": 80,
+          "systolic_unit": "kPa",
+          "diastolic_unit": "kPa",
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_omop_models.py:40",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:67"
+          ]
+        }
+      ],
+      "current_expected": {
+        "last_bp_date": "2025-09-13",
+        "systolic": 145,
+        "diastolic": 75,
+        "controlled": 0,
+        "classification": "조절 안 됨",
+        "reason": "수축기 140 이상",
+        "denominator_contribution": 1
+      },
+      "new_expected": {
+        "last_bp_date": "2025-09-13",
+        "systolic": 145,
+        "diastolic": 75,
+        "controlled": 0,
+        "classification": "조절 안 됨",
+        "reason": "수축기 140 이상",
+        "denominator_contribution": 1
+      },
+      "changed": false,
+      "changed_fields": [],
+      "current_evidence": [
+        "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_omop_models.py:39",
+        "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_omop_models.py:40"
+      ],
+      "manual_steps": [
+        "10/1의 120/80은 두 성분이 모두 kPa라 제외돼요. 9/13의 145/75를 유지해요."
+      ],
+      "evidence_kind": "◆ 원문과 입력 파일에서 직접 따졌어요."
+    },
+    {
+      "id": "UI-partial-injected-B-dec31",
+      "group": "UI_injection",
+      "person": "B 연말의 기존 9행",
+      "hospital": "B",
+      "as_of_label": "dec31",
+      "inputs": [
+        {
+          "evidence": [
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_v1_report.py:10",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_v1_report.py:16",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_v1_report.py:166",
+            "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_v1_report.py:167"
+          ],
+          "operation": "최종 결과 테이블의 수축기·이완기·이유만 바꿔 넣어요.",
+          "systolic": 109.51,
+          "diastolic": null
+        }
+      ],
+      "current_expected": {
+        "scope": "화면 표시",
+        "row_count": 9,
+        "rows": [
+          {
+            "evidence": [
+              "/home/junhyun/dev/projects/fhir-indicator-line/expected/person_B.csv:11",
+              "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_v1_report.py:166"
+            ],
+            "as_of": "2196-12-31",
+            "last_bp_date": "2196-08-03",
+            "systolic": 109.51,
+            "diastolic": null,
+            "controlled": 0,
+            "reason": "마지막 날에 한쪽 값만"
+          },
+          {
+            "evidence": [
+              "/home/junhyun/dev/projects/fhir-indicator-line/expected/person_B.csv:12",
+              "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_v1_report.py:166"
+            ],
+            "as_of": "2111-12-31",
+            "last_bp_date": "2111-11-23",
+            "systolic": 109.51,
+            "diastolic": null,
+            "controlled": 0,
+            "reason": "마지막 날에 한쪽 값만"
+          },
+          {
+            "evidence": [
+              "/home/junhyun/dev/projects/fhir-indicator-line/expected/person_B.csv:13",
+              "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_v1_report.py:166"
+            ],
+            "as_of": "2136-12-31",
+            "last_bp_date": "2136-10-23",
+            "systolic": 109.51,
+            "diastolic": null,
+            "controlled": 1,
+            "reason": "마지막 날에 한쪽 값만"
+          },
+          {
+            "evidence": [
+              "/home/junhyun/dev/projects/fhir-indicator-line/expected/person_B.csv:14",
+              "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_v1_report.py:166"
+            ],
+            "as_of": "2140-12-31",
+            "last_bp_date": "2140-04-26",
+            "systolic": 109.51,
+            "diastolic": null,
+            "controlled": 0,
+            "reason": "마지막 날에 한쪽 값만"
+          },
+          {
+            "evidence": [
+              "/home/junhyun/dev/projects/fhir-indicator-line/expected/person_B.csv:15",
+              "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_v1_report.py:166"
+            ],
+            "as_of": "2185-12-31",
+            "last_bp_date": "2185-07-08",
+            "systolic": 109.51,
+            "diastolic": null,
+            "controlled": 0,
+            "reason": "마지막 날에 한쪽 값만"
+          },
+          {
+            "evidence": [
+              "/home/junhyun/dev/projects/fhir-indicator-line/expected/person_B.csv:16",
+              "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_v1_report.py:166"
+            ],
+            "as_of": "2114-12-31",
+            "last_bp_date": "2114-06-29",
+            "systolic": 109.51,
+            "diastolic": null,
+            "controlled": 0,
+            "reason": "마지막 날에 한쪽 값만"
+          },
+          {
+            "evidence": [
+              "/home/junhyun/dev/projects/fhir-indicator-line/expected/person_B.csv:17",
+              "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_v1_report.py:166"
+            ],
+            "as_of": "2154-12-31",
+            "last_bp_date": "2154-05-17",
+            "systolic": 109.51,
+            "diastolic": null,
+            "controlled": 1,
+            "reason": "마지막 날에 한쪽 값만"
+          },
+          {
+            "evidence": [
+              "/home/junhyun/dev/projects/fhir-indicator-line/expected/person_B.csv:18",
+              "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_v1_report.py:166"
+            ],
+            "as_of": "2169-12-31",
+            "last_bp_date": "2169-02-20",
+            "systolic": 109.51,
+            "diastolic": null,
+            "controlled": 1,
+            "reason": "마지막 날에 한쪽 값만"
+          },
+          {
+            "evidence": [
+              "/home/junhyun/dev/projects/fhir-indicator-line/expected/person_B.csv:19",
+              "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_v1_report.py:166"
+            ],
+            "as_of": "2117-12-31",
+            "last_bp_date": "2117-06-23",
+            "systolic": 109.51,
+            "diastolic": null,
+            "controlled": 0,
+            "reason": "마지막 날에 한쪽 값만"
+          }
+        ],
+        "classification": "계산 판정은 미확인이에요. 바꿔 넣기 전 controlled를 그대로 표시해요.",
+        "clinical_recalculation": "미확인이에요. 사람별 원천 측정 이력이 이 시험에 갖춰져 있지 않아요."
+      },
+      "new_expected": {
+        "scope": "화면 표시",
+        "row_count": 9,
+        "rows": [
+          {
+            "evidence": [
+              "/home/junhyun/dev/projects/fhir-indicator-line/expected/person_B.csv:11",
+              "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_v1_report.py:166"
+            ],
+            "as_of": "2196-12-31",
+            "last_bp_date": "2196-08-03",
+            "systolic": 109.51,
+            "diastolic": null,
+            "controlled": 0,
+            "reason": "마지막 날에 한쪽 값만"
+          },
+          {
+            "evidence": [
+              "/home/junhyun/dev/projects/fhir-indicator-line/expected/person_B.csv:12",
+              "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_v1_report.py:166"
+            ],
+            "as_of": "2111-12-31",
+            "last_bp_date": "2111-11-23",
+            "systolic": 109.51,
+            "diastolic": null,
+            "controlled": 0,
+            "reason": "마지막 날에 한쪽 값만"
+          },
+          {
+            "evidence": [
+              "/home/junhyun/dev/projects/fhir-indicator-line/expected/person_B.csv:13",
+              "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_v1_report.py:166"
+            ],
+            "as_of": "2136-12-31",
+            "last_bp_date": "2136-10-23",
+            "systolic": 109.51,
+            "diastolic": null,
+            "controlled": 1,
+            "reason": "마지막 날에 한쪽 값만"
+          },
+          {
+            "evidence": [
+              "/home/junhyun/dev/projects/fhir-indicator-line/expected/person_B.csv:14",
+              "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_v1_report.py:166"
+            ],
+            "as_of": "2140-12-31",
+            "last_bp_date": "2140-04-26",
+            "systolic": 109.51,
+            "diastolic": null,
+            "controlled": 0,
+            "reason": "마지막 날에 한쪽 값만"
+          },
+          {
+            "evidence": [
+              "/home/junhyun/dev/projects/fhir-indicator-line/expected/person_B.csv:15",
+              "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_v1_report.py:166"
+            ],
+            "as_of": "2185-12-31",
+            "last_bp_date": "2185-07-08",
+            "systolic": 109.51,
+            "diastolic": null,
+            "controlled": 0,
+            "reason": "마지막 날에 한쪽 값만"
+          },
+          {
+            "evidence": [
+              "/home/junhyun/dev/projects/fhir-indicator-line/expected/person_B.csv:16",
+              "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_v1_report.py:166"
+            ],
+            "as_of": "2114-12-31",
+            "last_bp_date": "2114-06-29",
+            "systolic": 109.51,
+            "diastolic": null,
+            "controlled": 0,
+            "reason": "마지막 날에 한쪽 값만"
+          },
+          {
+            "evidence": [
+              "/home/junhyun/dev/projects/fhir-indicator-line/expected/person_B.csv:17",
+              "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_v1_report.py:166"
+            ],
+            "as_of": "2154-12-31",
+            "last_bp_date": "2154-05-17",
+            "systolic": 109.51,
+            "diastolic": null,
+            "controlled": 1,
+            "reason": "마지막 날에 한쪽 값만"
+          },
+          {
+            "evidence": [
+              "/home/junhyun/dev/projects/fhir-indicator-line/expected/person_B.csv:18",
+              "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_v1_report.py:166"
+            ],
+            "as_of": "2169-12-31",
+            "last_bp_date": "2169-02-20",
+            "systolic": 109.51,
+            "diastolic": null,
+            "controlled": 1,
+            "reason": "마지막 날에 한쪽 값만"
+          },
+          {
+            "evidence": [
+              "/home/junhyun/dev/projects/fhir-indicator-line/expected/person_B.csv:19",
+              "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_v1_report.py:166"
+            ],
+            "as_of": "2117-12-31",
+            "last_bp_date": "2117-06-23",
+            "systolic": 109.51,
+            "diastolic": null,
+            "controlled": 0,
+            "reason": "마지막 날에 한쪽 값만"
+          }
+        ],
+        "classification": "계산 판정은 미확인이에요. 바꿔 넣기 전 controlled를 그대로 표시해요.",
+        "clinical_recalculation": "미확인이에요. 사람별 원천 측정 이력이 이 시험에 갖춰져 있지 않아요."
+      },
+      "changed": false,
+      "changed_fields": [],
+      "current_evidence": [
+        "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_v1_report.py:166",
+        "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_v1_report.py:167"
+      ],
+      "manual_steps": [
+        "원천 측정값을 바꾼 시험이 아니에요. 날짜·controlled는 기존 행에서 물려받고 수축기·이완기·이유만 바뀌어요.",
+        "새 임상 규칙으로 이 9행을 다시 계산했다고 가정하지 않아요. 이 대역 입력을 그대로 쓴다면 화면은 소수와 NULL을 계속 보존해야 해요."
+      ],
+      "evidence_kind": "◆ 원문과 입력 파일에서 직접 따졌어요."
+    }
+  ],
+  "aggregate_expected": {
+    "M1": [
+      {
+        "as_of_label": "sep30",
+        "current": {
+          "numerator": 15,
+          "denominator": 23,
+          "rate": 0.6522
+        },
+        "new": {
+          "numerator": 16,
+          "denominator": 23,
+          "rate": 0.6957
+        },
+        "numerator_delta": 1,
+        "delta_case_ids": [
+          "M1-t04-sep30"
+        ],
+        "evidence": [
+          "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:248"
+        ]
+      },
+      {
+        "as_of_label": "dec31",
+        "current": {
+          "numerator": 17,
+          "denominator": 25,
+          "rate": 0.68
+        },
+        "new": {
+          "numerator": 18,
+          "denominator": 25,
+          "rate": 0.72
+        },
+        "numerator_delta": 1,
+        "delta_case_ids": [
+          "M1-t04-dec31"
+        ],
+        "evidence": [
+          "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py:248"
+        ]
+      }
+    ],
+    "E01": {
+      "summary_by_label": [
+        {
+          "current": {
+            "hospital": "A",
+            "as_of_label": "sep30",
+            "numerator": "1",
+            "denominator": "2",
+            "rate": "0.5000"
+          },
+          "new": {
+            "hospital": "A",
+            "as_of_label": "sep30",
+            "numerator": "1",
+            "denominator": "2",
+            "rate": "0.5000"
+          },
+          "evidence": "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/expected_manual/summary_by_label.csv:2"
+        },
+        {
+          "current": {
+            "hospital": "A",
+            "as_of_label": "dec31",
+            "numerator": "1",
+            "denominator": "3",
+            "rate": "0.3333"
+          },
+          "new": {
+            "hospital": "A",
+            "as_of_label": "dec31",
+            "numerator": "1",
+            "denominator": "3",
+            "rate": "0.3333"
+          },
+          "evidence": "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/expected_manual/summary_by_label.csv:3"
+        },
+        {
+          "current": {
+            "hospital": "A_PRIME",
+            "as_of_label": "sep30",
+            "numerator": "1",
+            "denominator": "2",
+            "rate": "0.5000"
+          },
+          "new": {
+            "hospital": "A_PRIME",
+            "as_of_label": "sep30",
+            "numerator": "1",
+            "denominator": "2",
+            "rate": "0.5000"
+          },
+          "evidence": "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/expected_manual/summary_by_label.csv:4"
+        },
+        {
+          "current": {
+            "hospital": "A_PRIME",
+            "as_of_label": "dec31",
+            "numerator": "1",
+            "denominator": "3",
+            "rate": "0.3333"
+          },
+          "new": {
+            "hospital": "A_PRIME",
+            "as_of_label": "dec31",
+            "numerator": "1",
+            "denominator": "3",
+            "rate": "0.3333"
+          },
+          "evidence": "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/expected_manual/summary_by_label.csv:5"
+        },
+        {
+          "current": {
+            "hospital": "B",
+            "as_of_label": "sep30",
+            "numerator": "1",
+            "denominator": "1",
+            "rate": "1.0000"
+          },
+          "new": {
+            "hospital": "B",
+            "as_of_label": "sep30",
+            "numerator": "1",
+            "denominator": "1",
+            "rate": "1.0000"
+          },
+          "evidence": "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/expected_manual/summary_by_label.csv:6"
+        },
+        {
+          "current": {
+            "hospital": "B",
+            "as_of_label": "dec31",
+            "numerator": "0",
+            "denominator": "1",
+            "rate": "0.0000"
+          },
+          "new": {
+            "hospital": "B",
+            "as_of_label": "dec31",
+            "numerator": "0",
+            "denominator": "1",
+            "rate": "0.0000"
+          },
+          "evidence": "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/expected_manual/summary_by_label.csv:7"
+        }
+      ],
+      "summary_by_date": [
+        {
+          "current": {
+            "hospital": "A",
+            "as_of": "2025-09-30",
+            "numerator": "1",
+            "denominator": "2",
+            "rate": "0.5000"
+          },
+          "new": {
+            "hospital": "A",
+            "as_of": "2025-09-30",
+            "numerator": "1",
+            "denominator": "2",
+            "rate": "0.5000"
+          },
+          "evidence": "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/expected_manual/summary_by_date.csv:2"
+        },
+        {
+          "current": {
+            "hospital": "A_PRIME",
+            "as_of": "2025-09-30",
+            "numerator": "1",
+            "denominator": "2",
+            "rate": "0.5000"
+          },
+          "new": {
+            "hospital": "A_PRIME",
+            "as_of": "2025-09-30",
+            "numerator": "1",
+            "denominator": "2",
+            "rate": "0.5000"
+          },
+          "evidence": "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/expected_manual/summary_by_date.csv:3"
+        },
+        {
+          "current": {
+            "hospital": "A",
+            "as_of": "2025-12-31",
+            "numerator": "1",
+            "denominator": "3",
+            "rate": "0.3333"
+          },
+          "new": {
+            "hospital": "A",
+            "as_of": "2025-12-31",
+            "numerator": "1",
+            "denominator": "3",
+            "rate": "0.3333"
+          },
+          "evidence": "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/expected_manual/summary_by_date.csv:4"
+        },
+        {
+          "current": {
+            "hospital": "A_PRIME",
+            "as_of": "2025-12-31",
+            "numerator": "1",
+            "denominator": "3",
+            "rate": "0.3333"
+          },
+          "new": {
+            "hospital": "A_PRIME",
+            "as_of": "2025-12-31",
+            "numerator": "1",
+            "denominator": "3",
+            "rate": "0.3333"
+          },
+          "evidence": "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/expected_manual/summary_by_date.csv:5"
+        },
+        {
+          "current": {
+            "hospital": "B",
+            "as_of": "2031-09-30",
+            "numerator": "1",
+            "denominator": "1",
+            "rate": "1.0000"
+          },
+          "new": {
+            "hospital": "B",
+            "as_of": "2031-09-30",
+            "numerator": "1",
+            "denominator": "1",
+            "rate": "1.0000"
+          },
+          "evidence": "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/expected_manual/summary_by_date.csv:6"
+        },
+        {
+          "current": {
+            "hospital": "B",
+            "as_of": "2031-12-31",
+            "numerator": "0",
+            "denominator": "1",
+            "rate": "0.0000"
+          },
+          "new": {
+            "hospital": "B",
+            "as_of": "2031-12-31",
+            "numerator": "0",
+            "denominator": "1",
+            "rate": "0.0000"
+          },
+          "evidence": "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/expected_manual/summary_by_date.csv:7"
+        },
+        {
+          "current": {
+            "hospital": "B",
+            "as_of": "2032-09-30",
+            "numerator": "0",
+            "denominator": "0",
+            "rate": ""
+          },
+          "new": {
+            "hospital": "B",
+            "as_of": "2032-09-30",
+            "numerator": "0",
+            "denominator": "0",
+            "rate": ""
+          },
+          "evidence": "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/expected_manual/summary_by_date.csv:8"
+        },
+        {
+          "current": {
+            "hospital": "B",
+            "as_of": "2032-12-31",
+            "numerator": "0",
+            "denominator": "0",
+            "rate": ""
+          },
+          "new": {
+            "hospital": "B",
+            "as_of": "2032-12-31",
+            "numerator": "0",
+            "denominator": "0",
+            "rate": ""
+          },
+          "evidence": "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/expected_manual/summary_by_date.csv:9"
+        }
+      ],
+      "explanation": "p1의 두 출처 모두 분자 0을 유지해요. 다른 사람의 결과가 같아서 라벨 요약 여섯 행과 날짜 요약 여덟 행도 같아요."
+    },
+    "database": [
+      {
+        "hospital": "A",
+        "as_of_label": "dec31",
+        "numerator": 4,
+        "denominator": 6,
+        "rate": 0.6667
+      },
+      {
+        "hospital": "A",
+        "as_of_label": "sep30",
+        "numerator": 3,
+        "denominator": 5,
+        "rate": 0.6
+      },
+      {
+        "hospital": "A_PRIME",
+        "as_of_label": "dec31",
+        "numerator": 4,
+        "denominator": 6,
+        "rate": 0.6667
+      },
+      {
+        "hospital": "A_PRIME",
+        "as_of_label": "sep30",
+        "numerator": 3,
+        "denominator": 5,
+        "rate": 0.6
+      },
+      {
+        "hospital": "B",
+        "as_of_label": "dec31",
+        "numerator": 3,
+        "denominator": 9,
+        "rate": 0.3333
+      },
+      {
+        "hospital": "B",
+        "as_of_label": "sep30",
+        "numerator": 4,
+        "denominator": 9,
+        "rate": 0.4444
+      }
+    ]
+  }
+}

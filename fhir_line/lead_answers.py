@@ -1,4 +1,4 @@
-"""D1-D7 / ADR0010,0013: verify byte-identical lead-owned reference copies.
+"""D1-D7 / ADR0010,0013,0015: verify byte-identical lead-owned reference copies.
 
 This module uses only the standard library so a fresh clone can lock its copies
 before creating the Python environment. It never writes the private originals.
@@ -9,7 +9,7 @@ import os
 import re
 
 ROOT = Path(__file__).resolve().parents[1]
-BUNDLES = ('cell_diff', 'e01', 'v1')
+BUNDLES = ('cell_diff', 'e01', 'v1', 'wp5-bp-days-both-values')
 
 
 def _files(folder):
@@ -59,8 +59,9 @@ def verify(root=ROOT, source_root=None, *, prepare=False):
             origin_files = _files(original)
             copied = {name.removeprefix(bundle + '/'): files[name]
                       for name in hashes if name.startswith(bundle + '/')}
-            if set(origin_files) != set(copied) or any(
-                    origin_files[name].read_bytes() != copied[name].read_bytes() for name in copied):
+            origin_bytes = {name: path.read_bytes() for name, path in origin_files.items()}
+            if set(origin_bytes) != set(copied) or any(
+                    origin_bytes[name] != copied[name].read_bytes() for name in copied):
                 raise ValueError('LEAD_ORIGIN_BYTES_MISMATCH')
     paths = [folder, *folder.rglob('*')]
     if prepare:

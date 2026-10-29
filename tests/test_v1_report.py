@@ -5,6 +5,7 @@ from unittest.mock import patch
 import duckdb
 from fhir_line import definition,report_ui as ui
 from fhir_line.runtime import ROOT
+from wp5_expected import cases as wp5_cases
 
 
 def fixture(con,screen):
@@ -51,13 +52,25 @@ class V1Contract(unittest.TestCase):
     def payload(self):
         state,folder=self.render();self.assertEqual(state['status'],'통과');return state,json.loads((folder/'data.json').read_text()),folder
 
-    def test_D1_0010_manifest_codes_hash_and_every_registered_file(self):
-        manifest,digest=definition.context();self.assertEqual(manifest,self.code['candidate_manifest']);self.assertEqual(digest,self.code['hash_contract']['definition_manifest_sha256'])
+    def test_D1_D5_0010_0015_manifest_codes_hash_and_every_registered_file(self):
+        manifest,digest=definition.context()
+        historic=json.loads((ROOT/'config/indicator_definitions/v1/manifest.json').read_text())
+        self.assertEqual(historic,self.code['candidate_manifest'])
+        self.assertEqual(definition.digest(definition.canonical(historic)),self.code['hash_contract']['definition_manifest_sha256'])
+        self.assertEqual(digest,definition.REGISTERED['v2']);self.assertEqual(manifest['source_codes'],historic['source_codes'])
+        old_files={r['path']:r['sha256'] for r in historic['files']}
+        new_files={r['path']:r['sha256'] for r in manifest['files']}
+        self.assertEqual(set(new_files)-set(old_files),{'docs/decisions/0015-bp-days-require-both-components.md'})
+        for name,hash_value in old_files.items():
+            if name!='models/marts/fct_bp_person.sql':self.assertEqual(new_files[name],hash_value)
+        for entry in manifest['files']:
+            self.assertEqual(entry['sha256'],definition.digest((ROOT/entry['path']).read_bytes()))
+        self.assertEqual(manifest['definition_version'],'v2');self.assertEqual(manifest['code_set_version'],'v1')
         identity=self.code['identity_rules']
         for field in ('definition_id','code_set_id'):self.assertRegex(manifest[field],identity['id_pattern'])
         for field in ('definition_version','code_set_version'):self.assertRegex(manifest[field],identity['version_pattern'])
         self.assertEqual(manifest['code_set_id']+'/'+manifest['code_set_version'],identity['list_version_id'])
-        self.assertEqual(manifest['definition_id']+'/'+manifest['definition_version'],identity['definition_version_id'])
+        self.assertEqual(manifest['definition_id']+'/v1',identity['definition_version_id'])
         self.assertFalse(identity['official_cms_version_claim']);self.assertTrue(identity['changes_require_review_and_new_registration'])
         membership=self.code['membership'];self.assertEqual(len(manifest['source_codes']),membership['source_code_count'])
         self.assertTrue(all(r['target_concept_id']==membership['standard_hypertension_concept_id'] and r['target_vocabulary_id']==membership['standard_vocabulary'] for r in manifest['source_codes']))
@@ -66,24 +79,45 @@ class V1Contract(unittest.TestCase):
         self.assertEqual(definition.canonical(manifest)[-1:],b'\n');self.assertNotIn('run_id',manifest)
         self.assertEqual(definition.generated_manifest(),manifest)
 
-    def test_D1_0010_reject_five_version_and_system_counterexamples(self):
+    def test_D1_D5_0010_0015_reject_old_unregistered_versions_and_system_counterexamples(self):
         manifest,h=definition.context();r=self.code['rejection_examples']
         self.assertEqual(definition.member(manifest,'A','ICD-10',manifest['source_codes'][0]['source_code']),r['same_code_in_other_system_is_member'])
-        with self.assertRaises(definition.DefinitionError):definition.context('v2')
-        with patch.object(definition,'generated_manifest',return_value=manifest|{'definition_version':'v2'}):
+        for version in ('v1','v3'):
+            with self.assertRaises(definition.DefinitionError):definition.context(version)
+        with patch.object(definition,'generated_manifest',return_value=manifest|{'definition_version':'v3'}):
             with self.assertRaises(definition.DefinitionError):definition.context()
-        for change in ({'definition_version':'v2'},{'code_set_version':'v2'}):
+        for change in ({'definition_version':'v1'},{'definition_version':'v3'},{'code_set_version':'v2'}):
             bad=manifest|change
             with self.assertRaises(definition.DefinitionError):definition.metadata(bad,h,'run')
         with self.assertRaises(definition.DefinitionError):definition.metadata(manifest,h,'')
         self.assertTrue(all(x is False for x in r.values()))
 
-    def test_D1_D6_S01_all_four_rows_and_bound_metadata(self):
+    def test_0015_D5_frozen_guard_uses_configured_base_and_skips_empty(self):
+        from types import SimpleNamespace
+        paths='FROZEN_PATHS="models/intermediate models/marts models/reports"\n'
+        with patch.object(Path,'read_text',return_value='FROZEN_BASE=\n'+paths):
+            with patch.object(ui.subprocess,'run') as run,patch.object(ui.subprocess,'check_output') as output:
+                ui.frozen_layers()
+                run.assert_not_called();output.assert_not_called()
+        with patch.object(Path,'read_text',return_value='FROZEN_BASE=abcdef0\n'+paths):
+            with patch.object(ui.subprocess,'run',return_value=SimpleNamespace(returncode=0)) as run:
+                ui.frozen_layers()
+                self.assertEqual(run.call_args.args[0],['git','diff','--quiet','abcdef0','--',
+                    'models/intermediate','models/marts','models/reports'])
+            with patch.object(ui.subprocess,'run',return_value=SimpleNamespace(returncode=1)):
+                with self.assertRaises(ui.ReportError):ui.frozen_layers()
+        with patch.object(Path,'read_text',return_value='FROZEN_BASE=invalid\n'+paths):
+            with self.assertRaises(ui.ReportError):ui.frozen_layers()
+
+    def test_0015_D1_D6_S01_all_four_rows_and_bound_metadata(self):
         state,payload,_=self.payload()
         for actual,want in zip(payload['summaries'],self.screen['S01']['rows']):
+            want=want|{'definition_version':'v2','definition_manifest_sha256':definition.REGISTERED['v2']}
             self.assertEqual({k:actual[k] for k in want},want);self.assertEqual(actual['run_id'],state['run_id'])
         self.assertEqual(len(payload['summaries']),self.screen['S01']['row_count'])
-        meta=self.code['public_summary_metadata'];self.assertEqual({k:payload['summaries'][0][k] for k in meta['fixed']},meta['fixed'])
+        meta=self.code['public_summary_metadata'];current=meta['fixed']|{'definition_version':'v2',
+            'definition_manifest_sha256':definition.REGISTERED['v2']}
+        self.assertEqual({k:payload['summaries'][0][k] for k in current},current)
         self.assertEqual(set(meta['added_fields']),set(meta['fixed'])|{'run_id'})
         for want in self.code['unchanged_summaries']:
             actual=next(r for r in payload['summaries'] if (r['hospital'],r['as_of_label'])==(want['hospital'],want['as_of_label']));self.assertEqual({k:actual[k] for k in want},want)
@@ -143,11 +177,16 @@ class V1Contract(unittest.TestCase):
         con=duckdb.connect(str(self.db));con.execute("UPDATE bp_summary SET denominator=0,numerator=0,rate=NULL WHERE hospital='B' AND as_of_label='dec31'");con.close()
         _,folder=self.render();p=json.loads((folder/'data.json').read_text());r=next(r for r in p['summaries'] if r['hospital']=='B' and r['as_of_label']=='dec31');zero=self.screen['S01']['zero_denominator'];self.assertEqual((r['numerator'],r['denominator'],r['rate'],r['percent_display']),(zero['numerator'],zero['denominator'],zero['rate'],zero['display']))
 
-    def test_0011_component_ties_partial_values_and_missing_links_are_not_fabricated(self):
+    def test_0011_0015_D5_component_ties_partial_display_and_missing_links_are_not_fabricated(self):
         con=duckdb.connect(str(self.db));con.execute('INSERT INTO measurement SELECT 99,person_id,measurement_source_value,measurement_date,measurement_concept_id,value_as_number,unit_concept_id,unit_source_value FROM measurement WHERE measurement_id=1');con.execute('DELETE FROM omop_source_link');con.close()
         _,p,_=self.payload();trace=next(x for x in p['traces'] if x['patient']==self.screen['S03']['representative']);self.assertEqual(len(trace['standard_rows']),3);self.assertTrue(all(x['source_link_status']=='미확인' for x in trace['standard_rows']))
         con=duckdb.connect(str(self.db));con.execute("UPDATE fct_bp_person SET systolic=109.51,diastolic=NULL,reason='마지막 날에 한쪽 값만' WHERE hospital='B' AND as_of_label='dec31'");con.close()
-        _,folder=self.render();p=json.loads((folder/'data.json').read_text());self.assertTrue(all(x['systolic']==109.51 and x['diastolic'] is None for x in p['people'] if x['hospital']=='B' and x['as_of_label']=='dec31'))
+        _,folder=self.render();p=json.loads((folder/'data.json').read_text())
+        selected=wp5_cases('UI_injection');self.assertEqual(len(selected),1);want=selected[0]['new_expected']
+        actual=[{k:r[k] for k in ('as_of','last_bp_date','systolic','diastolic','controlled','reason')}
+            for r in p['people'] if r['hospital']=='B' and r['as_of_label']=='dec31']
+        expected=[{k:r[k] for k in actual[0]} for r in want['rows']]
+        self.assertEqual(len(actual),want['row_count']);self.assertCountEqual(actual,expected)
 
     def test_0013_all_surfaces_have_no_ids_and_public_has_no_patient_objects(self):
         _,p,folder=self.payload();privacy=self.screen['privacy'];ui.assert_private_free(p)
@@ -188,7 +227,7 @@ class V1Contract(unittest.TestCase):
 
     def test_D1_0010_mixed_versions_and_unbound_run_or_snapshot_fail(self):
         _,p,folder=self.payload()
-        for field,bad in [('definition_version','v2'),('code_set_version','v2'),('run_id','unbound')]:
+        for field,bad in [('definition_version','v1'),('code_set_version','v2'),('run_id','unbound')]:
             broken=copy.deepcopy(p);broken['summaries'][0][field]=bad
             with self.assertRaises(ui.ReportError):ui.validate_bindings(broken)
         latest=folder.parent/'latest-success.json';saved=json.loads(latest.read_text());saved['database_sha256']='0'*64
@@ -219,8 +258,13 @@ class V1Contract(unittest.TestCase):
         base=self.base/'locked';base.mkdir();lock=(base/'run.lock').open('a');self.addCleanup(lock.close);fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
         with self.assertRaises(BlockingIOError):ui.render(self.db,output_root=base)
         self.assertFalse((base/'latest.json').exists())
-        context=definition.context()
-        with patch.object(definition,'context',side_effect=[context,definition.DefinitionError('DEFINITION_HASH_MISMATCH')]):state,folder=self.render()
+        context=definition.context();snapshot=ui.snapshot
+        def change_after_snapshot(*args,**kwargs):
+            result=snapshot(*args,**kwargs)
+            current_context.side_effect=definition.DefinitionError('DEFINITION_HASH_MISMATCH')
+            return result
+        with patch.object(definition,'context',return_value=context) as current_context, \
+             patch.object(ui,'snapshot',side_effect=change_after_snapshot):state,folder=self.render()
         self.assertEqual(state['status'],'실패');self.assertEqual(state['definition_status'],self.code['public_summary_metadata']['unregistered_or_hash_mismatch_display']);self.assertNotIn('definition_version',state);self.assertFalse((folder/'S01.html').exists())
 
     def test_L2_external_five_cases_are_required_and_cannot_be_skipped(self):

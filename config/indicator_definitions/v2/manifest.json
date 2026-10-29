@@ -1,0 +1,102 @@
+{
+  "code_set_id": "essential-hypertension-learning",
+  "code_set_version": "v1",
+  "definition_id": "bp-control-learning",
+  "definition_version": "v2",
+  "files": [
+    {
+      "path": "docs/decisions/0001-indicator-definition-d1-d7.md",
+      "sha256": "7ef4b7326388d5aa61400b24115606fc096de399880c88efb674607be37fd254"
+    },
+    {
+      "path": "docs/decisions/0003-hospital-b-three-definitions.md",
+      "sha256": "65143434b1d5caca3cac95756694dc3993ff49bdcafb93c066c3265689adfa26"
+    },
+    {
+      "path": "docs/decisions/0010-definition-rules-in-calculation-layer.md",
+      "sha256": "30643fb14f90f3af23eadf5fde5a70ef54fb61191d71d18d2975a1b5d750006b"
+    },
+    {
+      "path": "docs/decisions/0015-bp-days-require-both-components.md",
+      "sha256": "ba0b60894dd75d64139e35faac4e42fc8eedaa266e6213407ee56c7439092ece"
+    },
+    {
+      "path": "models/intermediate/int_bp_daily.sql",
+      "sha256": "3eef286bcc483d08f91cb82b38773bcbdfb27fb820e7c0f501540b719c9f1914"
+    },
+    {
+      "path": "models/intermediate/int_person_period.sql",
+      "sha256": "875863b0b51a0877e96dcc4d32da60f2c14fe87f27e5b4ce6b4e82b3e0b4e442"
+    },
+    {
+      "path": "models/marts/dim_as_of.sql",
+      "sha256": "828500943255897a3e99ed497a2956e0501633be09e936cafaa30bb0deec1caf"
+    },
+    {
+      "path": "models/marts/fct_bp_person.sql",
+      "sha256": "f6db32a131db4b6ce00fbf365b4c96309cd2c415316d6793bd780ae98128df3f"
+    },
+    {
+      "path": "models/reports/bp_summary.sql",
+      "sha256": "3647a568da7a054c0190aa443a26e57059cf6e3079cd62f7a8de95c0ecfcc15e"
+    },
+    {
+      "path": "seeds/as_of_labels.csv",
+      "sha256": "aa3f3724e0cdfe17a8e940fd1744969523f6667296102595277a4a20c6bc142f"
+    },
+    {
+      "path": "seeds/concept.csv",
+      "sha256": "d50c8267629f0c61c27a022499dd9363188a7a6258032cd0f45477820d136ebd"
+    },
+    {
+      "path": "seeds/indicator_concepts.csv",
+      "sha256": "fd645aa40bdeefe699b19cf2c02608941a281a8bb4e66ca6f71868a06fab70b0"
+    },
+    {
+      "path": "seeds/source_to_concept_map.csv",
+      "sha256": "c5982c725acdb320ab5f0c4f27f786b5ed6b290a0e927e445347e399da266de6"
+    }
+  ],
+  "source_codes": [
+    {
+      "hospital": "A",
+      "source_code": "59621000",
+      "source_system": "SNOMED",
+      "source_vocabulary_id": "hospital_a_dx",
+      "target_concept_id": 320128,
+      "target_vocabulary_id": "SNOMED"
+    },
+    {
+      "hospital": "B",
+      "source_code": "I10",
+      "source_system": "ICD-10",
+      "source_vocabulary_id": "hospital_b_icd10",
+      "target_concept_id": 320128,
+      "target_vocabulary_id": "SNOMED"
+    },
+    {
+      "hospital": "B",
+      "source_code": "4010",
+      "source_system": "ICD-9",
+      "source_vocabulary_id": "hospital_b_icd9",
+      "target_concept_id": 320128,
+      "target_vocabulary_id": "SNOMED"
+    },
+    {
+      "hospital": "B",
+      "source_code": "4011",
+      "source_system": "ICD-9",
+      "source_vocabulary_id": "hospital_b_icd9",
+      "target_concept_id": 320128,
+      "target_vocabulary_id": "SNOMED"
+    },
+    {
+      "hospital": "B",
+      "source_code": "4019",
+      "source_system": "ICD-9",
+      "source_vocabulary_id": "hospital_b_icd9",
+      "target_concept_id": 320128,
+      "target_vocabulary_id": "SNOMED"
+    }
+  ]
+}

@@ -26,10 +26,10 @@ echo "== A′ 고정 기대 결과(결정 0013)"
 .venv/bin/python -m fhir_line aprime-verify-lock
 
 echo "== 바뀌면 안 되는 층(표준 과정 v1.11 · 기준 커밋은 마일스톤마다 요청서에서 바꿔요)"
-FROZEN_BASE=3e99c30                                   # M3: 계산이 OMOP 위로 옮겨진 뒤(요청 07 · 결정 0004) — 새 병원 · 새 출처는 L4 ~ L6과 지표 개념을 0줄로
+FROZEN_BASE=1ae75dded622a3ac064e7dccb0300bd09ff26438 # WP-5 · 결정 0015 구현 뒤 L4 ~ L6을 다시 고정해요
 FROZEN_PATHS="models/intermediate models/marts models/reports seeds/indicator_concepts.csv seeds/as_of_labels.csv"
 if [ -z "$FROZEN_BASE" ]; then
-  echo "건너뜀: 결정 0004 · 요청 07로 L4 ~ L6을 바꾸는 반복이에요(숫자는 ④가 셀마다 봐요)"
+  echo "건너뜀: WP-5 · 결정 0015로 측정일 규칙을 바꾸는 반복이에요(고정 기대 결과와 셀을 비교해요)"
 elif ! git diff --quiet "$FROZEN_BASE" -- $FROZEN_PATHS; then
   echo "L4 ~ L6이 $FROZEN_BASE 뒤로 바뀌었어요(경계가 틀렸거나, 바꾸기로 한 마일스톤이면 기준 커밋을 고쳐요)"
   git diff --stat "$FROZEN_BASE" -- $FROZEN_PATHS; exit 1

@@ -1,4 +1,4 @@
--- D1,D2,D5-D7 / ADR0001,0003,0010: maximum day + that exact row, not component-wise last values.
+-- D1,D2,D5-D7 / ADR0001,0003,0010,0015: maximum day + that exact row, not component-wise last values.
 with daily_with_label as (
     select d.*, p.as_of_label from q1_reference d
     join periods p using (hospital, person_id, as_of)
@@ -20,7 +20,7 @@ with daily_with_label as (
       )
 ), max_days as (
     select hospital, person_id, as_of, max(bp_date) as last_bp_date
-    from daily_with_label group by hospital, person_id, as_of
+    from daily_with_label where systolic_min is not null and diastolic_min is not null group by hospital, person_id, as_of
 ), last_values as (
     select e.hospital, e.person_id, e.as_of_label, e.as_of, m.last_bp_date,
            d.systolic_min as systolic, d.diastolic_min as diastolic
@@ -31,7 +31,6 @@ with daily_with_label as (
 select *, cast(last_bp_date is not null and systolic is not null and diastolic is not null
                and systolic < 140 and diastolic < 90 as integer) as controlled,
        case when last_bp_date is null then '혈압 없음'
-            when systolic is null or diastolic is null then '마지막 날에 한쪽 값만'
             when systolic >= 140 then '수축기 140 이상'
             when diastolic >= 90 then '이완기 90 이상'
             else '조절됨' end as reason

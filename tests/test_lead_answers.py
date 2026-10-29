@@ -42,7 +42,7 @@ class LeadAnswerCopies(unittest.TestCase):
     def test_D1_0010_same_origin_bytes_and_readonly_copies(self):
         result = lead_answers.verify(self.root, self.source, prepare=True)
         self.assertTrue(result['source_compared'])
-        self.assertEqual(result['files'], 9)
+        self.assertEqual(result['files'], 3 * len(lead_answers.BUNDLES))
         self.assertTrue(all(not p.stat().st_mode & 0o222
                             for p in [self.target, *self.target.rglob('*')]))
 
@@ -72,6 +72,14 @@ class LeadAnswerCopies(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'ORIGIN_BYTES_MISMATCH'):
             lead_answers.verify(self.root, self.source, prepare=True)
         self.assertEqual((self.target / 'v1/README.md').read_bytes(), original)
+
+    def test_D1_0015_rehashed_copy_still_must_match_independent_origin(self):
+        file=self.target/'e01/fixture.json';file.write_text('{"handmade": false}\n')
+        listing=self.target/'SHA256SUMS'
+        listing.write_text(''.join(hashlib.sha256(p.read_bytes()).hexdigest()+'  '+p.relative_to(self.target).as_posix()+'\n'
+            for p in sorted(self.target.rglob('*')) if p.is_file() and p!=listing))
+        with self.assertRaisesRegex(ValueError,'ORIGIN_BYTES_MISMATCH'):
+            lead_answers.verify(self.root,self.source,prepare=True)
 
     def test_D1_0010_extra_copy_is_rejected(self):
         (self.target / 'v1/extra.json').write_text('{}\n')

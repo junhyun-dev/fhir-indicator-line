@@ -20,6 +20,10 @@ answer_key_lead/v1/README.md
 answer_key_lead/v1/code_set_manifest_expected.json
 answer_key_lead/v1/notification.md
 answer_key_lead/v1/screens_expected.json
+answer_key_lead/wp5-bp-days-both-values/README.md
+answer_key_lead/wp5-bp-days-both-values/expected.json
+answer_key_lead/wp5-bp-days-both-values/notification.md
+answer_key_lead/wp5-bp-days-both-values/verification.json
 docs/data-dictionary.md
 docs/decisions/0002-new-hospital-own-staging-and-map-rows.md
 docs/decisions/0003-hospital-b-three-definitions.md

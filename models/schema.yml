@@ -224,13 +224,12 @@ models:
     - not_null:
         name: t_D6_reason_not_null
     - accepted_values:
-        name: t_D6_reason_accepted_values
+        name: t_0015_D5_D6_reason_accepted_values
         arguments:
           values:
           - 조절됨
           - 수축기 140 이상
           - 이완기 90 이상
-          - 마지막 날에 한쪽 값만
           - 혈압 없음
 - name: dim_as_of
   description: D1/D6 all hospital/label pairs reach reports, even without eligible people.

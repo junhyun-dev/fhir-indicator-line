@@ -68,11 +68,11 @@ class SqlMeaning(unittest.TestCase):
             with self.subTest(field=field):
                 self.reject(f"SELECT * REPLACE (CASE WHEN person_id='p1' AND hospital IN ('A','A_PRIME') AND bp_date='2025-09-30' THEN {bad} ELSE {field} END AS {field}) FROM q1_reference", 'daily')
 
-    def test_S02_D5_D7_last_complete_pair_or_mixed_components_is_wrong(self):
+    def test_S02_0015_D5_D6_partial_last_day_or_mixed_dates_is_wrong(self):
         self.good()
-        bad = self.replace_one('q2_last_reference','from daily_with_label\n','from daily_with_label where systolic_min is not null and diastolic_min is not null\n')
+        bad = self.replace_one('q2_last_reference','from daily_with_label where systolic_min is not null and diastolic_min is not null\n','from daily_with_label\n')
         self.reject(bad, 'person')
-        self.reject("SELECT * REPLACE (CASE WHEN hospital='A' AND person_id='p1' AND as_of_label='dec31' THEN 92 ELSE diastolic END AS diastolic) FROM q2_reference", 'person')
+        self.reject("SELECT * REPLACE (CASE WHEN hospital='A' AND person_id='p1' AND as_of_label='dec31' THEN 121 ELSE systolic END AS systolic) FROM q2_reference", 'person')
 
     def test_S03_D3_D5_null_only_day_rejects_Q1_before_Q2(self):
         bad = self.replace_one('q1_daily_reference','and bp.value_as_number is not null','')
