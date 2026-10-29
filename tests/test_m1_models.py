@@ -1,4 +1,4 @@
-"""D1-D7 / decisions 0004,0006,0010: unchanged clinical expectations over OMOP.
+"""D1-D7 / decisions 0004,0006,0010,0015: reviewed clinical expectations over OMOP.
 
 No original/expected inputs are used here. Expected outcomes are specified per case.
 """
@@ -14,6 +14,7 @@ import uuid
 from fhir_line.runtime import ROOT, connect, environment
 from fhir_line.store import append_rows, initialize
 from mimic_fixture import write_sources
+from wp5_expected import cases as wp5_cases, expected as wp5_expected, person_values
 
 SEPTEMBER = '2025-09-30'
 DECEMBER = '2025-12-31'
@@ -237,13 +238,14 @@ class IndicatorModels(unittest.TestCase):
             FROM int_bp_daily WHERE hospital='A' AND person_id=? AND as_of_label=? ORDER BY bp_date''',
             [identifier('Patient',label),'dec31'])]
 
-    def test_t01_D2_D5_D6_normal_connection(self):
+    def test_t01_0015_D2_D5_D6_normal_connection(self):
         self.assertEqual(self.person('t01'),('2025-02-01',104,81,1,'조절됨'))
         self.assertEqual(self.query("SELECT count(*),sum(controlled) FROM fct_bp_person WHERE hospital='A' AND person_id=? AND as_of_label=?",
                                    [identifier('Patient','t01'),'dec31']),[(1,1)])
         summaries = {label:(d,n,r) for label,d,n,r in self.query(
             "SELECT as_of_label,denominator,numerator,rate FROM bp_summary WHERE hospital='A'")}
-        self.assertEqual(summaries,{'sep30':(23,15,0.6522),'dec31':(25,17,0.68)})
+        self.assertEqual(summaries,{r['as_of_label']:tuple(r['new'][k] for k in
+            ('denominator','numerator','rate')) for r in wp5_expected()['aggregate_expected']['M1']})
 
     def test_t02_D6_systolic_140_not_controlled(self):
         self.assertEqual(self.person('t02'),('2025-02-01',140,81,0,'수축기 140 이상'))
@@ -251,9 +253,21 @@ class IndicatorModels(unittest.TestCase):
     def test_t03_D6_diastolic_90_not_controlled(self):
         self.assertEqual(self.person('t03'),('2025-02-01',104,90,0,'이완기 90 이상'))
 
-    def test_t04_D5_D6_last_partial_overrides_older_pair_and_threshold(self):
-        self.assertEqual(self.person('t04'),('2025-08-01',150,None,0,'마지막 날에 한쪽 값만'))
-        self.assertEqual(self.person('t04-dia'),('2025-08-01',None,75,0,'마지막 날에 한쪽 값만'))
+    def test_t04_0015_D5_D6_latest_complete_day_or_no_bp(self):
+        for case in wp5_cases('M1'):
+            if case['person'] in ('t04','t04-dia'):
+                with self.subTest(case=case['id']):
+                    self.assertEqual(self.person(case['person'],
+                        SEPTEMBER if case['as_of_label']=='sep30' else DECEMBER),person_values(case))
+        self.assertEqual(self.daily('t04'),[('2025-02-01',104,81),('2025-08-01',150,None)])
+        self.assertEqual(self.daily('t04-dia'),[('2025-08-01',None,75)])
+
+    def test_0015_D1_D7_all_21_reviewed_M1_cases(self):
+        cases=wp5_cases('M1');self.assertEqual(len(cases),21)
+        for case in cases:
+            with self.subTest(case=case['id']):
+                self.assertEqual(self.person(case['person'],
+                    SEPTEMBER if case['as_of_label']=='sep30' else DECEMBER),person_values(case))
 
     def test_t05_D4_daily_minima_are_independent(self):
         self.assertEqual(self.daily('t05'),[('2025-02-01',150,70)])
@@ -267,8 +281,11 @@ class IndicatorModels(unittest.TestCase):
         self.assertEqual(self.daily('t07-emer'),[('2025-01-19',104,81),('2025-01-21',120,80)])
         self.assertEqual(self.daily('t07-year'),[('2025-01-03',118,78)])
 
-    def test_t08_D3_unit_code_and_no_usable_component_day(self):
-        self.assertEqual(self.person('t08-unit'),('2025-08-01',None,81,0,'마지막 날에 한쪽 값만'))
+    def test_t08_0015_D3_D5_unit_code_and_no_complete_day(self):
+        for case in wp5_cases('M1'):
+            if case['person']=='t08-unit':
+                self.assertEqual(self.person('t08-unit',
+                    SEPTEMBER if case['as_of_label']=='sep30' else DECEMBER),person_values(case))
         for label in ('t08-both','t08-missing'):
             with self.subTest(label=label):
                 self.assertEqual(self.daily(label),[('2025-02-01',104,81)])

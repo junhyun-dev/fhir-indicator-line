@@ -19,3 +19,4 @@
 | [0011](0011-observation-period-id-and-source-link.md) | 0007 보충 — `observation_period_id` = `person_id` · 사건 행 원래 id는 `omop_source_link` | 받아들임(Claude · 사전 검토 R2 · R3) |
 | [0012](0012-sources-by-script-and-hashes.md) | 데이터는 받는 스크립트 + 해시 목록으로 · 기대 결과 계산 스크립트는 저장소에 | 받아들임(Claude · 설계 02) |
 | [0013](0013-a-prime-derived-source-and-precision.md) | A′는 파생 출처이며 소수 원값 전체를 보존 | 최종 검수 수용·완료 · 원래 임상 의미 보존(52726ab) |
+| [0015](0015-bp-days-require-both-components.md) | 두 성분이 모두 있는 날 중 마지막 날로 혈압을 판정해요 | 사용자 결정 수용 · WP-5 구현 뒤 리드 검수 예정이에요 |

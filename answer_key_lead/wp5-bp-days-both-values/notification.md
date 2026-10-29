@@ -1,0 +1,1 @@
+WP-5 기대 결과를 작성했어요(리드 검수 전): 43사례 중 8사례 변경·35사례 유지, 실제 A·A′·B 요약은 모두 같아요. [결과](/home/junhyun/personal/builds/medical-data-hands-on/answer-key/wp5-bp-days-both-values/README.md) · 제품·기존 기대 결과·결정 기록 쓰기 0, push 0이에요.

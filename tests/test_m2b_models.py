@@ -7,6 +7,7 @@ import unittest
 from fhir_line.runtime import ROOT, connect, environment
 from fhir_line.store import initialize
 from mimic_fixture import HEADERS, write_sources
+from wp5_expected import cases as wp5_cases, person_values
 
 
 def cases():
@@ -99,6 +100,12 @@ class HospitalBModels(unittest.TestCase):
             WHERE hospital='B' AND person_id=? AND as_of_label=?""",[person,label])
         self.assertEqual(len(rows),1,person)
         return rows[0]
+
+    def test_0015_D1_D6_six_reviewed_B_cases(self):
+        cases=wp5_cases('M2B');self.assertEqual(len(cases),6)
+        for case in cases:
+            with self.subTest(case=case['id']):
+                self.assertEqual(self.person(case['person'],case['as_of_label'])[1:],person_values(case))
 
     def test_M2B_D3_D5_D6_split_pair_through_omop(self):
         self.assertEqual(self.person('split'),('2111-12-31','2111-02-01',113,44,1,'조절됨'))

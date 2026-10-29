@@ -1,4 +1,4 @@
--- D1,D2,D5,D6,D7 / decisions 0001,0004,0006,0010: eligibility once, using OMOP concept sets.
+-- D1,D2,D5,D6,D7 / decisions 0001,0004,0006,0010,0015: eligibility once, using OMOP concept sets.
 with eligible as (
     select periods.hospital, periods.as_of_label, periods.person_id, periods.as_of
     from {{ ref('int_person_period') }} periods
@@ -26,6 +26,7 @@ with eligible as (
     select hospital, as_of_label, person_id, bp_date, systolic_min, diastolic_min,
            row_number() over (partition by hospital, as_of_label, person_id order by bp_date desc) as day_rank
     from {{ ref('int_bp_daily') }}
+    where systolic_min is not null and diastolic_min is not null
 ), last_values as (
     select eligible.hospital, eligible.as_of_label, eligible.person_id, eligible.as_of, daily.bp_date as last_bp_date,
            daily.systolic_min as systolic, daily.diastolic_min as diastolic
@@ -36,7 +37,6 @@ with eligible as (
 ), classified as (
     select *,
            case when last_bp_date is null then '혈압 없음'
-                when systolic is null or diastolic is null then '마지막 날에 한쪽 값만'
                 when systolic >= 140 then '수축기 140 이상'
                 when diastolic >= 90 then '이완기 90 이상'
                 else '조절됨' end as reason

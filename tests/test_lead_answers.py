@@ -1,5 +1,8 @@
 """D1-D7 / ADR0010,0013: public copies work without a private HOME; tampering fails."""
 import hashlib
+import csv
+import io
+import json
 import os
 from pathlib import Path
 import shutil
@@ -42,7 +45,7 @@ class LeadAnswerCopies(unittest.TestCase):
     def test_D1_0010_same_origin_bytes_and_readonly_copies(self):
         result = lead_answers.verify(self.root, self.source, prepare=True)
         self.assertTrue(result['source_compared'])
-        self.assertEqual(result['files'], 9)
+        self.assertEqual(result['files'], 3 * len(lead_answers.BUNDLES))
         self.assertTrue(all(not p.stat().st_mode & 0o222
                             for p in [self.target, *self.target.rglob('*')]))
 
@@ -72,6 +75,44 @@ class LeadAnswerCopies(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'ORIGIN_BYTES_MISMATCH'):
             lead_answers.verify(self.root, self.source, prepare=True)
         self.assertEqual((self.target / 'v1/README.md').read_bytes(), original)
+
+    def test_D5_D6_0015_E01_transcription_matches_only_reviewed_replacements(self):
+        folder=lead_answers.ROOT/'answer_key_lead/e01'
+        current={str(p.relative_to(folder)):p.read_bytes() for p in folder.rglob('*') if p.is_file()}
+        wp5=(lead_answers.ROOT/'answer_key_lead/wp5-bp-days-both-values/expected.json').read_bytes()
+        name='expected_manual/person.csv'
+        reader=csv.DictReader(io.StringIO(current[name].decode(),newline=''));rows=list(reader)
+        for case in json.loads(wp5)['cases']:
+            if case['group']=='E01' and case['changed']:
+                row=next(r for r in rows if (r['hospital'],r['person_id'],r['as_of_label'])==
+                    (case['hospital'],case['person'],case['as_of_label']))
+                for key in ('last_bp_date','systolic','diastolic','controlled','reason'):
+                    value=case['current_expected'][key];row[key]='' if value is None else str(value)
+        stream=io.StringIO(newline='');writer=csv.DictWriter(stream,fieldnames=reader.fieldnames,lineterminator='\n')
+        writer.writeheader();writer.writerows(rows)
+        origin=current|{name:stream.getvalue().encode()}
+        copied=lead_answers.wp5_e01_transcription(origin,wp5)
+        # Numeric spelling in untouched cells is preserved; all copied changes match the reviewed JSON.
+        def typed(body):
+            result=[]
+            for row in csv.DictReader(io.StringIO(body.decode())):
+                for key in ('systolic','diastolic','controlled'):
+                    row[key]=float(row[key]) if row[key] else None
+                result.append(row)
+            return result
+        self.assertEqual(typed(copied[name]),typed(current[name]))
+        self.assertTrue(all(copied[p]==b for p,b in current.items() if p not in (name,'SHA256SUMS')))
+        broken=dict(origin);broken[name]=origin[name].replace(b'121.0',b'122.0')
+        with self.assertRaisesRegex(ValueError,'ORIGIN_CHANGED'):
+            lead_answers.wp5_e01_transcription(broken,wp5)
+
+    def test_D1_0015_rehashed_copy_still_must_match_independent_origin(self):
+        file=self.target/'e01/fixture.json';file.write_text('{"handmade": false}\n')
+        listing=self.target/'SHA256SUMS'
+        listing.write_text(''.join(hashlib.sha256(p.read_bytes()).hexdigest()+'  '+p.relative_to(self.target).as_posix()+'\n'
+            for p in sorted(self.target.rglob('*')) if p.is_file() and p!=listing))
+        with self.assertRaisesRegex(ValueError,'ORIGIN_BYTES_MISMATCH'):
+            lead_answers.verify(self.root,self.source,prepare=True)
 
     def test_D1_0010_extra_copy_is_rejected(self):
         (self.target / 'v1/extra.json').write_text('{}\n')

@@ -1,4 +1,4 @@
-"""D1-D7 / ADR0010,0011,0013: read-only snapshot export; no patient IDs in browser files."""
+"""D1-D7 / ADR0010,0011,0013,0015: read-only snapshot export; no patient IDs in browser files."""
 from __future__ import annotations
 import argparse,collections,csv,datetime as dt,fcntl,hashlib,io,json,math,os,re,secrets,subprocess
 from pathlib import Path
@@ -89,7 +89,18 @@ def a_prime_lock():
     if not frozen_checker().verify_lock(ROOT/'expected_a_prime').get('ok'):raise ReportError('A_PRIME_LOCK')
 
 def frozen_layers():
-    cmd=['git','diff','--quiet','3e99c30','--','models/intermediate','models/marts','models/reports','seeds/indicator_concepts.csv','seeds/as_of_labels.csv']
+    # D5 / ADR0015: use the same approved baseline and paths as the complete check.
+    script=(ROOT/'scripts/check.sh').read_text()
+    base=re.search(r'^FROZEN_BASE=([0-9a-f]{7,40}|)\s*(?:#.*)?$',script,re.M)
+    paths=re.search(r'^FROZEN_PATHS="([^"]+)"$',script,re.M)
+    if not base or not paths:raise ReportError('FROZEN_LAYERS')
+    if not base[1]:
+        # During WP-5, accept only the registered clinical change; other frozen files stay fixed.
+        definition.context()
+        changed=subprocess.check_output(['git','diff','--name-only','3e99c30','--',*paths[1].split()],cwd=ROOT,text=True).splitlines()
+        if any(p!='models/marts/fct_bp_person.sql' for p in changed):raise ReportError('FROZEN_LAYERS')
+        return
+    cmd=['git','diff','--quiet',base[1],'--',*paths[1].split()]
     if subprocess.run(cmd,cwd=ROOT,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL).returncode:raise ReportError('FROZEN_LAYERS')
 
 def quality(con):

@@ -1,4 +1,4 @@
--- D1,D2,D5-D7 / ADR0001,0003,0010: frozen rank-and-join semantics.
+-- D1,D2,D5-D7 / ADR0001,0003,0010,0015: frozen rank-and-join semantics.
 -- Both Q2 candidates consume the same already verified Q1 reference output.
 with daily_with_label as (
     select d.*, p.as_of_label from q1_reference d
@@ -22,7 +22,7 @@ with daily_with_label as (
 ), ranked_days as (
     select hospital, as_of_label, person_id, bp_date, systolic_min, diastolic_min,
            row_number() over (partition by hospital, as_of_label, person_id order by bp_date desc) as day_rank
-    from daily_with_label
+    from daily_with_label where systolic_min is not null and diastolic_min is not null
 ), last_values as (
     select e.hospital, e.as_of_label, e.person_id, e.as_of, d.bp_date as last_bp_date,
            d.systolic_min as systolic, d.diastolic_min as diastolic
@@ -30,7 +30,6 @@ with daily_with_label as (
       and d.person_id=e.person_id and d.day_rank=1
 ), classified as (
     select *, case when last_bp_date is null then '혈압 없음'
-                   when systolic is null or diastolic is null then '마지막 날에 한쪽 값만'
                    when systolic >= 140 then '수축기 140 이상'
                    when diastolic >= 90 then '이완기 90 이상'
                    else '조절됨' end as reason from last_values

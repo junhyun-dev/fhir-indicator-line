@@ -1,0 +1,992 @@
+{
+  "schema_version": 1,
+  "question": "CMS165 v13의 두 성분이 모두 있는 날을 적용하면 기존 사례와 실제 DB 결과가 어떻게 달라지나요?",
+  "author": "만들기 · OMOP 임상 지표 · Codex(기대 결과)",
+  "created_date": "2026-10-29",
+  "review_status": "리드 검수 전이에요.",
+  "request": "/home/junhyun/personal/builds/medical-data-hands-on/thinking/exchange/REQ-wp5-expected-1029/REQUEST.md",
+  "database": {
+    "database": "/home/junhyun/dev/projects/fhir-indicator-line/data/fhir.duckdb",
+    "duckdb_version": "1.4.3",
+    "read_only": true,
+    "transaction": "BEGIN TRANSACTION / ROLLBACK",
+    "writes": 0,
+    "time": "2026-10-29T12:07:05.699811+00:00",
+    "queries": {
+      "current_summary": {
+        "sql": "SELECT hospital,as_of_label,numerator,denominator,rate FROM bp_summary ORDER BY hospital,as_of_label",
+        "elapsed_seconds": 0.0203
+      },
+      "new_summary": {
+        "sql": "WITH complete_days AS (SELECT hospital,as_of_label,person_id,bp_date,systolic_min,diastolic_min, row_number() OVER (PARTITION BY hospital,as_of_label,person_id ORDER BY bp_date DESC) AS day_rank FROM int_bp_daily WHERE systolic_min IS NOT NULL AND diastolic_min IS NOT NULL), new_people AS (SELECT p.hospital,p.as_of_label,p.person_id,d.bp_date AS last_bp_date,d.systolic_min AS systolic,d.diastolic_min AS diastolic,CASE WHEN d.bp_date IS NULL THEN 0 WHEN d.systolic_min<140 AND d.diastolic_min<90 THEN 1 ELSE 0 END AS controlled,CASE WHEN d.bp_date IS NULL THEN '혈압 없음' WHEN d.systolic_min>=140 THEN '수축기 140 이상' WHEN d.diastolic_min>=90 THEN '이완기 90 이상' ELSE '조절됨' END AS reason FROM fct_bp_person p LEFT JOIN complete_days d ON d.hospital=p.hospital AND d.as_of_label=p.as_of_label AND d.person_id=p.person_id AND d.day_rank=1) SELECT hospital,as_of_label,sum(controlled)::integer numerator,count(*)::integer denominator,round(sum(controlled)*1.0/count(*),4) rate FROM new_people GROUP BY 1,2 ORDER BY 1,2",
+        "elapsed_seconds": 0.0231
+      },
+      "daily_counts": {
+        "sql": "SELECT hospital,as_of_label,count(*) daily_rows,count(*) FILTER (WHERE systolic_min IS NULL OR diastolic_min IS NULL) incomplete_days,count(*) FILTER (WHERE systolic_min IS NOT NULL AND diastolic_min IS NOT NULL) complete_days FROM int_bp_daily GROUP BY 1,2 ORDER BY 1,2",
+        "elapsed_seconds": 0.0095
+      },
+      "latest_incomplete": {
+        "sql": "SELECT hospital,as_of_label,count(*) people,count(*) FILTER (WHERE reason='마지막 날에 한쪽 값만') AS latest_incomplete FROM fct_bp_person GROUP BY 1,2 ORDER BY 1,2",
+        "elapsed_seconds": 0.0141
+      },
+      "person_differences": {
+        "sql": "WITH complete_days AS (SELECT hospital,as_of_label,person_id,bp_date,systolic_min,diastolic_min, row_number() OVER (PARTITION BY hospital,as_of_label,person_id ORDER BY bp_date DESC) AS day_rank FROM int_bp_daily WHERE systolic_min IS NOT NULL AND diastolic_min IS NOT NULL), new_people AS (SELECT p.hospital,p.as_of_label,p.person_id,d.bp_date AS last_bp_date,d.systolic_min AS systolic,d.diastolic_min AS diastolic,CASE WHEN d.bp_date IS NULL THEN 0 WHEN d.systolic_min<140 AND d.diastolic_min<90 THEN 1 ELSE 0 END AS controlled,CASE WHEN d.bp_date IS NULL THEN '혈압 없음' WHEN d.systolic_min>=140 THEN '수축기 140 이상' WHEN d.diastolic_min>=90 THEN '이완기 90 이상' ELSE '조절됨' END AS reason FROM fct_bp_person p LEFT JOIN complete_days d ON d.hospital=p.hospital AND d.as_of_label=p.as_of_label AND d.person_id=p.person_id AND d.day_rank=1) SELECT p.hospital,p.as_of_label,count(*) FILTER (WHERE ROW(p.last_bp_date,p.systolic,p.diastolic,p.controlled,p.reason) IS DISTINCT FROM ROW(n.last_bp_date,n.systolic,n.diastolic,n.controlled,n.reason)) changed_people FROM fct_bp_person p JOIN new_people n USING (hospital,as_of_label,person_id) GROUP BY 1,2 ORDER BY 1,2",
+        "elapsed_seconds": 0.0373
+      },
+      "views": {
+        "sql": "SELECT view_name,sql FROM duckdb_views() WHERE view_name IN ('fct_bp_person','int_bp_daily','bp_summary') ORDER BY view_name",
+        "elapsed_seconds": 0.0072
+      }
+    },
+    "results": {
+      "current_summary": [
+        {
+          "hospital": "A",
+          "as_of_label": "dec31",
+          "numerator": 4,
+          "denominator": 6,
+          "rate": 0.6667
+        },
+        {
+          "hospital": "A",
+          "as_of_label": "sep30",
+          "numerator": 3,
+          "denominator": 5,
+          "rate": 0.6
+        },
+        {
+          "hospital": "A_PRIME",
+          "as_of_label": "dec31",
+          "numerator": 4,
+          "denominator": 6,
+          "rate": 0.6667
+        },
+        {
+          "hospital": "A_PRIME",
+          "as_of_label": "sep30",
+          "numerator": 3,
+          "denominator": 5,
+          "rate": 0.6
+        },
+        {
+          "hospital": "B",
+          "as_of_label": "dec31",
+          "numerator": 3,
+          "denominator": 9,
+          "rate": 0.3333
+        },
+        {
+          "hospital": "B",
+          "as_of_label": "sep30",
+          "numerator": 4,
+          "denominator": 9,
+          "rate": 0.4444
+        }
+      ],
+      "new_summary": [
+        {
+          "hospital": "A",
+          "as_of_label": "dec31",
+          "numerator": 4,
+          "denominator": 6,
+          "rate": 0.6667
+        },
+        {
+          "hospital": "A",
+          "as_of_label": "sep30",
+          "numerator": 3,
+          "denominator": 5,
+          "rate": 0.6
+        },
+        {
+          "hospital": "A_PRIME",
+          "as_of_label": "dec31",
+          "numerator": 4,
+          "denominator": 6,
+          "rate": 0.6667
+        },
+        {
+          "hospital": "A_PRIME",
+          "as_of_label": "sep30",
+          "numerator": 3,
+          "denominator": 5,
+          "rate": 0.6
+        },
+        {
+          "hospital": "B",
+          "as_of_label": "dec31",
+          "numerator": 3,
+          "denominator": 9,
+          "rate": 0.3333
+        },
+        {
+          "hospital": "B",
+          "as_of_label": "sep30",
+          "numerator": 4,
+          "denominator": 9,
+          "rate": 0.4444
+        }
+      ],
+      "daily_counts": [
+        {
+          "hospital": "A",
+          "as_of_label": "dec31",
+          "daily_rows": 47,
+          "incomplete_days": 0,
+          "complete_days": 47
+        },
+        {
+          "hospital": "A",
+          "as_of_label": "sep30",
+          "daily_rows": 39,
+          "incomplete_days": 0,
+          "complete_days": 39
+        },
+        {
+          "hospital": "A_PRIME",
+          "as_of_label": "dec31",
+          "daily_rows": 47,
+          "incomplete_days": 0,
+          "complete_days": 47
+        },
+        {
+          "hospital": "A_PRIME",
+          "as_of_label": "sep30",
+          "daily_rows": 39,
+          "incomplete_days": 0,
+          "complete_days": 39
+        },
+        {
+          "hospital": "B",
+          "as_of_label": "dec31",
+          "daily_rows": 193,
+          "incomplete_days": 0,
+          "complete_days": 193
+        },
+        {
+          "hospital": "B",
+          "as_of_label": "sep30",
+          "daily_rows": 134,
+          "incomplete_days": 0,
+          "complete_days": 134
+        }
+      ],
+      "latest_incomplete": [
+        {
+          "hospital": "A",
+          "as_of_label": "dec31",
+          "people": 6,
+          "latest_incomplete": 0
+        },
+        {
+          "hospital": "A",
+          "as_of_label": "sep30",
+          "people": 5,
+          "latest_incomplete": 0
+        },
+        {
+          "hospital": "A_PRIME",
+          "as_of_label": "dec31",
+          "people": 6,
+          "latest_incomplete": 0
+        },
+        {
+          "hospital": "A_PRIME",
+          "as_of_label": "sep30",
+          "people": 5,
+          "latest_incomplete": 0
+        },
+        {
+          "hospital": "B",
+          "as_of_label": "dec31",
+          "people": 9,
+          "latest_incomplete": 0
+        },
+        {
+          "hospital": "B",
+          "as_of_label": "sep30",
+          "people": 9,
+          "latest_incomplete": 0
+        }
+      ],
+      "person_differences": [
+        {
+          "hospital": "A",
+          "as_of_label": "dec31",
+          "changed_people": 0
+        },
+        {
+          "hospital": "A",
+          "as_of_label": "sep30",
+          "changed_people": 0
+        },
+        {
+          "hospital": "A_PRIME",
+          "as_of_label": "dec31",
+          "changed_people": 0
+        },
+        {
+          "hospital": "A_PRIME",
+          "as_of_label": "sep30",
+          "changed_people": 0
+        },
+        {
+          "hospital": "B",
+          "as_of_label": "dec31",
+          "changed_people": 0
+        },
+        {
+          "hospital": "B",
+          "as_of_label": "sep30",
+          "changed_people": 0
+        }
+      ],
+      "views": [
+        {
+          "view_name": "bp_summary",
+          "sql": "CREATE VIEW bp_summary AS SELECT periods.hospital, periods.as_of_label, CAST(count(person.person_id) AS INTEGER) AS denominator, CAST(COALESCE(sum(person.controlled), 0) AS INTEGER) AS numerator, CAST(round((CAST(sum(person.controlled) AS DOUBLE) / \"nullif\"(count(person.person_id), 0)), 4) AS DOUBLE) AS rate FROM fhir.main.dim_as_of AS periods LEFT JOIN fhir.main.fct_bp_person AS person ON (((person.hospital = periods.hospital) AND (person.as_of_label = periods.as_of_label))) GROUP BY periods.hospital, periods.as_of_label;"
+        },
+        {
+          "view_name": "fct_bp_person",
+          "sql": "CREATE VIEW fct_bp_person AS WITH eligible AS (SELECT periods.hospital, periods.as_of_label, periods.person_id, periods.as_of FROM fhir.main.int_person_period AS periods WHERE ((periods.age_at_year_end BETWEEN 18 AND 85) AND EXISTS(SELECT 1 FROM fhir.main.condition_occurrence AS diagnosis INNER JOIN fhir.main.indicator_concepts AS condition_set ON (((condition_set.concept_id = diagnosis.condition_concept_id) AND (condition_set.concept_set = 'essential_hypertension'))) WHERE ((diagnosis.person_id = periods.omop_person_id) AND (diagnosis.condition_start_date <= periods.hypertension_cutoff_day) AND (diagnosis.condition_start_date <= periods.as_of) AND ((diagnosis.condition_end_date IS NULL) OR (diagnosis.condition_end_date >= periods.measurement_start_day)))) AND EXISTS(SELECT 1 FROM fhir.main.visit_occurrence AS visits INNER JOIN fhir.main.indicator_concepts AS outpatient ON (((outpatient.concept_id = visits.visit_concept_id) AND (outpatient.concept_set = 'outpatient_visit'))) WHERE ((visits.person_id = periods.omop_person_id) AND (visits.visit_start_date BETWEEN periods.measurement_start_day AND periods.period_end_day))))), ranked_days AS (SELECT hospital, as_of_label, person_id, bp_date, systolic_min, diastolic_min, row_number() OVER (PARTITION BY hospital, as_of_label, person_id ORDER BY bp_date DESC) AS day_rank FROM fhir.main.int_bp_daily), last_values AS (SELECT eligible.hospital, eligible.as_of_label, eligible.person_id, eligible.as_of, daily.bp_date AS last_bp_date, daily.systolic_min AS systolic, daily.diastolic_min AS diastolic FROM eligible LEFT JOIN ranked_days AS daily ON (((daily.hospital = eligible.hospital) AND (daily.as_of_label = eligible.as_of_label) AND (daily.person_id = eligible.person_id) AND (daily.day_rank = 1)))), classified AS (SELECT *, CASE  WHEN ((last_bp_date IS NULL)) THEN ('혈압 없음') WHEN (((systolic IS NULL) OR (diastolic IS NULL))) THEN ('마지막 날에 한쪽 값만') WHEN ((systolic >= 140)) THEN ('수축기 140 이상') WHEN ((diastolic >= 90)) THEN ('이완기 90 이상') ELSE '조절됨' END AS reason FROM last_values)SELECT hospital, as_of_label, person_id, as_of, last_bp_date, systolic, diastolic, CAST((reason = '조절됨') AS INTEGER) AS controlled, reason FROM classified;"
+        },
+        {
+          "view_name": "int_bp_daily",
+          "sql": "CREATE VIEW int_bp_daily AS SELECT periods.hospital, periods.as_of_label, periods.person_id, bp.measurement_date AS bp_date, min(CASE  WHEN ((meaning.concept_set = 'systolic')) THEN (CAST(bp.value_as_number AS DOUBLE)) ELSE NULL END) AS systolic_min, min(CASE  WHEN ((meaning.concept_set = 'diastolic')) THEN (CAST(bp.value_as_number AS DOUBLE)) ELSE NULL END) AS diastolic_min FROM fhir.main.measurement AS bp INNER JOIN fhir.main.indicator_concepts AS meaning ON (((meaning.concept_id = bp.measurement_concept_id) AND (meaning.concept_set IN ('systolic', 'diastolic')))) INNER JOIN fhir.main.int_person_period AS periods ON ((periods.omop_person_id = bp.person_id)) WHERE ((bp.measurement_date BETWEEN periods.measurement_start_day AND periods.period_end_day) AND (bp.value_as_number IS NOT NULL) AND EXISTS(SELECT 1 FROM fhir.main.indicator_concepts AS unit WHERE ((unit.concept_set = 'bp_unit') AND (unit.concept_id = bp.unit_concept_id))) AND (NOT EXISTS(SELECT 1 FROM fhir.main.visit_occurrence AS visits INNER JOIN fhir.main.indicator_concepts AS excluded ON (((excluded.concept_id = visits.visit_concept_id) AND (excluded.concept_set = 'inpatient_or_ed_visit'))) WHERE ((visits.person_id = periods.omop_person_id) AND (bp.measurement_date BETWEEN visits.visit_start_date AND visits.visit_end_date))))) GROUP BY periods.hospital, periods.as_of_label, periods.person_id, bp.measurement_date;"
+        }
+      ]
+    },
+    "database_file_unchanged": {
+      "before": {
+        "size": 183250944,
+        "mtime_ns": 1793113066366745300
+      },
+      "after": {
+        "size": 183250944,
+        "mtime_ns": 1793113066366745300
+      },
+      "same": true
+    }
+  },
+  "source_snapshot": {
+    "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/README.md": {
+      "sha256": "b670c2866048404fe3b72792dc4b3e85fd2539f28c64066bfae386a611162d72",
+      "size": 9044,
+      "mode": "0o444"
+    },
+    "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/SHA256SUMS": {
+      "sha256": "0ca5a6eb47f44bbdbfb2090443a01c9ff9d246eb2c54cd04148e6567f3e87eca",
+      "size": 832,
+      "mode": "0o444"
+    },
+    "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/expected_manual/daily.csv": {
+      "sha256": "08823e0d3780c2f6257e6c096a29407693b0c80b4aefd3ccc65b94c8c9a48921",
+      "size": 772,
+      "mode": "0o444"
+    },
+    "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/expected_manual/person.csv": {
+      "sha256": "a44dbc29f8ec5b040b9ea644ed5c3d79eb2c511b770d61f00b950284502bd138",
+      "size": 746,
+      "mode": "0o444"
+    },
+    "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/expected_manual/summary_by_date.csv": {
+      "sha256": "e12f6d884ae24e2a2dfdbe1b69059ff9707fd8bd313a6b6714c04b7c345f4ec0",
+      "size": 234,
+      "mode": "0o444"
+    },
+    "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/expected_manual/summary_by_label.csv": {
+      "sha256": "457313a4e31065cab0b91084ce3fe4b028bfb95c5c04a8c1090d94edfd624154",
+      "size": 174,
+      "mode": "0o444"
+    },
+    "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/conditions.csv": {
+      "sha256": "0b2198b79b07ff076ce02a3b1ae8b5d52a917212489213a0565c81f4dc0ab02f",
+      "size": 670,
+      "mode": "0o444"
+    },
+    "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv": {
+      "sha256": "bd01b6b4fc024cc8dd4baacb20c43d428a848a573687d2cfde93279024b08de6",
+      "size": 2638,
+      "mode": "0o444"
+    },
+    "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/persons.csv": {
+      "sha256": "8dcc0750398eac5147f991006c656cfbaabc824373b55a9edc3c7888f7d99c97",
+      "size": 235,
+      "mode": "0o444"
+    },
+    "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/sources.csv": {
+      "sha256": "84feca82e53d78479e18a0822ac3ee89634bf490e20799d58b86b2e00287d3ef",
+      "size": 38,
+      "mode": "0o444"
+    },
+    "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/visits.csv": {
+      "sha256": "7f410c5c8576a171490abeb7b59418861296a8ec28d2b0907c71b9fd2e837c17",
+      "size": 1154,
+      "mode": "0o444"
+    },
+    "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/notification.md": {
+      "sha256": "7d6bd699708159f474b858bc982d352a2d4bc12d5b99909f0fbcd6015709dcaf",
+      "size": 367,
+      "mode": "0o444"
+    },
+    "/home/junhyun/dev/projects/fhir-indicator-line/docs/decisions/0001-indicator-definition-d1-d7.md": {
+      "sha256": "7ef4b7326388d5aa61400b24115606fc096de399880c88efb674607be37fd254",
+      "size": 1703,
+      "mode": "0o644"
+    },
+    "/home/junhyun/dev/projects/fhir-indicator-line/expected/person_B.csv": {
+      "sha256": "68d49e236cc05a15fe460a603f320c83cb4f0867519b33fba569c7b89254d737",
+      "size": 1271,
+      "mode": "0o444"
+    },
+    "/home/junhyun/dev/projects/fhir-indicator-line/fhir_line/a_prime_checks.py": {
+      "sha256": "12cad30a23a2c2183c5cdca1eec13b90ae7101e373145819c0aab6e4628d524c",
+      "size": 9784,
+      "mode": "0o644"
+    },
+    "/home/junhyun/dev/projects/fhir-indicator-line/fhir_line/lead_answers.py": {
+      "sha256": "09e196eec5549ce80c1526264de2ea93d9485d9cfd88ad23b2ec7af6dfcdce18",
+      "size": 4335,
+      "mode": "0o644"
+    },
+    "/home/junhyun/dev/projects/fhir-indicator-line/fhir_line/observation_period_checks.py": {
+      "sha256": "562a89d4cf7555f901f14d331da5ebeef03a52dfee5970030a383e1c20f06d71",
+      "size": 9803,
+      "mode": "0o644"
+    },
+    "/home/junhyun/dev/projects/fhir-indicator-line/fhir_line/omop.py": {
+      "sha256": "4000a1f88efb8173215ebb205544cca28031882b5b3dce24daa001b9b55ba9c3",
+      "size": 12823,
+      "mode": "0o644"
+    },
+    "/home/junhyun/dev/projects/fhir-indicator-line/models/intermediate/int_bp_daily.sql": {
+      "sha256": "3eef286bcc483d08f91cb82b38773bcbdfb27fb820e7c0f501540b719c9f1914",
+      "size": 1447,
+      "mode": "0o644"
+    },
+    "/home/junhyun/dev/projects/fhir-indicator-line/models/intermediate/int_person_period.sql": {
+      "sha256": "875863b0b51a0877e96dcc4d32da60f2c14fe87f27e5b4ce6b4e82b3e0b4e442",
+      "size": 1030,
+      "mode": "0o644"
+    },
+    "/home/junhyun/dev/projects/fhir-indicator-line/models/marts/fct_bp_person.sql": {
+      "sha256": "533b7f20b31426ef3fe8228279eaae3d23d943e1b1aa545a832b82a90f978dfc",
+      "size": 2590,
+      "mode": "0o644"
+    },
+    "/home/junhyun/dev/projects/fhir-indicator-line/models/reports/bp_summary.sql": {
+      "sha256": "3647a568da7a054c0190aa443a26e57059cf6e3079cd62f7a8de95c0ecfcc15e",
+      "size": 594,
+      "mode": "0o644"
+    },
+    "/home/junhyun/dev/projects/fhir-indicator-line/seeds/indicator_concepts.csv": {
+      "sha256": "fd645aa40bdeefe699b19cf2c02608941a281a8bb4e66ca6f71868a06fab70b0",
+      "size": 203,
+      "mode": "0o644"
+    },
+    "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_a_prime.py": {
+      "sha256": "6551e4ec740bdd9e54fd3019568f0dc520e9309fd4ce8d931e52d3ea0b73f5c3",
+      "size": 18194,
+      "mode": "0o644"
+    },
+    "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_lead_answers.py": {
+      "sha256": "b40e22ab559e32b73708896ec5bef60ff2e68f846a8179b146f3475bbd913f00",
+      "size": 6062,
+      "mode": "0o644"
+    },
+    "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m1_models.py": {
+      "sha256": "96bcd55a95d78b183dc313490ff2d348b53a0defb123abcbeb19ee580557318c",
+      "size": 17829,
+      "mode": "0o644"
+    },
+    "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_m2b_models.py": {
+      "sha256": "52a0e5976a78e53c93842b0f1f73536b61ef26aba17e7313535fd46e4e77b6ba",
+      "size": 8003,
+      "mode": "0o644"
+    },
+    "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_observation_period_checks.py": {
+      "sha256": "d858a5a5a10ee36d6c67e1ae88ca9f484703d3b05f1e3cd78da16f274074cc8e",
+      "size": 8546,
+      "mode": "0o644"
+    },
+    "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_omop_models.py": {
+      "sha256": "09e192d26f948adbdf5140e37d2c47881408ac886f64372aaf2b145ea9c31cdd",
+      "size": 10654,
+      "mode": "0o644"
+    },
+    "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_v1_report.py": {
+      "sha256": "796d9fefa7dbd18735a161b17e2ca258c8a6aa47ba1de31fabbccdd964505d35",
+      "size": 26544,
+      "mode": "0o644"
+    },
+    "/home/junhyun/personal/builds/medical-data-hands-on/thinking/exchange/REQ-wp5-expected-1029/REQUEST.md": {
+      "sha256": "e2a3985ab90427b7109ee7ad3251acc106995b99c5526d924512c9452346befb",
+      "size": 5370,
+      "mode": "0o644"
+    },
+    "/home/junhyun/personal/builds/medical-data-hands-on/thinking/research/valueset-and-zero-1027/sources/v13-CMS165-v13-0-000-QDM-5-6.cql": {
+      "sha256": "0ce76f229b7eeeb04ab6545d568ed8a6191fe7874f2f6a240e94feacdda59359",
+      "size": 6778,
+      "mode": "0o644"
+    },
+    "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/v1.1/_gen/generate.py": {
+      "sha256": "79955bb0321af8118f54c1ccfe54ef755023b27f44eeecf58ba308fc787fd09e",
+      "size": 30027,
+      "mode": "0o444"
+    },
+    "/home/junhyun/dev/projects/fhir-indicator-line/models/schema.yml": {
+      "sha256": "6c4e229ece44c8818149c8bc87682bd42235cd47f1f089be7e544dce9e77a4d2",
+      "size": 9136,
+      "mode": "0o644"
+    },
+    "/home/junhyun/dev/projects/fhir-indicator-line/fhir_line/ladder.py": {
+      "sha256": "b910df256c23b3155f0968f23bf67f0d0eac0ba038d8e3107095fa5f858179e6",
+      "size": 28024,
+      "mode": "0o644"
+    },
+    "/home/junhyun/personal/builds/medical-data-hands-on/answer-key/make_expected.py": {
+      "sha256": "b404c8021a083f97996f39d1aa8ef594c995febf2232aa37b9971d07720c0f61",
+      "size": 7529,
+      "mode": "0o644"
+    },
+    "/home/junhyun/personal/builds/medical-data-hands-on/answer-key/make_expected_b.py": {
+      "sha256": "0cd08c4e3eae3fb1add0c5af3d542fa7eff3e34f61284ac7f5a8e83b409bf9f8",
+      "size": 6398,
+      "mode": "0o644"
+    },
+    "/home/junhyun/personal/builds/medical-data-hands-on/answer-key/e01/fixtures/measurements.csv": {
+      "sha256": "bd01b6b4fc024cc8dd4baacb20c43d428a848a573687d2cfde93279024b08de6",
+      "size": 2638,
+      "mode": "0o644"
+    },
+    "/home/junhyun/personal/builds/medical-data-hands-on/answer-key/e01/fixtures/visits.csv": {
+      "sha256": "7f410c5c8576a171490abeb7b59418861296a8ec28d2b0907c71b9fd2e837c17",
+      "size": 1154,
+      "mode": "0o644"
+    },
+    "/home/junhyun/personal/builds/medical-data-hands-on/answer-key/e01/fixtures/persons.csv": {
+      "sha256": "8dcc0750398eac5147f991006c656cfbaabc824373b55a9edc3c7888f7d99c97",
+      "size": 235,
+      "mode": "0o644"
+    },
+    "/home/junhyun/personal/builds/medical-data-hands-on/answer-key/e01/fixtures/conditions.csv": {
+      "sha256": "0b2198b79b07ff076ce02a3b1ae8b5d52a917212489213a0565c81f4dc0ab02f",
+      "size": 670,
+      "mode": "0o644"
+    },
+    "/home/junhyun/personal/builds/medical-data-hands-on/answer-key/e01/fixtures/sources.csv": {
+      "sha256": "84feca82e53d78479e18a0822ac3ee89634bf490e20799d58b86b2e00287d3ef",
+      "size": 38,
+      "mode": "0o644"
+    },
+    "/home/junhyun/personal/builds/medical-data-hands-on/answer-key/e01/expected_manual/daily.csv": {
+      "sha256": "08823e0d3780c2f6257e6c096a29407693b0c80b4aefd3ccc65b94c8c9a48921",
+      "size": 772,
+      "mode": "0o644"
+    },
+    "/home/junhyun/personal/builds/medical-data-hands-on/answer-key/e01/expected_manual/person.csv": {
+      "sha256": "a44dbc29f8ec5b040b9ea644ed5c3d79eb2c511b770d61f00b950284502bd138",
+      "size": 746,
+      "mode": "0o644"
+    },
+    "/home/junhyun/personal/builds/medical-data-hands-on/answer-key/e01/expected_manual/summary_by_date.csv": {
+      "sha256": "e12f6d884ae24e2a2dfdbe1b69059ff9707fd8bd313a6b6714c04b7c345f4ec0",
+      "size": 234,
+      "mode": "0o644"
+    },
+    "/home/junhyun/personal/builds/medical-data-hands-on/answer-key/e01/expected_manual/summary_by_label.csv": {
+      "sha256": "457313a4e31065cab0b91084ce3fe4b028bfb95c5c04a8c1090d94edfd624154",
+      "size": 174,
+      "mode": "0o644"
+    }
+  },
+  "product": {
+    "path": "/home/junhyun/dev/projects/fhir-indicator-line",
+    "head": "1bb454c4a7c9234b04ea967d993d382fab94eee4",
+    "branch": "work/fhir-line-07-v1-1",
+    "dirty_before": [
+      " M fhir_line/a_prime_checks.py",
+      " M fhir_line/lead_answers.py",
+      " M fhir_line/observation_period_checks.py",
+      " M fhir_line/omop.py",
+      " M tests/test_lead_answers.py",
+      " M tests/test_observation_period_checks.py"
+    ],
+    "request_baseline": "fd10709",
+    "baseline_difference": "현재 제품 HEAD는 요청서의 공개 기준보다 뒤예요. 혈압 SQL 세 파일은 같고, 관련 시험은 진단 보존·경고 시험 추가 때문에 줄 번호가 옮겨졌어요. 입력값과 부분값 판정의 기존 기대는 직접 읽었어요."
+  },
+  "cql_evidence": [
+    {
+      "name": "Blood Pressure Days",
+      "path": "/home/junhyun/personal/builds/medical-data-hands-on/thinking/research/valueset-and-zero-1027/sources/v13-CMS165-v13-0-000-QDM-5-6.cql",
+      "start_line": 65,
+      "end_line": 71,
+      "source_lines": [
+        {
+          "line": 65,
+          "text": "define \"Blood Pressure Days\":"
+        },
+        {
+          "line": 66,
+          "text": "  ( \"Qualifying Diastolic Blood Pressure Reading\" DBPExam"
+        },
+        {
+          "line": 67,
+          "text": "      return date from Global.\"LatestOf\" ( DBPExam.relevantDatetime, DBPExam.relevantPeriod )"
+        },
+        {
+          "line": 68,
+          "text": "  )"
+        },
+        {
+          "line": 69,
+          "text": "    intersect ( \"Qualifying Systolic Blood Pressure Reading\" SBPExam"
+        },
+        {
+          "line": 70,
+          "text": "        return date from Global.\"LatestOf\" ( SBPExam.relevantDatetime, SBPExam.relevantPeriod )"
+        },
+        {
+          "line": 71,
+          "text": "    )"
+        }
+      ],
+      "meaning": "두 성분의 날짜 목록에서 공통인 날만 인정해요."
+    },
+    {
+      "name": "Most Recent Blood Pressure Day",
+      "path": "/home/junhyun/personal/builds/medical-data-hands-on/thinking/research/valueset-and-zero-1027/sources/v13-CMS165-v13-0-000-QDM-5-6.cql",
+      "start_line": 89,
+      "end_line": 92,
+      "source_lines": [
+        {
+          "line": 89,
+          "text": "define \"Most Recent Blood Pressure Day\":"
+        },
+        {
+          "line": 90,
+          "text": "  Last(\"Blood Pressure Days\" BPDays"
+        },
+        {
+          "line": 91,
+          "text": "      sort asc"
+        },
+        {
+          "line": 92,
+          "text": "  )"
+        }
+      ],
+      "meaning": "인정한 날을 오름차순 정렬하고 마지막 날을 선택해요."
+    },
+    {
+      "name": "Lowest Systolic Reading",
+      "path": "/home/junhyun/personal/builds/medical-data-hands-on/thinking/research/valueset-and-zero-1027/sources/v13-CMS165-v13-0-000-QDM-5-6.cql",
+      "start_line": 77,
+      "end_line": 81,
+      "source_lines": [
+        {
+          "line": 77,
+          "text": "define \"Lowest Systolic Reading on Most Recent Blood Pressure Day\":"
+        },
+        {
+          "line": 78,
+          "text": "  First(\"Qualifying Systolic Blood Pressure Reading\" SBPReading"
+        },
+        {
+          "line": 79,
+          "text": "      where Global.\"LatestOf\"(SBPReading.relevantDatetime, SBPReading.relevantPeriod) same day as \"Most Recent Blood Pressure Day\""
+        },
+        {
+          "line": 80,
+          "text": "      sort by(result as Quantity)"
+        },
+        {
+          "line": 81,
+          "text": "  )"
+        }
+      ],
+      "meaning": "그날의 가장 작은 수축기를 써요."
+    },
+    {
+      "name": "Lowest Diastolic Reading",
+      "path": "/home/junhyun/personal/builds/medical-data-hands-on/thinking/research/valueset-and-zero-1027/sources/v13-CMS165-v13-0-000-QDM-5-6.cql",
+      "start_line": 83,
+      "end_line": 87,
+      "source_lines": [
+        {
+          "line": 83,
+          "text": "define \"Lowest Diastolic Reading on Most Recent Blood Pressure Day\":"
+        },
+        {
+          "line": 84,
+          "text": "  First(\"Qualifying Diastolic Blood Pressure Reading\" DBPReading"
+        },
+        {
+          "line": 85,
+          "text": "      where Global.\"LatestOf\"(DBPReading.relevantDatetime, DBPReading.relevantPeriod) same day as \"Most Recent Blood Pressure Day\""
+        },
+        {
+          "line": 86,
+          "text": "      sort by(result as Quantity)"
+        },
+        {
+          "line": 87,
+          "text": "  )"
+        }
+      ],
+      "meaning": "그날의 가장 작은 이완기를 써요."
+    },
+    {
+      "name": "Has Diastolic / Systolic",
+      "path": "/home/junhyun/personal/builds/medical-data-hands-on/thinking/research/valueset-and-zero-1027/sources/v13-CMS165-v13-0-000-QDM-5-6.cql",
+      "start_line": 50,
+      "end_line": 54,
+      "source_lines": [
+        {
+          "line": 50,
+          "text": "define \"Has Diastolic Blood Pressure Less Than 90\":"
+        },
+        {
+          "line": 51,
+          "text": "  \"Lowest Diastolic Reading on Most Recent Blood Pressure Day\".result < 90 'mm[Hg]'"
+        },
+        {
+          "line": 52,
+          "text": ""
+        },
+        {
+          "line": 53,
+          "text": "define \"Has Systolic Blood Pressure Less Than 140\":"
+        },
+        {
+          "line": 54,
+          "text": "  \"Lowest Systolic Reading on Most Recent Blood Pressure Day\".result < 140 'mm[Hg]'"
+        }
+      ],
+      "meaning": "이완기 90 미만과 수축기 140 미만이에요."
+    },
+    {
+      "name": "Numerator",
+      "path": "/home/junhyun/personal/builds/medical-data-hands-on/thinking/research/valueset-and-zero-1027/sources/v13-CMS165-v13-0-000-QDM-5-6.cql",
+      "start_line": 101,
+      "end_line": 103,
+      "source_lines": [
+        {
+          "line": 101,
+          "text": "define \"Numerator\":"
+        },
+        {
+          "line": 102,
+          "text": "  \"Has Systolic Blood Pressure Less Than 140\""
+        },
+        {
+          "line": 103,
+          "text": "    and \"Has Diastolic Blood Pressure Less Than 90\""
+        }
+      ],
+      "meaning": "두 조건을 함께 만족해야 분자에 포함해요."
+    },
+    {
+      "name": "Qualifying readings",
+      "path": "/home/junhyun/personal/builds/medical-data-hands-on/thinking/research/valueset-and-zero-1027/sources/v13-CMS165-v13-0-000-QDM-5-6.cql",
+      "start_line": 105,
+      "end_line": 119,
+      "source_lines": [
+        {
+          "line": 105,
+          "text": "define \"Qualifying Diastolic Blood Pressure Reading\":"
+        },
+        {
+          "line": 106,
+          "text": "  [\"Physical Exam, Performed\": \"Diastolic blood pressure\"] DiastolicBP"
+        },
+        {
+          "line": 107,
+          "text": "    without ( [\"Encounter, Performed\": \"Encounter Inpatient\"]"
+        },
+        {
+          "line": 108,
+          "text": "      union [\"Encounter, Performed\": \"Emergency Department Evaluation and Management Visit\"] ) DisqualifyingEncounter"
+        },
+        {
+          "line": 109,
+          "text": "      such that Global.\"LatestOf\" ( DiastolicBP.relevantDatetime, DiastolicBP.relevantPeriod ) during day of DisqualifyingEncounter.relevantPeriod"
+        },
+        {
+          "line": 110,
+          "text": "    where DiastolicBP.result.unit = 'mm[Hg]'"
+        },
+        {
+          "line": 111,
+          "text": "      and Global.\"LatestOf\" ( DiastolicBP.relevantDatetime, DiastolicBP.relevantPeriod ) during day of \"Measurement Period\""
+        },
+        {
+          "line": 112,
+          "text": ""
+        },
+        {
+          "line": 113,
+          "text": "define \"Qualifying Systolic Blood Pressure Reading\":"
+        },
+        {
+          "line": 114,
+          "text": "  [\"Physical Exam, Performed\": \"Systolic blood pressure\"] SystolicBP"
+        },
+        {
+          "line": 115,
+          "text": "    without ( [\"Encounter, Performed\": \"Encounter Inpatient\"]"
+        },
+        {
+          "line": 116,
+          "text": "      union [\"Encounter, Performed\": \"Emergency Department Evaluation and Management Visit\"] ) DisqualifyingEncounter"
+        },
+        {
+          "line": 117,
+          "text": "      such that Global.\"LatestOf\" ( SystolicBP.relevantDatetime, SystolicBP.relevantPeriod ) during day of DisqualifyingEncounter.relevantPeriod"
+        },
+        {
+          "line": 118,
+          "text": "    where SystolicBP.result.unit = 'mm[Hg]'"
+        },
+        {
+          "line": 119,
+          "text": "      and Global.\"LatestOf\" ( SystolicBP.relevantDatetime, SystolicBP.relevantPeriod ) during day of \"Measurement Period\""
+        }
+      ],
+      "meaning": "입원·응급실 방문, 단위, 측정 기간 조건을 먼저 적용해요."
+    },
+    {
+      "name": "Denominator",
+      "path": "/home/junhyun/personal/builds/medical-data-hands-on/thinking/research/valueset-and-zero-1027/sources/v13-CMS165-v13-0-000-QDM-5-6.cql",
+      "start_line": 47,
+      "end_line": 48,
+      "source_lines": [
+        {
+          "line": 47,
+          "text": "define \"Denominator\":"
+        },
+        {
+          "line": 48,
+          "text": "  \"Initial Population\""
+        }
+      ],
+      "meaning": "두 성분이 있는 날이 없어도 이번 변경으로 분모에서 빼지 않아요."
+    }
+  ],
+  "empty_complete_days": {
+    "derivation": [
+      "적합한 이완기 날짜 목록과 수축기 날짜 목록의 공통 원소가 없어요.",
+      "Blood Pressure Days는 빈 목록이고 Last는 NULL이에요. 선택 날짜와 선택할 두 성분도 없어요.",
+      "Numerator가 true가 아니므로 분자에 포함하지 않아요. 이 결정을 controlled=0으로 표현해요. CQL의 NULL을 false라고 바꾸어 설명하지 않아요.",
+      "분모 자격은 그대로예요. 날짜·수축기·이완기는 NULL이고, 이유는 △ 「혈압 없음」 유지 제안이에요."
+    ],
+    "example_case_ids": [
+      "M1-t04-dia-sep30",
+      "M1-t04-dia-dec31",
+      "M1-t08-unit-sep30",
+      "M1-t08-unit-dec31"
+    ],
+    "not_executed": "CQL 엔진 실행은 미확인이에요. 원문과 공통 연산자 의미를 읽어 손으로 도출했어요."
+  },
+  "online_sources": [
+    {
+      "url": "https://ecqi.healthit.gov/sites/default/files/ecqm/measures/CMS165v13.html",
+      "accessed": "2026-10-29",
+      "version": "13.0.000 / QDM 5.6",
+      "sections": [
+        "Guidance",
+        "Numerator",
+        "Blood Pressure Days",
+        "Most Recent Blood Pressure Day"
+      ],
+      "observation": "숫자로 된 두 성분이 필요하고 기록이 없으면 분자에 포함하지 않는 설명을 확인했어요."
+    },
+    {
+      "url": "https://cql.hl7.org/09-b-cqlreference.html#last",
+      "accessed": "2026-10-29",
+      "version": "2.0.0 R2 STU 1",
+      "sections": [
+        "Last",
+        "Indexer",
+        "First"
+      ],
+      "observation": "Last는 목록 길이 N에서 인덱스 N-1의 원소예요. 빈 목록에서는 인덱스가 -1이라 NULL이에요. 공통 연산자 의미의 보조 확인이며 CMS165 전체 적합성 검증은 아니에요.",
+      "older_versions": "1.5.3과 1.5.2의 해당 URL은 웹 도구에서 열리지 않아 그 판의 직접 대조는 미확인이에요."
+    }
+  ],
+  "manual_method": [
+    "입력값은 AST의 리터럴·기본 인자·기존 CSV에서 읽었어요. 제품 파서나 제품 계산 함수를 호출하지 않았어요.",
+    "쓸 날짜와 유지할 사례는 입력을 읽어 하나씩 정했어요. 날짜별 두 값은 입력에서 확인한 성분별 최솟값이에요.",
+    "M1·E01·A′·B·OMOP·화면 바꿔 넣기를 구분하고, 사례별 과정을 expected.json의 manual_steps에 남겼어요.",
+    "기존 시험과 기대 결과는 실행하거나 바꾸지 않았어요. 실제 DB 값은 손 사례의 기대값을 만드는 입력으로 쓰지 않고, 실제 데이터 영향만 따로 확인했어요."
+  ],
+  "definition_scope": {
+    "changed": [
+      "D5: 두 성분의 유효한 값이 모두 있는 날 중 마지막 날을 선택해요.",
+      "D6: 그날이 없으면 분자에 포함하지 않고, 있으면 기존 140/90 미만 판정을 적용해요."
+    ],
+    "unchanged": [
+      "D1: 날짜 글자와 환자별 기준 연도, 측정 시작·기준일 경계를 유지해요.",
+      "D2: 나이·고혈압 진단·외래 방문과 분모를 유지해요.",
+      "D3: 코드·단위 mm[Hg]·입원·응급실 제외와 숫자 없는 성분 처리의 의미를 유지해요.",
+      "D4: 같은 날 수축기·이완기의 최솟값을 각각 구해요. 같은 행에서 두 값이 함께 나올 필요는 없어요.",
+      "D7: 학습용 정의의 제외 범위를 유지해요."
+    ],
+    "daily_rows": "부분값의 원천 행과 성분별 일별 최솟값은 증거로 남을 수 있어요. 그런 날을 최종 측정일 후보로 인정하지 않는다는 기대예요. 중간 테이블의 물리적 배치를 정하는 것은 이 결과의 범위 밖이에요."
+  },
+  "reason_proposal": {
+    "status": "△ 리드가 정해요.",
+    "unreachable_in_new_clinical_results": "마지막 날에 한쪽 값만",
+    "proposed_no_complete_day_reason": "혈압 없음",
+    "definition": "현재 측정 기간 안에 두 성분이 모두 있는 유효한 혈압 측정일이 없어요.",
+    "why": "이미 쓰는 이유 이름을 유지하면서 의미를 명확히 할 수 있어요. 부분값 원문이 없다는 뜻으로 해석하면 안 돼요.",
+    "other_option": "리드가 구분이 필요하다고 판단하면 「유효한 혈압 측정일 없음」으로 바꿀 수 있어요. 이 세션은 이름을 확정하지 않아요.",
+    "ui_note": "최종 결과에 부분값을 직접 바꿔 넣는 기존 화면 시험은 임상 판정의 유효성을 증명하지 않아요. 이 입력을 표시하는 계약은 별도로 남아요."
+  },
+  "search": {
+    "plan": [
+      "질문: 기존 손 사례와 실제 A·A′·B 결과가 두 성분 날짜 조건으로 바뀌나요?",
+      "범위: 지정 CQL, D1~D7, 제품의 추적된 시험·기대 결과, 작업실의 대응 사본, 실제 제품 DB예요.",
+      "포함: 부분값·숫자 없음·잘못된 단위·입원 제외·기간 경계·같은 날 최솟값과 직접 관련된 기존 입력이에요. 새 임상 사례와 CMS165 전체 제외 규칙은 추가하지 않아요.",
+      "항목: 입력 파일과 줄, 날짜·두 성분, 기존 결과, 새 결과, 이유 이름·변경 여부와 계산 과정이에요.",
+      "종료: 지정 사례를 모두 확인하고 반대 사례 검색으로 A′의 이전 부분값·화면 바꿔 넣기·보존된 기대 결과 생성기의 기존 규칙까지 확인해요."
+    ],
+    "commands": [
+      "git grep -n -E '마지막 날에 한쪽|partial|single.component|systolic.*None|diastolic.*None|systolic.*NULL|diastolic.*NULL|systolic_min.*null|diastolic_min.*null' -- tests answer_key_lead expected models fhir_line config docs",
+      "rg -n '한쪽|is null' /home/junhyun/personal/builds/medical-data-hands-on/answer-key -g '*.py' -g '*.csv' -g '*.json' -g '*.md'",
+      "git diff --name-only fd10709 -- models/intermediate/int_bp_daily.sql models/intermediate/int_person_period.sql models/marts/fct_bp_person.sql tests/test_m1_models.py tests/test_a_prime.py tests/test_v1_report.py answer_key_lead/e01"
+    ],
+    "additional_findings": [
+      {
+        "ref": "/home/junhyun/dev/projects/fhir-indicator-line/tests/test_a_prime.py:43",
+        "finding": "A′에는 8/20 부분값이 있지만 이후 완전한 날이 있어 최종 결과가 같아요."
+      },
+      {
+        "ref": "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/v1.1/_gen/generate.py:260",
+        "finding": "보존된 별도 기대 결과 생성기에도 기존 부분값 판정이 있어요. 실제 입력에서 해당 사례가 있는지와 규칙이 코드에 있는지는 구분해요."
+      },
+      {
+        "ref": "/home/junhyun/personal/builds/medical-data-hands-on/answer-key/make_expected.py:87",
+        "finding": "기존 A 기대 결과 생성기에도 부분값 판정이 있어요."
+      },
+      {
+        "ref": "/home/junhyun/personal/builds/medical-data-hands-on/answer-key/make_expected_b.py:81",
+        "finding": "기존 B 기대 결과 생성기에도 부분값 판정이 있어요."
+      },
+      {
+        "ref": "/home/junhyun/personal/builds/medical-data-hands-on/answer-key/e01/expected_manual/person.csv:6",
+        "finding": "제품 E01 사본과 작업실 정본을 함께 확인해요."
+      },
+      {
+        "ref": "/home/junhyun/dev/projects/fhir-indicator-line/models/schema.yml:233",
+        "finding": "기존 이유 목록에 부분값 이유가 있어요."
+      },
+      {
+        "ref": "/home/junhyun/dev/projects/fhir-indicator-line/fhir_line/ladder.py:328",
+        "finding": "기존 공개용 이유 목록에도 부분값 이유가 있어요."
+      }
+    ],
+    "coverage_counts": {
+      "selected_case_outcomes": 43,
+      "changed_case_outcomes": 8,
+      "unchanged_case_outcomes": 35,
+      "actual_summary_rows": 6
+    },
+    "bias_and_limits": "명시된 사례와 직접 관련된 기존 사례를 골랐어요. 모든 시험·모든 원천 자원을 전수 재판정한 결과는 아니에요. 국내 다른 지표는 이번에 바꾸지 않아요."
+  },
+  "verification": {
+    "case_count": 43,
+    "changed_count": 8,
+    "unchanged_count": 35,
+    "controlled_changed_case_count": 2,
+    "expected_json_has_all_manual_steps": true,
+    "product_functions_executed": 0,
+    "product_test_runs": 0,
+    "product_writes": 0,
+    "decision_writes": 0,
+    "original_expected_writes": 0,
+    "push_count": 0,
+    "lead_review": "미확인이에요. 이 결과는 리드가 원문과 입력에 대조할 초안이에요.",
+    "source_references_checked": 170,
+    "separate_m1_input_rule_checks_passed": 21,
+    "e01_mirror_files_identical": 9,
+    "source_hashes_unchanged": 46,
+    "product_dirty_unchanged": true,
+    "plain_terms_command": "python3 -B system/skills/plain-terms/check.py README.md expected.json verification.json notification.md",
+    "plain_terms_flagged_lines": 0,
+    "expected_counts_and_nullable_fields": "통과",
+    "validation_note": "기대 결과 파일의 참조·유일성·NULL·집계·기존 입력을 확인했어요. 새 제품 구현이나 제품 시험 통과를 뜻하지 않아요.",
+    "separate_e01_input_rule_checks_passed": 12,
+    "e01_summary_label_reconciliations_passed": 6,
+    "separate_m2b_input_rule_checks_passed": 6,
+    "input_references_are_existing_files": true,
+    "places_check": "python3 -B system/tools/check_places.py --staged: 걸린 것 0",
+    "git_diff_check": "git diff --cached --check -- 지정 폴더: 통과",
+    "result_hash_check": "SHA256SUMS의 네 결과 파일을 확인해요. SHA256SUMS 자신은 목록에 넣지 않아요."
+  },
+  "e01_mirror_comparison": [
+    {
+      "product": "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/measurements.csv",
+      "workspace": "/home/junhyun/personal/builds/medical-data-hands-on/answer-key/e01/fixtures/measurements.csv",
+      "product_sha256": "bd01b6b4fc024cc8dd4baacb20c43d428a848a573687d2cfde93279024b08de6",
+      "workspace_sha256": "bd01b6b4fc024cc8dd4baacb20c43d428a848a573687d2cfde93279024b08de6",
+      "same": true
+    },
+    {
+      "product": "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/visits.csv",
+      "workspace": "/home/junhyun/personal/builds/medical-data-hands-on/answer-key/e01/fixtures/visits.csv",
+      "product_sha256": "7f410c5c8576a171490abeb7b59418861296a8ec28d2b0907c71b9fd2e837c17",
+      "workspace_sha256": "7f410c5c8576a171490abeb7b59418861296a8ec28d2b0907c71b9fd2e837c17",
+      "same": true
+    },
+    {
+      "product": "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/persons.csv",
+      "workspace": "/home/junhyun/personal/builds/medical-data-hands-on/answer-key/e01/fixtures/persons.csv",
+      "product_sha256": "8dcc0750398eac5147f991006c656cfbaabc824373b55a9edc3c7888f7d99c97",
+      "workspace_sha256": "8dcc0750398eac5147f991006c656cfbaabc824373b55a9edc3c7888f7d99c97",
+      "same": true
+    },
+    {
+      "product": "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/conditions.csv",
+      "workspace": "/home/junhyun/personal/builds/medical-data-hands-on/answer-key/e01/fixtures/conditions.csv",
+      "product_sha256": "0b2198b79b07ff076ce02a3b1ae8b5d52a917212489213a0565c81f4dc0ab02f",
+      "workspace_sha256": "0b2198b79b07ff076ce02a3b1ae8b5d52a917212489213a0565c81f4dc0ab02f",
+      "same": true
+    },
+    {
+      "product": "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/fixtures/sources.csv",
+      "workspace": "/home/junhyun/personal/builds/medical-data-hands-on/answer-key/e01/fixtures/sources.csv",
+      "product_sha256": "84feca82e53d78479e18a0822ac3ee89634bf490e20799d58b86b2e00287d3ef",
+      "workspace_sha256": "84feca82e53d78479e18a0822ac3ee89634bf490e20799d58b86b2e00287d3ef",
+      "same": true
+    },
+    {
+      "product": "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/expected_manual/daily.csv",
+      "workspace": "/home/junhyun/personal/builds/medical-data-hands-on/answer-key/e01/expected_manual/daily.csv",
+      "product_sha256": "08823e0d3780c2f6257e6c096a29407693b0c80b4aefd3ccc65b94c8c9a48921",
+      "workspace_sha256": "08823e0d3780c2f6257e6c096a29407693b0c80b4aefd3ccc65b94c8c9a48921",
+      "same": true
+    },
+    {
+      "product": "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/expected_manual/person.csv",
+      "workspace": "/home/junhyun/personal/builds/medical-data-hands-on/answer-key/e01/expected_manual/person.csv",
+      "product_sha256": "a44dbc29f8ec5b040b9ea644ed5c3d79eb2c511b770d61f00b950284502bd138",
+      "workspace_sha256": "a44dbc29f8ec5b040b9ea644ed5c3d79eb2c511b770d61f00b950284502bd138",
+      "same": true
+    },
+    {
+      "product": "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/expected_manual/summary_by_date.csv",
+      "workspace": "/home/junhyun/personal/builds/medical-data-hands-on/answer-key/e01/expected_manual/summary_by_date.csv",
+      "product_sha256": "e12f6d884ae24e2a2dfdbe1b69059ff9707fd8bd313a6b6714c04b7c345f4ec0",
+      "workspace_sha256": "e12f6d884ae24e2a2dfdbe1b69059ff9707fd8bd313a6b6714c04b7c345f4ec0",
+      "same": true
+    },
+    {
+      "product": "/home/junhyun/dev/projects/fhir-indicator-line/answer_key_lead/e01/expected_manual/summary_by_label.csv",
+      "workspace": "/home/junhyun/personal/builds/medical-data-hands-on/answer-key/e01/expected_manual/summary_by_label.csv",
+      "product_sha256": "457313a4e31065cab0b91084ce3fe4b028bfb95c5c04a8c1090d94edfd624154",
+      "workspace_sha256": "457313a4e31065cab0b91084ce3fe4b028bfb95c5c04a8c1090d94edfd624154",
+      "same": true
+    }
+  ]
+}

@@ -15,6 +15,7 @@ from fhir_line import a_prime, a_prime_checks
 from fhir_line.runtime import ROOT, connect, environment, writable_path
 from fhir_line.store import initialize
 from mimic_fixture import HEADERS, write_sources
+from wp5_expected import cases as wp5_cases, person_values
 
 
 def handmade():
@@ -234,6 +235,15 @@ class ActualSqlContract(unittest.TestCase):
 
     def query(self,sql):
         with connect(self.database,read_only=True) as con:return con.execute(sql).fetchall()
+
+    def test_0015_D3_D6_two_reviewed_aprime_cases(self):
+        cases=wp5_cases('A_PRIME_fixture');self.assertEqual(len(cases),2)
+        for case in cases:
+            with self.subTest(case=case['id']),connect(self.database,read_only=True) as con:
+                row=con.execute('''SELECT cast(last_bp_date as varchar),systolic,diastolic,controlled,reason
+                    FROM fct_bp_person WHERE hospital=? AND person_id=? AND as_of_label=?''',
+                    [case['hospital'],case['person'],case['as_of_label']]).fetchall()
+                self.assertEqual(row,[person_values(case)])
 
     def test_0013_D2_candidate_only_and_wrong_system_never_map_to_hypertension(self):
         self.assertEqual(self.query('SELECT source_person_id,concept_id FROM omop_diagnoses ORDER BY 1'),
