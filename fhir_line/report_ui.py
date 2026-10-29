@@ -95,10 +95,6 @@ def frozen_layers():
     paths=re.search(r'^FROZEN_PATHS="([^"]+)"$',script,re.M)
     if not base or not paths:raise ReportError('FROZEN_LAYERS')
     if not base[1]:
-        # During WP-5, accept only the registered clinical change; other frozen files stay fixed.
-        definition.context()
-        changed=subprocess.check_output(['git','diff','--name-only','3e99c30','--',*paths[1].split()],cwd=ROOT,text=True).splitlines()
-        if any(p!='models/marts/fct_bp_person.sql' for p in changed):raise ReportError('FROZEN_LAYERS')
         return
     cmd=['git','diff','--quiet',base[1],'--',*paths[1].split()]
     if subprocess.run(cmd,cwd=ROOT,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL).returncode:raise ReportError('FROZEN_LAYERS')

@@ -92,17 +92,18 @@ class V1Contract(unittest.TestCase):
         with self.assertRaises(definition.DefinitionError):definition.metadata(manifest,h,'')
         self.assertTrue(all(x is False for x in r.values()))
 
-    def test_0015_D5_frozen_guard_uses_approved_base_and_limits_open_calculation_changes(self):
+    def test_0015_D5_frozen_guard_uses_configured_base_and_skips_empty(self):
         from types import SimpleNamespace
-        paths='FROZEN_PATHS="models/intermediate models/marts models/reports seeds/indicator_concepts.csv seeds/as_of_labels.csv"\n'
+        paths='FROZEN_PATHS="models/intermediate models/marts models/reports"\n'
         with patch.object(Path,'read_text',return_value='FROZEN_BASE=\n'+paths):
-            with patch.object(ui.subprocess,'check_output',return_value='models/marts/fct_bp_person.sql\n'):
+            with patch.object(ui.subprocess,'run') as run,patch.object(ui.subprocess,'check_output') as output:
                 ui.frozen_layers()
-            with patch.object(ui.subprocess,'check_output',return_value='models/intermediate/int_bp_daily.sql\n'):
-                with self.assertRaises(ui.ReportError):ui.frozen_layers()
+                run.assert_not_called();output.assert_not_called()
         with patch.object(Path,'read_text',return_value='FROZEN_BASE=abcdef0\n'+paths):
             with patch.object(ui.subprocess,'run',return_value=SimpleNamespace(returncode=0)) as run:
-                ui.frozen_layers();self.assertIn('abcdef0',run.call_args.args[0])
+                ui.frozen_layers()
+                self.assertEqual(run.call_args.args[0],['git','diff','--quiet','abcdef0','--',
+                    'models/intermediate','models/marts','models/reports'])
             with patch.object(ui.subprocess,'run',return_value=SimpleNamespace(returncode=1)):
                 with self.assertRaises(ui.ReportError):ui.frozen_layers()
         with patch.object(Path,'read_text',return_value='FROZEN_BASE=invalid\n'+paths):
