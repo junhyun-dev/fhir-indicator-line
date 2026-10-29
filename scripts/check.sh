@@ -26,7 +26,7 @@ echo "== A′ 고정 기대 결과(결정 0013)"
 .venv/bin/python -m fhir_line aprime-verify-lock
 
 echo "== 바뀌면 안 되는 층(표준 과정 v1.11 · 기준 커밋은 마일스톤마다 요청서에서 바꿔요)"
-FROZEN_BASE=                                          # WP-5 · 결정 0015로 L5 혈압 측정일을 바꾸는 반복
+FROZEN_BASE=1ae75dded622a3ac064e7dccb0300bd09ff26438 # WP-5 · 결정 0015 구현 뒤 L4 ~ L6을 다시 고정해요
 FROZEN_PATHS="models/intermediate models/marts models/reports seeds/indicator_concepts.csv seeds/as_of_labels.csv"
 if [ -z "$FROZEN_BASE" ]; then
   echo "건너뜀: WP-5 · 결정 0015로 측정일 규칙을 바꾸는 반복이에요(고정 기대 결과와 셀을 비교해요)"
